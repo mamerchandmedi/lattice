@@ -11,12 +11,15 @@ sources for git learning:
 how to see changes:
 
 enter directory 
+
 git pull
 
 
 how to upload 
 
 git add <file name>
+  
 git commit -m <message>
+  
 git push
 

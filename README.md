@@ -10,7 +10,7 @@ sources for git learning:
 
 how to see changes:
 
-enter directory
+enter directory 
 git pull
 
 

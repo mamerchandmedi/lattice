@@ -23,3 +23,5 @@ git commit -m "message"
   
 git push
 
+cosmoTransitions documentation:
+https://clwainwright.net/CosmoTransitions/tunnelling1D.html

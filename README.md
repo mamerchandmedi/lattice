@@ -17,9 +17,9 @@ git pull
 
 how to upload 
 
-git add <file name>
+git add "file name"
   
-git commit -m <message>
+git commit -m "message"
   
 git push
 

@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr 26 10:37:54 2022
+
+@author: Tomasz Krajewski
+"""
+
+# %% Importing mathematicla package.
+import math
+# end: Importing mathematicla package.
+
+# %% Importing parameters of the model.
+from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn
+# end: Importing parameters of the model.
+
+gst = 106.75
+a = gst * (math.pi**2) / 90
+
+
+# %% Defining thermally corrected potential of the model.
+def VT(field, temp):
+    return 0.5 * gamma * (temp**2 - T0**2) * field**2 - \
+        (1 / 3) * alpha * temp * field**3 + 0.25 * lam * field**4
+# end: Defining thermally corrected potential of the model.
+
+
+# %% Defining derivative of thermally corrected potential of the model.
+def dVT(field, temp):
+    return gamma * (temp**2 - T0**2) * field - alpha * temp * field**2 + \
+        lam * field**3
+# end: Defining derivative of thermally corrected potential of the model.
+
+
+# %% Defining energy density of the system.
+def eps(field, temp):
+    return 3 * a * temp**4 + VT(field, temp) - temp * dVT(field, temp)
+# end: Defining energy density of the system.
+
+
+# %% Defining pressure of the system.
+def p(field, temp):
+    return a * temp**4 - VT(field, temp)
+# end: Defining pressure of the system.
+
+
+# %% Defining barotropic parameter of the system.
+def w(field, temp):
+    return eps(field, temp) + p(field, temp)
+# end: Defining barotropic parameter of the system.
+
+
+# %% Defining relativistic gamma factor.
+def gam(vel):
+    return 1 / (1 - vel**2)**0.5
+# end: Defining relativistic gamma factor.

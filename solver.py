@@ -11,7 +11,7 @@ from scipy.optimize import fsolve
 # end: Importing procedure for solving nonlinear equations.
 
 # %% Import termodynamically corrected quantities.
-from thermo import gst, a, VT, dVT, eps, p, w, gam
+from thermo import p, w
 # end: Import termodynamically corrected quantities.
 
 

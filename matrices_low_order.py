@@ -22,47 +22,6 @@ N = int(np.floor((rmax - rmin) / dr))
 
 r = np.array(range(0, N + 1)) * dr
 
-cr1 = np.empty_like(r)
-cr2 = np.empty_like(r)
-
-for j in range(N):
-    cr1[j] = 2 * (r[j+1]**3 - r[j]**3) * \
-        (r[j+1]**2 + r[j]**2 + r[j-1]**2 + r[j+1]*r[j-1] +
-         2*r[j]*r[j+1])**(-1) / dr**3
-    cr2[j] = 2 * (r[j]**3 - r[j-1]**3) * \
-        (r[j+1]**2 + r[j]**2 + r[j-1]**2 + r[j+1]*r[j-1] +
-         2*r[j]*r[j+1])**(-1)/dr**3
-
-cr1[1] = (r[2]**3-r[1]**3) * \
-    (r[1]**3 - r[0]**3 + (r[2] - r[1]) / 4 * (3 * r[1]**2 + 2 * r[1] * r[2] +
-                                              r[2]**2))**(-1) / dr**2
-cr2[1] = 0.
-
-cF0 = np.empty_like(r)
-cFm1 = np.empty_like(r)
-for j in range(1, N):
-    cF0[j] = 4 * (r[j+1]**2 + r[j+1] * r[j] + r[j]**2)
-    cFm1[j] = -4 * (r[j]**2 + r[j] * r[j-1] + r[j-1]**2)
-
-cF0[0] = 4 * (r[0]**2 + r[0] * r[1] + r[1]**2)
-cF0[N] = 12*r[N]**2
-cFm1[N] = -4 * (r[N-1]**2 + r[N-1] * r[N] + r[N]**2)
-
-cGUp1 = np.empty_like(r)
-cGU0 = np.empty_like(r)
-cGUm1 = np.empty_like(r)
-den = np.empty_like(r)
-for j in range(N):
-    cGU0[j] = 2 * dr * (r[j + 1] + 6 * r[j] + r[j-1]) - \
-        ((3 * r[j]**2 + 2 * r[j] * r[j+1] + r[j+1]**2) -
-         (r[j-1]**2 + 2 * r[j-1] * r[j] + 3 * r[j]**2))
-    cGUp1[j] = 2 * dr * (r[j+1] + r[j]) - (r[j]**2 + 2*r[j]*r[j+1] +
-                                           3 * r[j+1]**2)
-    cGUm1[j] = 2 * dr * (r[j] + r[j-1]) + (3 * r[j-1]**2 + 2 * r[j-1]*r[j] +
-                                           r[j]**2)
-    den[j] = (r[j+1]**2 + r[j]**2 + r[j-1]**2 + r[j+1]*r[j-1] +
-              r[j+1]*r[j] + r[j]*r[j-1])
-
 advection_matrix = np.ndarray((N + 1, 2))
 sources_matrix = np.ndarray((N + 1, 3))
 mass_matrix = np.ndarray((N + 1, ))

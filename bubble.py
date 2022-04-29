@@ -21,7 +21,7 @@ from cosmoTransitions.tunneling1D import SingleFieldInstanton
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from scaled import GeV
-from matrices_low_order import dr, r
+from matrices_low_order import r
 
 # %% Importing the potetnial of the model.
 from potential import V, dV
@@ -38,13 +38,13 @@ fphi = interpolate.interp1d(profile.R, profile.Phi,
 def thin_wall(r, v0, L, r0):
     return v0/2*(-np.tanh((r-r0)/L) + 1.)
 
+
 fit = curve_fit(thin_wall, profile.R, profile.Phi,
                 bounds=(0, [1.5 * vt, 1, 1]))[0]
 dt = 0.002
 plt.plot(r / GeV, thin_wall(r / GeV, fit[0], fit[1], fit[2]),
          label="thin-wall approximation")
-plt.scatter(profile.R, profile.Phi, c = "red", s = 1,
-            label="Numerical profile")
+plt.scatter(profile.R, profile.Phi, c="red", s=1, label="Numerical profile")
 plt.xlim(0, 0.2)
 plt.legend()
 plt.savefig('phi0')

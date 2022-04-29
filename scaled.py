@@ -7,7 +7,7 @@ Created on Tue Apr 26 10:49:33 2022
 """
 
 # %% Import termodynamically corrected quantities.
-from thermo import gst, a, VT, dVT, eps, p, w, gam
+from thermo import VT, dVT
 # end: Import termodynamically corrected quantities.
 
 # %% Importing procedure for solving algebraic relation

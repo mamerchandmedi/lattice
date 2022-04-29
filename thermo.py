@@ -6,16 +6,16 @@ Created on Tue Apr 26 10:37:54 2022
 @author: Tomasz Krajewski
 """
 
-# %% Importing mathematicla package.
-import math
-# end: Importing mathematicla package.
+# %% Importing mathematical constants.
+from numpy import pi
+# end: Importing mathematical constants.
 
 # %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn
+from parameters import T0, alpha, gamma, lam
 # end: Importing parameters of the model.
 
 gst = 106.75
-a = gst * (math.pi**2) / 90
+a = gst * pi**2 / 90
 
 
 # %% Defining thermally corrected potential of the model.

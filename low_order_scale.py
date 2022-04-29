@@ -28,8 +28,8 @@ from scaled import GeV, VT_mod, dVT_mod, tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
 # %% Import matrices of the integration scheme.
-from matrices_low_order import dr, r,  cr1, cr2, cF0, cFm1, \
-    cGUp1, cGU0, cGUm1, den, N, advection_matrix, mass_matrix, sources_matrix
+from matrices_low_order import dr, r, N, laplacian_matrix, kinetic_matrix, \
+ advection_matrix, mass_matrix, sources_matrix
 # end: Import matrices of the integration scheme.
 
 # %% Importing initial values.
@@ -42,7 +42,7 @@ from solver import tauZphi2Tpv
 # end: Importing procedure for solving algebraic relation
 #      T, p, v as function of tau, Z, phi.
 
-dt = 0.01 * GeV**(-1)
+dt = 0.001 * GeV**(-1)
 
 phidot = np.zeros(r.size)
 taudot = np.zeros(r.size)
@@ -55,16 +55,17 @@ fig.subplots_adjust(wspace=0.5)
 #------plotting
 plt.xlim(0,10)
 #plt.ylim(0,0.1)
-fig.suptitle("dr = "+str(dr) + " ,dt = "+str(dt))
-axs[0, 0].set_ylabel('phi')
-axs[1, 0].set_ylabel('tau')
-axs[2, 0].set_ylabel('Z')
-axs[2, 0].set_xlabel("r")
+fig.suptitle("dr = "+ str(dr / GeV**(-1)) + ", dt = "+str(dt / GeV**(-1))
+             + ", GeV = "+str(GeV))
+axs[0, 0].set_ylabel(r'$\phi$')
+axs[1, 0].set_ylabel(r'$\tau$')
+axs[2, 0].set_ylabel(r'$Z$')
+axs[2, 0].set_xlabel(r'$r$')
 
-axs[0, 1].set_ylabel('v')
-axs[1, 1].set_ylabel('T')
-axs[2, 1].set_ylabel('P')
-axs[2, 1].set_xlabel("r")
+axs[0, 1].set_ylabel(r'$v$')
+axs[1, 1].set_ylabel(r'$T$')
+axs[2, 1].set_ylabel(r'$p$')
+axs[2, 1].set_xlabel(r'$r$')
 
 axs[0, 0].set_xlim(0, 1)
 axs[1, 0].set_xlim(0, 1)
@@ -82,15 +83,13 @@ axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
 #axs[1,1].plot(r,T,linestyle = 'dashed')
 #axs[2,1].plot(r,P,linestyle = 'dashed')
 #plt.savefig('plots/low_order/plots_low_order'+str(0))
-nsteps = 20
-psteps = 1
+psteps = 10
 tmax = 0.04 * GeV**(-1)
 #def Tsolve(t,j):
 #	return tau[j] + p(phi[j],t)-0.5*(dr**4*w(phi[j],t)+(w(phi[j],t)**2+4*Z[j]**2)**0.5)
-for i in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
-    print(i)
+for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N + 1):
-        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
+        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi0[j], T[j], P[j],
                                            v[j])
 
     # ------tau, Z evolution (half step)
@@ -126,39 +125,42 @@ for i in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                    sources_matrix[j][1] * (P[j+1] - P_off[j+1])) / \
             mass_matrix[j]
 
-    tau = tau - 0.5 * dt * taudot
-    Z = Z - 0.5 * dt * Zdot
+    tau -= 0.5 * dt * taudot
+    Z -= 0.5 * dt * Zdot
 
     for j in range(N+1):
-        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
+        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi0[j], T[j], P[j],
                                            v[j])
 
-    phidot[1] = phidot[1] + dt*((r[2]**3-r[1]**3)*(phi[2]-phi[1])/dr**2*(r[1]**3 - r[0]**3 + (r[2]-r[1])/4*(3*r[1]**2+2*r[1]*r[2]+r[2]**2))**(-1) - dr*dVT_mod(phi[1],T[1]))
+    phidot[1] += dt * ((laplacian_matrix[1][1] * (phi[2] - phi[1])) /
+                       kinetic_matrix[1] - dVT_mod(phi[1], T[1]))
     for j in range(2, N):
-    	phidot[j] = phidot[j] + dt*(cr1[j]*(phi[j+1]-phi[j]) - cr2[j]*(phi[j]-phi[j-1]) - dr*dVT_mod(phi[j],T[j]))
+        phidot[j] += dt * ((laplacian_matrix[1][1] * (phi[j+1] - phi[j]) +
+                            laplacian_matrix[1][-1] * (phi[j] - phi[j-1])) /
+                           kinetic_matrix[j] - dVT_mod(phi[j], T[j]))
 
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
     phi[0] = phi[1]
 
     # ------tau, Z evolution (half step)
-    tau = tau - 0.5 * dt * taudot
-    Z = Z - 0.5 * dt * Zdot
+    tau -= 0.5 * dt * taudot
+    Z -= 0.5 * dt * Zdot
 
     # ------plotting
     colormap = plt.get_cmap('Blues')
-    colors = colormap((i + dt) / tmax)
-    if((i + dt) / tmax % psteps == 0):
+    colors = colormap((t + dt) / tmax)
+    if(((t + dt) / dt) % psteps == 0):
         axs[0, 0].plot(r / GeV**(-1), phi / GeV,
-                       label=str(i/Tc)+"*Tc", c=colors)
+                       label=str(t / Tc)+"*Tc", c=colors)
         axs[1, 0].plot(r / GeV**(-1), tau / (GeV**4),
-                       label=str(i/Tc)+"*Tc", c=colors)
+                       label=str(t / Tc)+"*Tc", c=colors)
         axs[2, 0].plot(r / GeV**(-1), Z / GeV**4,
-                       label=str(i / Tc) + "*Tc", c=colors)
+                       label=str(t / Tc) + "*Tc", c=colors)
         axs[0, 1].plot(r / GeV**(-1), v,
-                       label=str(i / Tc) + "*Tc", c=colors)
+                       label=str(t / Tc) + "*Tc", c=colors)
         axs[1, 1].plot(r / GeV**(-1), T / GeV,
-                       label=str(i/Tc)+"*Tc", c=colors)
+                       label=str(t/Tc)+"*Tc", c=colors)
         axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
-                       label=str(i / Tc) + "*Tc", c=colors)
-        plt.savefig('plots/low_order/plots_low_order' + str(i + dt) + '.png')
+                       label=str(t / Tc) + "*Tc", c=colors)
+        #plt.savefig('plots/low_order/plots_low_order' + str(t + dt) + '.png')

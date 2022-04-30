@@ -17,7 +17,7 @@ from solver import tauZphi2Tpv
 #      T, p, v as function of tau, Z, phi.
 
 # %% Defining rescaling factor.
-GeV = 0.01  # Value of GeV i therms of simulation units.
+GeV = 1  # Value of GeV i therms of simulation units.
 # end: Defining rescaling factor.
 
 

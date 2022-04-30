@@ -40,7 +40,7 @@ tau = w(phi0, T) * gam(v)**2 - P
 #tau = tau[0]*np.exp(-2*(r-5)**2)
 
 Z = w(phi0, T) * gam(v)**2 * v
-P_off = (p(vt, Tn)) * np.ones(r.size)
+P_off = 0 * (p(vt, Tn)) * np.ones(r.size)
 
 phi *= GeV
 T *= GeV

@@ -27,10 +27,22 @@ from thermo import gst, a, VT, dVT, eps, p, w, gam
 from scaled import GeV, VT_mod, dVT_mod, tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
-# %% Import matrices of the integration scheme.
-from matrices_low_order import dr, r, N, laplacian_matrix, kinetic_matrix, \
- advection_matrix, mass_matrix, sources_matrix
-# end: Import matrices of the integration scheme.
+# %% Import matrices of lattice definition.
+from lattice import dr, r, N
+# end: Import matrices of lattice definition.
+
+# %% Import matrices of wave equation integration scheme.
+from matrices_field import laplacian_matrix, kinetic_matrix
+# end: Import matrices of wave equation integration scheme.
+
+# %% Import matrices of the low order integration scheme.
+from matrices_low_order import advection_matrix, mass_matrix
+# end: Import matrices of the low order integration scheme.
+
+# %% Import matrices of the high order integration scheme.
+from matrices_high_order import sources_matrix
+from matrices_high_order import advection_matrix as high_order_advection_matrix
+# end: Import matrices of the high order integration scheme.
 
 # %% Importing initial values.
 from initialization import phi0, phi, T, P, tau, Z, v, P_off
@@ -84,9 +96,8 @@ axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
 #axs[2,1].plot(r,P,linestyle = 'dashed')
 #plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 10
-tmax = 0.04 * GeV**(-1)
-#def Tsolve(t,j):
-#	return tau[j] + p(phi[j],t)-0.5*(dr**4*w(phi[j],t)+(w(phi[j],t)**2+4*Z[j]**2)**0.5)
+tmax = 0.4 * GeV**(-1)
+
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N + 1):
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi0[j], T[j], P[j],
@@ -94,7 +105,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
 
     # ------tau, Z evolution (half step)
     Ftau = (tau + P) * v
-    FZ = Z * v + (P - P_off)
+    FZ = Z * v
 
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
@@ -106,12 +117,16 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         mass_matrix[N]
 
     Zdot[0] = (advection_matrix[0][0] * FZ[0] +
-               sources_matrix[0][0] * (P[0] - P_off[0]) +
-               sources_matrix[0][1] * (P[1] - P_off[1])) / mass_matrix[0]
+               (sources_matrix[0][0] + high_order_advection_matrix[0][0]) *
+               (P[0] - P_off[0]) +
+               (sources_matrix[0][1] + high_order_advection_matrix[0][1]) *
+               (P[1] - P_off[1])) / mass_matrix[0]
     Zdot[N] = (advection_matrix[N][-1] * FZ[N-1] +
                advection_matrix[N][0] * FZ[N] +
-               sources_matrix[N][-1] * (P[N-1] - P_off[N-1]) +
-               sources_matrix[N][0] * (P[N] - P_off[N])) / \
+               (sources_matrix[N][-1] + high_order_advection_matrix[N][-1]) *
+               (P[N-1] - P_off[N-1]) +
+               (sources_matrix[N][0] + high_order_advection_matrix[N][0]) *
+               (P[N] - P_off[N])) / \
         mass_matrix[N]
 
     for j in range(1, N):
@@ -120,9 +135,15 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
             mass_matrix[j]
         Zdot[j] = (advection_matrix[j][-1] * FZ[j-1] +
                    advection_matrix[j][0] * FZ[j] +
-                   sources_matrix[j][-1] * (P[j-1] - P_off[j-1]) +
-                   sources_matrix[j][0] * (P[j] - P_off[j]) +
-                   sources_matrix[j][1] * (P[j+1] - P_off[j+1])) / \
+                   (sources_matrix[j][-1] +
+                    high_order_advection_matrix[j][-1]) *
+                   (P[j-1] - P_off[j-1]) +
+                   (sources_matrix[j][0] +
+                    high_order_advection_matrix[j][0]) *
+                   (P[j] - P_off[j]) +
+                   (sources_matrix[j][1] +
+                    high_order_advection_matrix[j][1]) *
+                   (P[j+1] - P_off[j+1])) / \
             mass_matrix[j]
 
     tau -= 0.5 * dt * taudot

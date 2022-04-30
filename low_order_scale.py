@@ -66,6 +66,7 @@ fig.subplots_adjust(hspace=0.5)
 fig.subplots_adjust(wspace=0.5)
 #------plotting
 plt.xlim(0,10)
+plt.rcParams["figure.dpi"] = 400
 #plt.ylim(0,0.1)
 fig.suptitle("dr = "+ str(dr / GeV**(-1)) + ", dt = "+str(dt / GeV**(-1))
              + ", GeV = "+str(GeV))

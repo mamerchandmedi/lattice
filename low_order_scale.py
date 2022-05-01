@@ -101,8 +101,9 @@ tmax = 0.4 * GeV**(-1)
 
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N + 1):
-        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi0[j], T[j], P[j],
+        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
                                            v[j])
+
 
     # ------tau, Z evolution (half step)
     Ftau = (tau + P) * v
@@ -147,18 +148,20 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                    (P[j+1] - P_off[j+1])) / \
             mass_matrix[j]
 
+    print(taudot[0:])
+    print(Zdot[0:4])
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
 
     for j in range(N+1):
-        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi0[j], T[j], P[j],
+        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
                                            v[j])
 
     phidot[1] += dt * ((laplacian_matrix[1][1] * (phi[2] - phi[1])) /
                        kinetic_matrix[1] - dVT_mod(phi[1], T[1]))
     for j in range(2, N):
-        phidot[j] += dt * ((laplacian_matrix[1][1] * (phi[j+1] - phi[j]) +
-                            laplacian_matrix[1][-1] * (phi[j] - phi[j-1])) /
+        phidot[j] += dt * ((laplacian_matrix[j][1] * (phi[j+1] - phi[j]) +
+                            laplacian_matrix[j][-1] * (phi[j] - phi[j-1])) /
                            kinetic_matrix[j] - dVT_mod(phi[j], T[j]))
 
     # ------phi evolution (half step)
@@ -185,4 +188,4 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                        label=str(t/Tc)+"*Tc", c=colors)
         axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        #plt.savefig('plots/low_order/plots_low_order' + str(t + dt) + '.png')
+        plt.savefig('plots/low_order/plots_low_order' + str(t + dt) + '.png')

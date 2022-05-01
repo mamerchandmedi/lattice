@@ -1,0 +1,212 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import optimize as optimize
+import scipy.integrate as integrate
+from scipy import interpolate, special
+from scipy.optimize import fsolve
+import matplotlib.pylab as pl
+from tqdm import tqdm
+
+# %% Importing parameters of the model.
+from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn
+# end: Importing parameters of the model.
+
+# %% Importing the potetnial of the model.
+from potential import V, dV
+# end: Importing the potetnial of the model.
+
+# %% Import critical bubble calculated by CosmoTransitions.
+from bubble import vt, profile, fphi, phi_tw
+# end: Import critical bubble calculated by CosmoTransitions.
+
+# %% Import termodynamically corrected quantities.
+from thermo import gst, a, VT, dVT, eps, p, w, gam
+# end: Import termodynamically corrected quantities.
+
+# %% Import rescaled quantities.
+from scaled import GeV, VT_mod, dVT_mod, tauZphi2Tpv_mod
+# end: Import rescaled quantities.
+
+# %% Import matrices of lattice definition.
+from lattice import dr, r, N
+# end: Import matrices of lattice definition.
+
+# %% Import matrices of wave equation integration scheme.
+from matrices_field import laplacian_matrix, kinetic_matrix
+# end: Import matrices of wave equation integration scheme.
+
+
+# %% Import matrices of the high order integration scheme.
+from matrices_high_order import sources_matrix
+from matrices_high_order import advection_matrix 
+from matrices_high_order import mass_matrix
+# end: Import matrices of the high order integration scheme.
+
+# %% Importing initial values.
+from initialization import phi0, phi, T, P, tau, Z, v, P_off
+# end: Importing initial values.
+
+# %% Importing procedure for solving algebraic relation
+#    T, p, v as function of tau, Z, phi.
+from solver import tauZphi2Tpv
+# end: Importing procedure for solving algebraic relation
+#      T, p, v as function of tau, Z, phi.
+
+dt = 0.001 * GeV**(-1)
+
+phidot = np.zeros(r.size)
+taudot = np.zeros(r.size)
+Zdot = np.zeros(r.size)
+tau_temp = np.zeros(r.size)
+Z_temp= np.zeros(r.size)
+
+#EVOLUTION#
+fig, axs = plt.subplots(3, 2)
+fig.subplots_adjust(hspace=0.5)
+fig.subplots_adjust(wspace=0.5)
+#------plotting
+plt.xlim(0,10)
+plt.rcParams["figure.dpi"] = 400
+#plt.ylim(0,0.1)
+fig.suptitle("dr = "+ str(dr / GeV**(-1)) + ", dt = "+str(dt / GeV**(-1))
+             + ", GeV = "+str(GeV))
+axs[0, 0].set_ylabel(r'$\phi$')
+axs[1, 0].set_ylabel(r'$\tau$')
+axs[2, 0].set_ylabel(r'$Z$')
+axs[2, 0].set_xlabel(r'$r$')
+
+axs[0, 1].set_ylabel(r'$v$')
+axs[1, 1].set_ylabel(r'$T$')
+axs[2, 1].set_ylabel(r'$p$')
+axs[2, 1].set_xlabel(r'$r$')
+
+axs[0, 0].set_xlim(0, 4)
+axs[1, 0].set_xlim(0, 4)
+axs[2, 0].set_xlim(0, 4)
+axs[0, 1].set_xlim(0, 4)
+axs[1, 1].set_xlim(0, 4)
+axs[2, 1].set_xlim(0, 4)
+
+
+#axs[0,1].set_ylim(-1,1)
+#axs[0,0].plot(r,phi,linestyle = 'dashed')
+axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
+#axs[1,0].plot(r,tau,linestyle = 'dashed')
+#axs[2,0].plot(r,Z,linestyle = 'dashed')
+#axs[0,1].plot(r,v,linestyle = 'dashed')
+#axs[1,1].plot(r,T,linestyle = 'dashed')
+#axs[2,1].plot(r,P,linestyle = 'dashed')
+#plt.savefig('plots/low_order/plots_low_order'+str(0))
+psteps = 100
+tmax = 5 * GeV**(-1)
+
+for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
+    for j in range(N+1):
+        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
+                                           v[j])
+
+    Ftau = (tau + P)*v
+    FZ = Z *v + P
+    
+    # ------phi evolution (half step)
+    phi[1:] += 0.5 * dt * phidot[1:]
+    phi[0] = phi[1]
+    
+    taudot[0] = (advection_matrix[0][0] * Ftau[0] + advection_matrix[0][1] * Ftau[1]) / mass_matrix[0]
+    taudot[N] = (advection_matrix[N][-1] * Ftau[N-1] +
+                 advection_matrix[N][0] * Ftau[N]) / \
+        mass_matrix[N]
+
+    Zdot[0] = (advection_matrix[0][0] * FZ[0] + advection_matrix[0][1] * FZ[1] +
+               sources_matrix[0][0] * (P[0] - P_off[0]) +
+               sources_matrix[0][1] * (P[1] - P_off[1])) / mass_matrix[0]
+    Zdot[N] = (advection_matrix[N][-1] * FZ[N-1] +
+               advection_matrix[N][0] * FZ[N] +
+               sources_matrix[N][-1] * (P[N-1] - P_off[N-1]) +
+               sources_matrix[N][0] * (P[N] - P_off[N])) / \
+        mass_matrix[N]
+
+    for j in range(1, N):
+        taudot[j] = (advection_matrix[j][-1] * Ftau[j-1] +
+                     advection_matrix[j][0] * Ftau[j] +
+                     advection_matrix[j][1] * Ftau[j+1]) / \
+            mass_matrix[j]
+        Zdot[j] = (advection_matrix[j][-1] * FZ[j-1] +
+                   advection_matrix[j][0] * FZ[j] +
+                   advection_matrix[j][1] * FZ[j+1] +
+                   sources_matrix[j][-1] * (P[j-1] - P_off[j-1]) +
+                   sources_matrix[j][0] * (P[j] - P_off[j]) +
+                   sources_matrix[j][1] * (P[j+1] - P_off[j+1])) / \
+            mass_matrix[j]
+            
+    # ------tau, Z evolution (half step)
+    tau_temp = tau - 0.5 * dt * taudot
+    Z_temp = Z - 0.5 * dt * Zdot
+    
+    for j in range(N+1):
+        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau_temp[j], Z_temp[j], phi[j], T[j], P[j],
+                                           v[j])
+                                           
+    phidot[1] += dt * ((laplacian_matrix[1][1] * (phi[2] - phi[1])) /
+                       kinetic_matrix[1] - dVT_mod(phi[1], T[1]))
+    for j in range(2, N):
+        phidot[j] += dt * ((laplacian_matrix[j][1] * (phi[j+1] - phi[j]) +
+                            laplacian_matrix[j][-1] * (phi[j] - phi[j-1])) /
+                           kinetic_matrix[j] - dVT_mod(phi[j], T[j]))
+                                                        
+    Ftau = (tau + P)*v
+    FZ = Z*v + P
+    
+    taudot[0] = (advection_matrix[0][0] * Ftau[0] + advection_matrix[0][1] * Ftau[1]) / mass_matrix[0]
+    taudot[N] = (advection_matrix[N][-1] * Ftau[N-1] +
+                 advection_matrix[N][0] * Ftau[N]) / \
+        mass_matrix[N]
+
+    Zdot[0] = (advection_matrix[0][0] * FZ[0] + advection_matrix[0][1] * FZ[1] +
+               sources_matrix[0][0] * (P[0] - P_off[0]) +
+               sources_matrix[0][1] * (P[1] - P_off[1])) / mass_matrix[0]
+    Zdot[N] = (advection_matrix[N][-1] * FZ[N-1] +
+               advection_matrix[N][0] * FZ[N] +
+               sources_matrix[N][-1] * (P[N-1] - P_off[N-1]) +
+               sources_matrix[N][0] * (P[N] - P_off[N])) / \
+        mass_matrix[N]
+
+    for j in range(1, N):
+        taudot[j] = (advection_matrix[j][-1] * Ftau[j-1] +
+                     advection_matrix[j][0] * Ftau[j] +
+                     advection_matrix[j][1] * Ftau[j+1]) / \
+            mass_matrix[j]
+        Zdot[j] = (advection_matrix[j][-1] * FZ[j-1] +
+                   advection_matrix[j][0] * FZ[j] +
+                   advection_matrix[j][1] * FZ[j+1] +
+                   sources_matrix[j][-1] * (P[j-1] - P_off[j-1]) +
+                   sources_matrix[j][0] * (P[j] - P_off[j]) +
+                   sources_matrix[j][1] * (P[j+1] - P_off[j+1])) / \
+            mass_matrix[j]
+            
+    # ------tau, Z evolution (half step)
+    tau -=  dt * taudot
+    Z -=  dt * Zdot  
+    
+   
+    # ------phi evolution (half step)
+    phi[1:] += 0.5 * dt * phidot[1:]
+    phi[0] = phi[1] 
+    
+    # ------plotting
+    colormap = plt.get_cmap('Blues')
+    colors = colormap((t + dt) / tmax)
+    if(((t + dt) / dt) % psteps == 0):
+        axs[0, 0].plot(r / GeV**(-1), phi / GeV,
+                       label=str(t / Tc)+"*Tc", c=colors)
+        axs[1, 0].plot(r / GeV**(-1), tau / (GeV**4),
+                       label=str(t / Tc)+"*Tc", c=colors)
+        axs[2, 0].plot(r / GeV**(-1), Z / GeV**4,
+                       label=str(t / Tc) + "*Tc", c=colors)
+        axs[0, 1].plot(r / GeV**(-1), v,
+                       label=str(t / Tc) + "*Tc", c=colors)
+        axs[1, 1].plot(r / GeV**(-1), T / GeV,
+                       label=str(t/Tc)+"*Tc", c=colors)
+        axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
+                       label=str(t / Tc) + "*Tc", c=colors)
+        plt.savefig('plots/high_order/plots_high_order' + str(t + dt) + '.png')

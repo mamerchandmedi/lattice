@@ -84,12 +84,12 @@ axs[1, 1].set_ylabel(r'$T$')
 axs[2, 1].set_ylabel(r'$p$')
 axs[2, 1].set_xlabel(r'$r$')
 
-axs[0, 0].set_xlim(0, 1)
-axs[1, 0].set_xlim(0, 1)
-axs[2, 0].set_xlim(0, 1)
-axs[0, 1].set_xlim(0, 1)
-axs[1, 1].set_xlim(0, 1)
-axs[2, 1].set_xlim(0, 1)
+axs[0, 0].set_xlim(0, 4)
+axs[1, 0].set_xlim(0, 4)
+axs[2, 0].set_xlim(0, 4)
+axs[0, 1].set_xlim(0, 4)
+axs[1, 1].set_xlim(0, 4)
+axs[2, 1].set_xlim(0, 4)
 
 #axs[0,1].set_ylim(-1,1)
 #axs[0,0].plot(r,phi,linestyle = 'dashed')
@@ -100,11 +100,11 @@ axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
 #axs[1,1].plot(r,T,linestyle = 'dashed')
 #axs[2,1].plot(r,P,linestyle = 'dashed')
 #plt.savefig('plots/low_order/plots_low_order'+str(0))
-psteps = 50
-tmax = 2 * GeV**(-1)
+psteps = 100
+tmax = 5 * GeV**(-1)
 
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
-    for j in range(N):
+    for j in range(N+1):
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
                                            v[j])
 
@@ -159,7 +159,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
 
-    for j in range(N):
+    for j in range(N+1):
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
                                            v[j])
 
@@ -194,4 +194,4 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                        label=str(t/Tc)+"*Tc", c=colors)
         axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        plt.savefig('plots/low_order/plots_low_order' + str((t + dt)/dt) + '.png')
+        plt.savefig('plots/low_order/plots_low_order' + str(t + dt) + '.png')

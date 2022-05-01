@@ -101,8 +101,8 @@ axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
 #axs[2,1].plot(r,P,linestyle = 'dashed')
 #plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 100
-tmax = 5 * GeV**(-1)
-
+tmax = 4 * GeV**(-1)
+counter = 0
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N+1):
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
@@ -181,17 +181,20 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     # ------plotting
     colormap = plt.get_cmap('Blues')
     colors = colormap((t + dt) / tmax)
-    if(((t + dt) / dt) % psteps == 0):
-        axs[0, 0].plot(r / GeV**(-1), phi / GeV,
+    if((counter + 1) % psteps == 0):
+    
+    	axs[0, 0].plot(r / GeV**(-1), phi / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[1, 0].plot(r / GeV**(-1), tau / (GeV**4),
+    	axs[1, 0].plot(r / GeV**(-1), tau / (GeV**4),
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[2, 0].plot(r / GeV**(-1), Z / GeV**4,
+    	axs[2, 0].plot(r / GeV**(-1), Z / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[0, 1].plot(r / GeV**(-1), v,
+    	axs[0, 1].plot(r / GeV**(-1), v,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[1, 1].plot(r / GeV**(-1), T / GeV,
+    	axs[1, 1].plot(r / GeV**(-1), T / GeV,
                        label=str(t/Tc)+"*Tc", c=colors)
-        axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
+    	axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        plt.savefig('plots/low_order/plots_low_order' + str(t + dt) + '.png')
+    	plt.savefig('plots/low_order/plots_low_order' + str(counter + 1) + '.png')
+    
+    counter += 1

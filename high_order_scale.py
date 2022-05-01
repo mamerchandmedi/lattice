@@ -98,7 +98,8 @@ axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
 #axs[2,1].plot(r,P,linestyle = 'dashed')
 #plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 100
-tmax = 5 * GeV**(-1)
+tmax = 4 * GeV**(-1)
+counter = 0
 
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N+1):
@@ -196,7 +197,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     # ------plotting
     colormap = plt.get_cmap('Blues')
     colors = colormap((t + dt) / tmax)
-    if(((t + dt) / dt) % psteps == 0):
+    if((counter+1) % psteps == 0):
         axs[0, 0].plot(r / GeV**(-1), phi / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)
         axs[1, 0].plot(r / GeV**(-1), tau / (GeV**4),
@@ -209,4 +210,5 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                        label=str(t/Tc)+"*Tc", c=colors)
         axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        plt.savefig('plots/high_order/plots_high_order' + str(t + dt) + '.png')
+        plt.savefig('plots/high_order/plots_high_order' + str(counter + 1) + '.png')
+    counter += 1

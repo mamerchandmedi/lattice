@@ -1,7 +1,7 @@
 import numpy as np
 
 # %% Import termodynamically corrected quantities.
-from thermo import a, VT, dVT, dVTdT, d2VTdT, w, gam
+from thermo import a, VT, dVT, dVTdT, d2VTdT, w, gam, p, eps
 # end: Import termodynamically corrected quantities.
 
 def dpdT(field,T):
@@ -17,7 +17,7 @@ def dZdT(v,field,T):
 	return v*gam(v)**2*(16*a*T**3 - dVTdT(field,T) - T*d2VTdT(field,T))
 
 def dZdv(v,field,T):
-	return w(field,T)*(1+v**2)/gam(v)**4
+	return w(field,T)*(1+v**2)*gam(v)**4
 	
 def determinant(v,field,T):
 	return dtaudv(v,field,T)*dZdT(v,field,T) - dtaudT(v,field,T)*dZdv(v,field,T)
@@ -36,10 +36,10 @@ def dTdZ(v,field,T):
 
 def Jacobian(v,field,T,tau,Z,P):
 	J = np.ndarray((2, 2))
-	J[0][0] = v + v*dpdT(T,field)*dTdtau(v,T,field) + (tau + P)*dvdtau(v,T,field)
-	J[0][1] =  v*dpdT(T,field)*dTdZ(v,T,field) + (tau + P)*dvdZ(v,T,field)
-	J[1][0] = Z*dvdtau(v,T,field)
-	J[1][1] = v + Z*dvdZ(v,T,field)
+	J[0][0] = v + v*dpdT(field,T)*dTdtau(v,field,T) + (tau + P)*dvdtau(v,field,T)
+	J[0][1] =  v*dpdT(field,T)*dTdZ(v,field,T) + (tau + P)*dvdZ(v,field,T)
+	J[1][0] = Z*dvdtau(v,field,T)
+	J[1][1] = v + Z*dvdZ(v,field,T)
 	return J
 	
 def T_matrices(v,field,T,tau,Z,P):
@@ -58,6 +58,5 @@ def T_matrices(v,field,T,tau,Z,P):
 	T_inv[1][1] = T_inv[0][1] = 1/(2*A[1][0]*delta**0.5)**0.5 * (A[0][0]-A[1][1]+delta**0.5)
 	
 	return T, T_inv
-	
 
 

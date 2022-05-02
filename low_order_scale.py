@@ -20,11 +20,11 @@ from bubble import vt, profile, fphi, phi_tw
 # end: Import critical bubble calculated by CosmoTransitions.
 
 # %% Import termodynamically corrected quantities.
-from thermo import gst, a, VT, dVT, eps, p, w, gam
+from thermo import gst, a, VT, dVTdphi, eps, p, w, gam
 # end: Import termodynamically corrected quantities.
 
 # %% Import rescaled quantities.
-from scaled import GeV, VT_mod, dVT_mod, tauZphi2Tpv_mod
+from scaled import GeV, VT_mod, dVTdphi_mod, tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
 # %% Import matrices of lattice definition.
@@ -108,22 +108,24 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
                                            v[j])
 
-    Ftau = (tau + P) 
-    FZ = Z 
+    Ftau = (tau + P)
+    FZ = Z
 
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
     phi[0] = phi[1]
-    
+
     #-------evaluation of advection matrix
     advection_matrix = advection(v, high_order_advection_matrix)
 
-    taudot[0] = (advection_matrix[0][0] * Ftau[0] + advection_matrix[0][1] * Ftau[1]) / mass_matrix[0]
+    taudot[0] = (advection_matrix[0][0] * Ftau[0] +
+                 advection_matrix[0][1] * Ftau[1]) / mass_matrix[0]
     taudot[N] = (advection_matrix[N][-1] * Ftau[N-1] +
                  advection_matrix[N][0] * Ftau[N]) / \
         mass_matrix[N]
 
-    Zdot[0] = (advection_matrix[0][0] * FZ[0] + advection_matrix[0][1] * FZ[1] +
+    Zdot[0] = (advection_matrix[0][0] * FZ[0] +
+               advection_matrix[0][1] * FZ[1] +
                (sources_matrix[0][0] + high_order_advection_matrix[0][0]) *
                (P[0] - P_off[0]) +
                (sources_matrix[0][1] + high_order_advection_matrix[0][1]) *
@@ -154,7 +156,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                     high_order_advection_matrix[j][1]) *
                    (P[j+1] - P_off[j+1])) / \
             mass_matrix[j]
-            
+
     # ------tau, Z evolution (half step)
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
@@ -164,11 +166,11 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                                            v[j])
 
     phidot[1] += dt * ((laplacian_matrix[1][1] * (phi[2] - phi[1])) /
-                       kinetic_matrix[1] - dVT_mod(phi[1], T[1]))
+                       kinetic_matrix[1] - dVTdphi_mod(phi[1], T[1]))
     for j in range(2, N):
         phidot[j] += dt * ((laplacian_matrix[j][1] * (phi[j+1] - phi[j]) +
                             laplacian_matrix[j][-1] * (phi[j] - phi[j-1])) /
-                           kinetic_matrix[j] - dVT_mod(phi[j], T[j]))
+                           kinetic_matrix[j] - dVTdphi_mod(phi[j], T[j]))
 
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
@@ -182,7 +184,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     colormap = plt.get_cmap('Blues')
     colors = colormap((t + dt) / tmax)
     if((counter + 1) % psteps == 0):
-    
+
     	axs[0, 0].plot(r / GeV**(-1), phi / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)
     	axs[1, 0].plot(r / GeV**(-1), tau / (GeV**4),
@@ -195,6 +197,6 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                        label=str(t/Tc)+"*Tc", c=colors)
     	axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-    	plt.savefig('plots/low_order/plots_low_order' + str(counter + 1) + '.png')
-    
+    	#plt.savefig('plots/low_order/plots_low_order' + str(counter + 1) + '.png')
+
     counter += 1

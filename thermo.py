@@ -25,25 +25,34 @@ def VT(field, temp):
 # end: Defining thermally corrected potential of the model.
 
 
-# %% Defining derivative with respect to the field of thermally corrected potential of the model.
-def dVT(field, temp):
+# %% Defining derivative with respect to the field of
+#    thermally corrected potential of the model.
+def dVTdphi(field, temp):
     return gamma * (temp**2 - T0**2) * field - alpha * temp * field**2 + \
         lam * field**3
-# end: Defining derivative with respect to the field of thermally corrected potential of the model.
+# end: Defining derivative with respect to the field of
+#      thermally corrected potential of the model.
 
-# %% Defining first derivative with respect to the temperature of thermally corrected potential of the model.
+
+# %% Defining first derivative with respect to the temperature of
+#    thermally corrected potential of the model.
 def dVTdT(field, temp):
     return gamma * temp * field**2 - 1/3 * alpha * field**3
-# end: Defining first derivative with respect to the temperature of thermally corrected potential of the model.
+# end: Defining first derivative with respect to the temperature of
+#      thermally corrected potential of the model.
 
-# %% Defining second derivative with respect to the temperature of thermally corrected potential of the model.
+
+# %% Defining second derivative with respect to the temperature of
+#    thermally corrected potential of the model.
 def d2VTdT(field, temp):
     return gamma * field**2
-# end: Defining second derivative with respect to the temperature  of thermally corrected potential of the model.
+# end: Defining second derivative with respect to the temperature of
+#      thermally corrected potential of the model.
+
 
 # %% Defining energy density of the system.
 def eps(field, temp):
-    return 3 * a * temp**4 + VT(field, temp) - temp * dVT(field, temp)
+    return 3 * a * temp**4 + VT(field, temp) - temp * dVTdT(field, temp)
 # end: Defining energy density of the system.
 
 

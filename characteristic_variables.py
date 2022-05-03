@@ -1,7 +1,7 @@
 import numpy as np
 
 # %% Import termodynamically corrected quantities.
-from thermo import a, VT, dVT, dVTdT, d2VTdT, w, gam, p, eps
+from thermo import a, VT, dVTdT, d2VTdT, w, gam, p, eps
 # end: Import termodynamically corrected quantities.
 
 
@@ -63,7 +63,7 @@ def T_matrices(v, field, T, tau, Z, P):
     A = Jacobian(v, field, T, tau, Z, P)
     T = np.ndarray((2, 2))
     T_inv = np.ndarray((2, 2))
-    delta = (A[0][0] - A[1][1])**2 - 4 * A[0][1] * A[1][0]
+    delta = (A[0][0] - A[1][1])**2 + 4 * A[0][1] * A[1][0]
     norm = (2 * abs(A[1][0] * delta**0.5))**(-0.5)
     T[0][0] = norm * (A[0][0] - A[1][1] + delta**0.5)
     T[0][1] = norm * (A[0][0] - A[1][1] - delta**0.5)

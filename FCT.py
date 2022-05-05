@@ -32,11 +32,11 @@ def P_plus(A):
         P[N] = max(0, A[N][-1])
     return P
 
-def P_minus(A):
 
-	P = np.ndarray((N + 1, ))
-	P[0] = min(0, A[0][1])
-	for j in range(1, N):
-		P[j] = min(0, A[j][-1], A[j][1])
-	P[N] = min(0, A[N][-1])
-	return P
+def P_minus(A):
+    P = np.ndarray((N + 1, ))
+    P[0] = min(0, A[0][1])
+    for j in range(1, N):
+        P[j] = min(0, A[j][-1], A[j][1])
+        P[N] = min(0, A[N][-1])
+    return P

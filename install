@@ -9,4 +9,4 @@ ln -s ../.hooks hooks
 cd ..
 
 # Install PEP8 hook for Python
-pip install git_pep8_commit_hook
+pip install git_pep8_commit_hook --user

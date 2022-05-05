@@ -52,6 +52,10 @@ from matrices_high_order import advection_matrix as high_order_advection_matrix
 from initialization import phi0, phi, T, P, tau, Z, v, P_off
 # end: Importing initial values.
 
+# %% Importing characteristic variables.
+from characteristic_variables import T_matrices2
+# end: Importing characteristic variables.
+
 # %% Importing procedure for solving algebraic relation
 #    T, p, v as function of tau, Z, phi.
 from solver import tauZphi2Tpv
@@ -101,13 +105,15 @@ axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
 #axs[2,1].plot(r,P,linestyle = 'dashed')
 #plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 100
-tmax = 4 * GeV**(-1)
+tmax = 0.1 * GeV**(-1)
 counter = 0
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N+1):
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
                                            v[j])
 
+    T1, T2 = T_matrices2(v[50], phi[50], T[50])
+    print(T1)
     Ftau = (tau + P)
     FZ = Z
 

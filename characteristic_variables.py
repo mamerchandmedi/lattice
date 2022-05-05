@@ -61,18 +61,35 @@ def Jacobian(v, field, T, tau, Z, P):
 
 def T_matrices(v, field, T, tau, Z, P):
     A = Jacobian(v, field, T, tau, Z, P)
-    T = np.ndarray((2, 2))
+    T_mat = np.ndarray((2, 2))
     T_inv = np.ndarray((2, 2))
     delta = (A[0][0] - A[1][1])**2 + 4 * A[0][1] * A[1][0]
-    norm = (2 * abs(A[1][0] * delta**0.5))**(-0.5)
-    T[0][0] = norm * (A[0][0] - A[1][1] + delta**0.5)
-    T[0][1] = norm * (A[0][0] - A[1][1] - delta**0.5)
-    T[1][0] = norm * 2 * A[1][0]
-    T[1][1] = norm * 2 * A[1][0]
+    norm = (4 * abs(A[1][0] * delta**0.5))**(-0.5)
+    print(norm)
+    T_mat[0][0] = norm * (A[0][0] - A[1][1] + delta**0.5)
+    T_mat[0][1] = norm * (A[0][0] - A[1][1] - delta**0.5)
+    T_mat[1][0] = norm * 2 * A[1][0]
+    T_mat[1][1] = norm * 2 * A[1][0]
 
     T_inv[0][0] = norm * 2 * A[1][0]
     T_inv[0][1] = norm * (A[1][1] - A[0][0] + delta**0.5)
     T_inv[1][0] = norm * 2 * A[1][0]
     T_inv[1][1] = norm * (A[0][0] - A[1][1] + delta**0.5)
 
-    return T, T_inv
+    return T_mat, T_inv
+    
+def T_matrices2(v, field, T):
+    T_mat = np.ndarray((2, 2))
+    T_inv = np.ndarray((2, 2))
+    
+    T_mat[0][0] = dpdT(field,T)*dTdZ(v,field,T)*(dpdT(field,T)*dTdtau(v,field,T))**(-1)
+    T_mat[0][1] = 1
+    T_mat[1][0] = -1
+    T_mat[1][1] = 0
+
+    T_inv[0][0] = 0
+    T_inv[0][1] = -1
+    T_inv[1][0] = 1
+    T_inv[1][1] = dpdT(field,T)*dTdZ(v,field,T)*(dpdT(field,T)*dTdtau(v,field,T))**(-1)
+
+    return T_mat, T_inv

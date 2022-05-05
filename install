@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Installation script for git repository hooks
+
+# Symlink .git/hooks with hooks
+rm -fR .git/hooks
+cd .git
+ln -s ../.hooks hooks
+cd ..
+
+# Install PEP8 hook for Python
+pip install git_pep8_commit_hook

@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Git pre-commit hook for checking coding style of Python code.
+# The hook requires pep8. It will check files with the .py extension and files
+# that contain #! (shebang) and python in the first line.
+#
+# To configure edit --config .git/hooks/pep8_setup.cfg
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+# This pre-commit hook runs git_pep8_commit_hook from
+# https://github.com/sorenlind/git_pep8_commit_hook.git
+
+git_pep8_commit_hook --config ./.git/hooks/pep8_setup.cfg

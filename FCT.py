@@ -24,19 +24,35 @@ def antidiffusive_matrix(KH, KL, FH, FL, dt):
         return A
 
 
-def P_plus(A):
-    P = np.ndarray((N + 1,))
-    P[0] = max(0, A[0][1])
+def P(A):
+    P_plus = np.ndarray((N + 1,))
+    P_minus = np.ndarray((N + 1,))
+    P_plus[0] = max(0, A[0][1])
+    P_minus[0] = min(0, A[0][1])
     for j in range(1, N):
-        P[j] = max(0, A[j][-1], A[j][1])
-        P[N] = max(0, A[N][-1])
-    return P
+        P_plus[j] = max(0, A[j][-1], A[j][1])
+        P_minus[j] = min(0, A[j][-1], A[j][1])
+    P_plus[N] = max(0, A[N][-1])
+    P_minus[N] = min(0, A[N][-1])
+    return P_plus, P_minus
 
 
-def P_minus(A):
-    P = np.ndarray((N + 1, ))
-    P[0] = min(0, A[0][1])
+def Q(U):
+    Umin = np.ndarray((N + 1, ))
+    Umax = np.ndarray((N + 1, ))
+    Q_plus = np.ndarray((N + 1, ))
+    Q_minus = np.ndarray((N + 1, ))
+    Umin[0] = min(U[0], U[1])
+    Umax[0] = max(U[0], U[1])
+    Q_minus[0] = Umin[0] - U[0]
+    Q_plus[0] = Umax[0] - U[0]
     for j in range(1, N):
-        P[j] = min(0, A[j][-1], A[j][1])
-        P[N] = min(0, A[N][-1])
-    return P
+        Umin[j] = min(U[j-1], U[j], U[j+1])
+        Umax[j] = max(U[j-1], U[j], U[j+1])
+        Q_minus[j] = Umin[j] - U[j]
+        Q_plus[j] = Umax[j] - U[j]
+    Umin[N] = min(U[N-1], U[N])
+    Umax[N] = max(U[N-1], U[N])
+    Q_minus[N] = Umin[N] - U[N]
+    Q_plus[N] = Umax[N] - U[N]
+    return Q_plus, Q_minus

@@ -56,3 +56,41 @@ def Q(U):
     Q_minus[N] = Umin[N] - U[N]
     Q_plus[N] = Umax[N] - U[N]
     return Q_plus, Q_minus
+
+def limiter(A, PP, Pm, Qp, Qm):
+    R_plus = np.ndarray((N + 1, ))
+    R_minus = np.ndarray((N + 1, ))
+    alpha = np.ndarray((N + 1, 3))
+    for j in range(N+1):
+        if Pp[j] != 0:
+            R_plus[j] = min(1, Qp[j]/PP[j])
+        else:
+            R_plus[j] = 0
+        if Pm[j] != 0:
+            R_minus[j] = min(1, Qm[j]/Pm[j])
+        else:
+            R_minus[j] = 0
+    alpha[0][0] = min(R_plus[0], R_minus[0])
+    if A[0][1] >= 0:
+        alpha[0][1] = min(R_plus[0], R_minus[1])
+    else:
+        alpha[0][1] = min(R_minus[0], R_plus[1])
+    for j in range(1, N):
+        if A[j][-1] >= 0:
+            alpha[j][-1] = min(R_plus[j], R_minus[j-1])
+        else:
+            alpha[j][-1] = min(R_minus[j], R_plus[j-1])
+
+        alpha[j][0] = min(R_plus[j], R_minus[j])
+
+        if A[j][1] >= 0:
+            alpha[j][1] = min(R_plus[j], R_minus[j+1])
+        else:
+            alpha[j][1] = min(R_minus[j], R_plus[j+1])
+    if A[N][-1] >= 0:
+        alpha[N][-1] = min(R_plus[N], R_minus[N-1])
+    else:
+        alpha[N][-1] = min(R_minus[N], R_plus[N-1])
+    alpha[N][0] = min(R_plus[N], R_minus[N])
+
+    return alpha

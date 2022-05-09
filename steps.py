@@ -190,11 +190,11 @@ def low_order_step(fi, ti, zi, Ti, vi, Pi):
     # -------evaluation of advection matrix
     lo_advection_matrix = advection(v, ho_advection_matrix)
 
-    taudot[0] = (low_order_advection_matrix[0][0] * Ftau[0] +
-                 low_order_advection_matrix[0][1] * Ftau[1]) / \
+    taudot[0] = (lo_advection_matrix[0][0] * Ftau[0] +
+                 lo_advection_matrix[0][1] * Ftau[1]) / \
         mass_matrix[0]
-    taudot[N] = (low_order_advection_matrix[N][-1] * Ftau[N-1] +
-                 low_order_advection_matrix[N][0] * Ftau[N]) / \
+    taudot[N] = (lo_advection_matrix[N][-1] * Ftau[N-1] +
+                 lo_advection_matrix[N][0] * Ftau[N]) / \
         mass_matrix[N]
 
     Zdot[0] = (lo_advection_matrix[0][0] * FZ[0] +

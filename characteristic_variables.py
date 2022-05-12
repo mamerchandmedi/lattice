@@ -77,19 +77,21 @@ def T_matrices(v, field, T, tau, Z, P):
     T_inv[1][1] = norm * (A[0][0] - A[1][1] + delta**0.5)
 
     return T_mat, T_inv
-    
+
+
 def T_matrices2(v, field, T):
     T_mat = np.ndarray((2, 2))
     T_inv = np.ndarray((2, 2))
-    
-    T_mat[0][0] = dpdT(field,T)*dTdZ(v,field,T)*(dpdT(field,T)*dTdtau(v,field,T))**(-1)
+    T_mat[0][0] = - dpdT(field, T)*dTdZ(v, field, T)\
+        * (dpdT(field, T)*dTdtau(v, field, T))**(-1)
     T_mat[0][1] = 1
-    T_mat[1][0] = -1
+    T_mat[1][0] = 1
     T_mat[1][1] = 0
 
     T_inv[0][0] = 0
-    T_inv[0][1] = -1
+    T_inv[0][1] = 1
     T_inv[1][0] = 1
-    T_inv[1][1] = dpdT(field,T)*dTdZ(v,field,T)*(dpdT(field,T)*dTdtau(v,field,T))**(-1)
+    T_inv[1][1] = dpdT(field, T)*dTdZ(v, field, T)\
+        * (dpdT(field, T)*dTdtau(v, field, T))**(-1)
 
     return T_mat, T_inv

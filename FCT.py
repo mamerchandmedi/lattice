@@ -22,13 +22,13 @@ from characteristic_variables import T_matrices2
 def antidiffusive_matrix(KH, KL, FH, FL, dt):
     A = np.ndarray((N + 1, 3))
     A[0][0] = dt*(KH[0][0]*FH[0] - KL[0][0]*FL[0])/mass_matrix[0]
-    A[0][1] = dt*(KH[0][1]*FH[1] - KL[0][1]*FL[1])/mass_matrix[0]
+    A[0][1] = dt*(KH[0][1]*FH[0] - KL[0][1]*FL[0])/mass_matrix[0]
     for j in range(1, N):
-        A[j][-1] = dt*(KH[j][-1]*FH[j-1] - KL[j][-1]*FL[j-1])/mass_matrix[j]
+        A[j][-1] = dt*(KH[j][-1]*FH[j] - KL[j][-1]*FL[j])/mass_matrix[j]
         A[j][0] = dt*(KH[j][0]*FH[j] - KL[j][0]*FL[j])/mass_matrix[j]
-        A[j][1] = dt*(KH[j][1]*FH[j+1] - KL[j][1]*FL[j+1])/mass_matrix[j]
-    A[N][-1] = dt*(KH[N][-1]*FH[j-1] - KL[N][-1]*FL[j-1])/mass_matrix[N]
-    A[N][0] = dt*(KH[N][0]*FH[j] - KL[N][0]*FL[j])/mass_matrix[N]
+        A[j][1] = dt*(KH[j][1]*FH[j] - KL[j][1]*FL[j])/mass_matrix[j]
+    A[N][-1] = dt*(KH[N][-1]*FH[N] - KL[N][-1]*FL[N])/mass_matrix[N]
+    A[N][0] = dt*(KH[N][0]*FH[N] - KL[N][0]*FL[N])/mass_matrix[N]
     return A
 
 
@@ -38,26 +38,29 @@ def trans_antidiffusive_matrix(A1, A2, tau, Z, phi, T, P, v):
     Ti, Pi, vi = tauZphi2Tpv_mod(tau[0][0], Z[0][0], phi[0], T[0], P[0], v[0])
     T_mat, T_inv = T_matrices2(vi, phi[0], Ti)
     AT1[0][0] = T_inv[0][0] * A1[0][0] + T_inv[0][1] * A2[0][0]
-    AT2[0][0] = T_inv[0][1] * A1[0][0] + T_inv[1][1] * A2[0][0]
+    AT2[0][0] = T_inv[1][0] * A1[0][0] + T_inv[1][1] * A2[0][0]
     Ti, Pi, vi = tauZphi2Tpv_mod(tau[0][1], Z[0][1], phi[0], T[0], P[0], v[0])
     T_mat, T_inv = T_matrices2(vi, phi[0], Ti)
     AT1[0][1] = T_inv[0][0] * A1[0][1] + T_inv[0][1] * A2[0][1]
-    AT2[0][1] = T_inv[0][1] * A1[0][1] + T_inv[1][1] * A2[0][1]
+    AT2[0][1] = T_inv[1][0] * A1[0][1] + T_inv[1][1] * A2[0][1]
     for i in range(1, N):
         for j in [-1, 0, 1]:
-            Ti, Pi, vi = tauZphi2Tpv_mod(tau[i][j], Z[i][j], phi[i], T[i], P[i], v[i])
+            Ti, Pi, vi = \
+                tauZphi2Tpv_mod(tau[i][j], Z[i][j], phi[i], T[i], P[i], v[i])
             T_mat, T_inv = T_matrices2(vi, phi[i], Ti)
             AT1[i][j] = T_inv[0][0] * A1[i][j] + T_inv[0][1] * A2[i][j]
-            AT2[i][j] = T_inv[0][0] * A1[i][j] + T_inv[0][1] * A2[i][j]
-    Ti, Pi, vi = tauZphi2Tpv_mod(tau[N][-1], Z[N][-1], phi[N], T[N], P[N], v[N])
+            AT2[i][j] = T_inv[1][0] * A1[i][j] + T_inv[1][1] * A2[i][j]
+    Ti, Pi, vi = \
+        tauZphi2Tpv_mod(tau[N][-1], Z[N][-1], phi[N], T[N], P[N], v[N])
     T_mat, T_inv = T_matrices2(vi, phi[N], Ti)
     AT1[N][-1] = T_inv[0][0] * A1[N][-1] + T_inv[0][1] * A2[N][-1]
-    AT2[N][-1] = T_inv[0][1] * A1[N][-1] + T_inv[1][1] * A2[N][-1]
+    AT2[N][-1] = T_inv[1][0] * A1[N][-1] + T_inv[1][1] * A2[N][-1]
     Ti, Pi, vi = tauZphi2Tpv_mod(tau[N][0], Z[N][0], phi[N], T[N], P[N], v[N])
     T_mat, T_inv = T_matrices2(vi, phi[N], Ti)
     AT1[N][0] = T_inv[0][0] * A1[N][0] + T_inv[0][1] * A2[N][0]
-    AT2[N][0] = T_inv[0][1] * A1[N][0] + T_inv[1][1] * A2[N][0]
+    AT2[N][0] = T_inv[1][0] * A1[N][0] + T_inv[1][1] * A2[N][0]
     return AT1, AT2
+
 
 def P_vectors(A):
     P_plus = np.ndarray((N + 1,))
@@ -70,9 +73,6 @@ def P_vectors(A):
     P_plus[N] = max(0, A[N][-1])
     P_minus[N] = min(0, A[N][-1])
     return P_plus, P_minus
-
-    P_plus = max(0, Am1, Ap1)
-    P_minus = min(0, Am1, Ap1)
 
 
 def Q_values(U, i):
@@ -87,16 +87,18 @@ def Q_values(U, i):
         Q_minus = min(U[i-1], U[i], U[i+1]) - U[i]
     return Q_plus, Q_minus
 
+
 def R_values(Qp, Qm, Pp, Pm):
     if Pp != 0:
         Rp = min(1, Qp/Pp)
     else:
-        Rp = 0
+        Rp = 1
     if Pm != 0:
         Rm = min(1, Qm/Pm)
     else:
-        Rm = 0
+        Rm = 1
     return Rp, Rm
+
 
 def Ubar(U):
     U_matrix = np.ndarray((N + 1, 3))

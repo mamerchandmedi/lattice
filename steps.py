@@ -35,7 +35,6 @@ from lattice import dr, dt, r, N
 from matrices_field import laplacian_matrix, kinetic_matrix
 # end: Import matrices of wave equation integration scheme.
 
-
 # %% Import matrices of the high order integration scheme.
 from matrices_high_order import sources_matrix
 from matrices_high_order import advection_matrix as ho_advection_matrix
@@ -46,10 +45,6 @@ from matrices_high_order import mass_matrix
 from matrices_low_order_dynamically import advection
 # end: Import matrices of the low order integration scheme.
 
-# %% Importing initial values.
-from initialization import phi0, phi, T, P, tau, Z, v, P_off
-# end: Importing initial values.
-
 # %% Importing procedure for solving algebraic relation
 #    T, p, v as function of tau, Z, phi.
 from solver import tauZphi2Tpv
@@ -57,12 +52,10 @@ from solver import tauZphi2Tpv
 #      T, p, v as function of tau, Z, phi.
 
 
-def high_order_step(fi, ti, zi, Ti, vi, Pi):
-    phidot = np.zeros(r.size)
-    taudot = np.zeros(r.size)
-    Zdot = np.zeros(r.size)
-    tau_temp = np.zeros(r.size)
-    Z_temp = np.zeros(r.size)
+def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
+    phidot = fidot
+    taudot = tidot
+    Zdot = zidot
     T = Ti
     P = Pi
     v = vi
@@ -104,7 +97,7 @@ def high_order_step(fi, ti, zi, Ti, vi, Pi):
         Zdot[j] = (ho_advection_matrix[j][-1] * FZ[j-1] +
                    ho_advection_matrix[j][0] * FZ[j] +
                    ho_advection_matrix[j][1] * FZ[j+1] +
-                   sources_matrix[j][-1] * (P[j-1] - P_off[j-1]) +
+                   sources_matrix[j][-1] * P[j-1] +
                    sources_matrix[j][0] * P[j] +
                    sources_matrix[j][1] * P[j+1]) / \
             mass_matrix[j]
@@ -163,13 +156,13 @@ def high_order_step(fi, ti, zi, Ti, vi, Pi):
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
     phi[0] = phi[1]
-    return phi, tau, Z, T, v, P
+    return phi, tau, Z, T, v, P, phidot, taudot, Zdot
 
 
-def low_order_step(fi, ti, zi, Ti, vi, Pi):
-    phidot = np.zeros(r.size)
-    taudot = np.zeros(r.size)
-    Zdot = np.zeros(r.size)
+def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
+    phidot = fidot
+    taudot = tidot
+    Zdot = zidot
     T = Ti
     P = Pi
     v = vi
@@ -246,4 +239,4 @@ def low_order_step(fi, ti, zi, Ti, vi, Pi):
     # ------tau, Z evolution (half step)
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
-    return phi, tau, Z, T, v, P
+    return phi, tau, Z, T, v, P, phidot, taudot, Zdot

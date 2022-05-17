@@ -37,7 +37,7 @@ from matrices_field import laplacian_matrix, kinetic_matrix
 
 # %% Import matrices of the high order integration scheme.
 from matrices_high_order import sources_matrix
-from matrices_high_order import advection_matrix as ho_advection_matrix
+from matrices_high_order import advection_matrix as ho_advection_mat
 from matrices_high_order import mass_matrix
 # end: Import matrices of the high order integration scheme.
 
@@ -52,10 +52,10 @@ from solver import tauZphi2Tpv
 #      T, p, v as function of tau, Z, phi.
 
 
-def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
+def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
     phidot = fidot
-    taudot = tidot
-    Zdot = zidot
+    taudot = np.zeros(r.size)
+    Zdot = np.zeros(r.size)
     T = Ti
     P = Pi
     v = vi
@@ -67,40 +67,41 @@ def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
                                            v[j])
 
     Ftau = (tau + P) * v
-    FZ = Z * v + P
+    FZ = Z * v
 
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
     phi[0] = phi[1]
 
-    taudot[0] = (ho_advection_matrix[0][0] * Ftau[0] +
-                 ho_advection_matrix[0][1] * Ftau[1]) / mass_matrix[0]
-    taudot[N] = (ho_advection_matrix[N][-1] * Ftau[N-1] +
-                 ho_advection_matrix[N][0] * Ftau[N]) / \
+    taudot[0] = (ho_advection_mat[0][0] * Ftau[0] +
+                 ho_advection_mat[0][1] * Ftau[1]) / mass_matrix[0]
+    taudot[N] = (ho_advection_mat[N][-1] * Ftau[N-1] +
+                 ho_advection_mat[N][0] * Ftau[N]) / \
         mass_matrix[N]
 
-    Zdot[0] = (ho_advection_matrix[0][0] * FZ[0] +
-               ho_advection_matrix[0][1] * FZ[1] +
-               sources_matrix[0][0] * P[0] +
-               sources_matrix[0][1] * P[1]) / mass_matrix[0]
+    Zdot[0] = (ho_advection_mat[0][0] * FZ[0] +
+               ho_advection_mat[0][1] * FZ[1] +
+               (sources_matrix[0][0] + ho_advection_mat[0][0]) * P[0] +
+               (sources_matrix[0][1] + ho_advection_mat[0][1]) * P[1])\
+        / mass_matrix[0]
     Zdot[N] = (ho_advection_matrix[N][-1] * FZ[N-1] +
                ho_advection_matrix[N][0] * FZ[N] +
-               sources_matrix[N][-1] * P[N-1] +
-               sources_matrix[N][0] * P[N]) / \
-        mass_matrix[N]
+               (sources_matrix[N][-1] + ho_advection_mat[N][-1]) * P[N-1] +
+               (sources_matrix[N][0] + ho_advection_mat[N][0]) * P[N])\
+        / mass_matrix[N]
 
     for j in range(1, N):
-        taudot[j] = (ho_advection_matrix[j][-1] * Ftau[j-1] +
-                     ho_advection_matrix[j][0] * Ftau[j] +
-                     ho_advection_matrix[j][1] * Ftau[j+1]) / \
+        taudot[j] = (ho_advection_mat[j][-1] * Ftau[j-1] +
+                     ho_advection_mat[j][0] * Ftau[j] +
+                     ho_advection_mat[j][1] * Ftau[j+1]) / \
             mass_matrix[j]
-        Zdot[j] = (ho_advection_matrix[j][-1] * FZ[j-1] +
-                   ho_advection_matrix[j][0] * FZ[j] +
-                   ho_advection_matrix[j][1] * FZ[j+1] +
-                   sources_matrix[j][-1] * P[j-1] +
-                   sources_matrix[j][0] * P[j] +
-                   sources_matrix[j][1] * P[j+1]) / \
-            mass_matrix[j]
+        Zdot[j] = (ho_advection_mat[j][-1] * FZ[j-1] +
+                   ho_advection_mat[j][0] * FZ[j] +
+                   ho_advection_mat[j][1] * FZ[j+1] +
+                   (sources_matrix[j][-1] + ho_advection_mat[j][-1]) * P[j-1] +
+                   (sources_matrix[j][0] + ho_advection_mat[j][0]) * P[j] +
+                   (sources_matrix[j][1] + ho_advection_mat[j][1]) * P[j+1])\
+            / mass_matrix[j]
 
     # ------tau, Z evolution (half step)
     tau_temp = tau - 0.5 * dt * taudot
@@ -118,36 +119,45 @@ def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
                            kinetic_matrix[j] - dVTdphi_mod(phi[j], T[j]))
 
     Ftau = (tau + P)*v
-    FZ = Z*v + P
+    FZ = Z*v
+    GZ = np.zeros(r.size)
 
-    taudot[0] = (ho_advection_matrix[0][0] * Ftau[0] +
-                 ho_advection_matrix[0][1] * Ftau[1]) / mass_matrix[0]
-    taudot[N] = (ho_advection_matrix[N][-1] * Ftau[N-1] +
-                 ho_advection_matrix[N][0] * Ftau[N]) / \
+    taudot[0] = (ho_advection_mat[0][0] * Ftau[0] +
+                 ho_advection_mat[0][1] * Ftau[1]) / mass_matrix[0]
+    taudot[N] = (ho_advection_mat[N][-1] * Ftau[N-1] +
+                 ho_advection_mat[N][0] * Ftau[N]) / \
         mass_matrix[N]
 
-    Zdot[0] = (ho_advection_matrix[0][0] * FZ[0] +
-               ho_advection_matrix[0][1] * FZ[1] +
-               sources_matrix[0][0] * P[0] +
-               sources_matrix[0][1] * P[1]) / mass_matrix[0]
-    Zdot[N] = (ho_advection_matrix[N][-1] * FZ[N-1] +
-               ho_advection_matrix[N][0] * FZ[N] +
-               sources_matrix[N][-1] * P[N-1] +
-               sources_matrix[N][0] * P[N]) / \
+    Zdot[0] = (ho_advection_mat[0][0] * FZ[0] +
+               ho_advection_mat[0][1] * FZ[1] +
+               (sources_mat[0][0] + ho_advection_mat[0][0]) * P[0] +
+               (sources_mat[0][1] + ho_advection_mat[0][1]) * P[1])\
+        / mass_matrix[0]
+    GZ[0] = ((sources_matrix[0][0] + ho_advection_matrix[0][0]) * P[0] +
+             (sources_matrix[0][1] + ho_advection_matrix[0][1]) * P[1])
+    Zdot[N] = (ho_advection_mat[N][-1] * FZ[N-1] +
+               ho_advection_mat[N][0] * FZ[N] +
+               (sources_matrix[N][-1] + ho_advection_mat[N][-1]) * P[N-1] +
+               (sources_matrix[N][0] + ho_advection_mat[N][0]) * P[N]) / \
         mass_matrix[N]
+    GZ[N] = ((sources_matrix[N][-1] + ho_advection_mat[N][-1]) * P[N-1] +
+             (sources_matrix[N][0] + ho_advection_mat[N][0]) * P[N])
 
     for j in range(1, N):
-        taudot[j] = (ho_advection_matrix[j][-1] * Ftau[j-1] +
-                     ho_advection_matrix[j][0] * Ftau[j] +
-                     ho_advection_matrix[j][1] * Ftau[j+1]) / \
+        taudot[j] = (ho_advection_mat[j][-1] * Ftau[j-1] +
+                     ho_advection_mat[j][0] * Ftau[j] +
+                     ho_advection_mat[j][1] * Ftau[j+1]) / \
             mass_matrix[j]
-        Zdot[j] = (ho_advection_matrix[j][-1] * FZ[j-1] +
-                   ho_advection_matrix[j][0] * FZ[j] +
-                   ho_advection_matrix[j][1] * FZ[j+1] +
-                   sources_matrix[j][-1] * P[j-1] +
-                   sources_matrix[j][0] * P[j] +
-                   sources_matrix[j][1] * P[j+1]) / \
-            mass_matrix[j]
+        Zdot[j] = (ho_advection_mat[j][-1] * FZ[j-1] +
+                   ho_advection_mat[j][0] * FZ[j] +
+                   ho_advection_mat[j][1] * FZ[j+1] +
+                   (sources_matrix[j][-1] + ho_advection_mat[j][-1]) * P[j-1] +
+                   (sources_matrix[j][0] + ho_advection_mat[j][0]) * P[j] +
+                   (sources_matrix[j][1] + ho_advection_mat[j][1]) * P[j+1])\
+            / mass_matrix[j]
+        GZ[j] = ((sources_matrix[j][-1] + ho_advection_mat[j][-1]) * P[j-1] +
+                 (sources_matrix[j][0] + ho_advection_mat[j][0]) * P[j] +
+                 (sources_matrix[j][1] + ho_advection_mat[j][1]) * P[j+1])
 
     # ------tau, Z evolution (half step)
     tau -= dt * taudot
@@ -156,13 +166,13 @@ def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
     phi[0] = phi[1]
-    return phi, tau, Z, T, v, P, phidot, taudot, Zdot
+    return phi, tau, Z, T, v, P, phidot, Ftau, FZ, GZ, taudot
 
 
-def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
+def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
     phidot = fidot
-    taudot = tidot
-    Zdot = zidot
+    taudot = np.zeros(r.size)
+    Zdot = np.zeros(r.size)
     T = Ti
     P = Pi
     v = vi
@@ -175,13 +185,14 @@ def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
 
     Ftau = (tau + P)
     FZ = Z
+    GZ = np.zeros(r.size)
 
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
     phi[0] = phi[1]
 
     # -------evaluation of advection matrix
-    lo_advection_matrix = advection(v, ho_advection_matrix)
+    lo_advection_matrix = advection(v, ho_advection_mat)
 
     taudot[0] = (lo_advection_matrix[0][0] * Ftau[0] +
                  lo_advection_matrix[0][1] * Ftau[1]) / \
@@ -192,14 +203,18 @@ def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
 
     Zdot[0] = (lo_advection_matrix[0][0] * FZ[0] +
                lo_advection_matrix[0][1] * FZ[1] +
-               (sources_matrix[0][0] + ho_advection_matrix[0][0]) * P[0] +
-               (sources_matrix[0][1] + ho_advection_matrix[0][1]) * P[1]) / \
+               (sources_matrix[0][0] + ho_advection_mat[0][0]) * P[0] +
+               (sources_matrix[0][1] + ho_advection_mat[0][1]) * P[1]) / \
         mass_matrix[0]
+    GZ[0] = ((sources_matrix[0][0] + ho_advection_mat[0][0]) * P[0] +
+             (sources_matrix[0][1] + ho_advection_mat[0][1]) * P[1])
     Zdot[N] = (lo_advection_matrix[N][-1] * FZ[N-1] +
                lo_advection_matrix[N][0] * FZ[N] +
-               (sources_matrix[N][-1] + ho_advection_matrix[N][-1]) * P[N-1] +
-               (sources_matrix[N][0] + ho_advection_matrix[N][0]) * P[N]) / \
+               (sources_matrix[N][-1] + ho_advection_mat[N][-1]) * P[N-1] +
+               (sources_matrix[N][0] + ho_advection_mat[N][0]) * P[N]) / \
         mass_matrix[N]
+    GZ[N] = ((sources_matrix[N][-1] + ho_advection_mat[N][-1]) * P[N-1] +
+             (sources_matrix[N][0] + ho_advection_mat[N][0]) * P[N])
 
     for j in range(1, N):
         taudot[j] = (lo_advection_matrix[j][-1] * Ftau[j-1] +
@@ -210,12 +225,15 @@ def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
                    lo_advection_matrix[j][0] * FZ[j] +
                    lo_advection_matrix[j][1] * FZ[j+1] +
                    (sources_matrix[j][-1] +
-                    ho_advection_matrix[j][-1]) * P[j-1] +
+                    ho_advection_mat[j][-1]) * P[j-1] +
                    (sources_matrix[j][0] +
-                    ho_advection_matrix[j][0]) * P[j] +
+                    ho_advection_mat[j][0]) * P[j] +
                    (sources_matrix[j][1] +
-                    ho_advection_matrix[j][1]) * P[j+1]) / \
+                    ho_advection_mat[j][1]) * P[j+1]) / \
             mass_matrix[j]
+        GZ[j] = ((sources_matrix[j][-1] + ho_advection_mat[j][-1]) * P[j-1] +
+                 (sources_matrix[j][0] + ho_advection_mat[j][0]) * P[j] +
+                 (sources_matrix[j][1] + ho_advection_mat[j][1]) * P[j+1])
 
     # ------tau, Z evolution (half step)
     tau -= 0.5 * dt * taudot
@@ -239,4 +257,4 @@ def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot, tidot, zidot):
     # ------tau, Z evolution (half step)
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
-    return phi, tau, Z, T, v, P, phidot, taudot, Zdot
+    return phi, tau, Z, T, v, P, phidot, Ftau, FZ, GZ, lo_advection_matrix

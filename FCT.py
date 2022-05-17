@@ -21,14 +21,14 @@ from characteristic_variables import T_matrices2
 
 def antidiffusive_matrix(KH, KL, FH, FL, dt):
     A = np.ndarray((N + 1, 3))
-    A[0][0] = dt*(KH[0][0]*FH[0] - KL[0][0]*FL[0])/mass_matrix[0]
-    A[0][1] = dt*(KH[0][1]*FH[0] - KL[0][1]*FL[0])/mass_matrix[0]
+    A[0][0] = dt*(KH[0][0]*FH[0] - KL[0][0]*FL[0])
+    A[0][1] = dt*(KH[0][1]*FH[0] - KL[0][1]*FL[0])
     for j in range(1, N):
-        A[j][-1] = dt*(KH[j][-1]*FH[j] - KL[j][-1]*FL[j])/mass_matrix[j]
-        A[j][0] = dt*(KH[j][0]*FH[j] - KL[j][0]*FL[j])/mass_matrix[j]
-        A[j][1] = dt*(KH[j][1]*FH[j] - KL[j][1]*FL[j])/mass_matrix[j]
-    A[N][-1] = dt*(KH[N][-1]*FH[N] - KL[N][-1]*FL[N])/mass_matrix[N]
-    A[N][0] = dt*(KH[N][0]*FH[N] - KL[N][0]*FL[N])/mass_matrix[N]
+        A[j][-1] = dt*(KH[j][-1]*FH[j] - KL[j][-1]*FL[j])
+        A[j][0] = dt*(KH[j][0]*FH[j] - KL[j][0]*FL[j])
+        A[j][1] = dt*(KH[j][1]*FH[j] - KL[j][1]*FL[j])
+    A[N][-1] = dt*(KH[N][-1]*FH[N] - KL[N][-1]*FL[N])
+    A[N][0] = dt*(KH[N][0]*FH[N] - KL[N][0]*FL[N])
     return A
 
 

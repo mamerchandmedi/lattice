@@ -11,7 +11,7 @@ from numpy import pi
 # end: Importing mathematical constants.
 
 # %% Importing parameters of the model.
-from parameters import T0, alpha, gamma, lam
+from parameters import T0, alpha, gamma, lam, eta
 # end: Importing parameters of the model.
 
 gst = 106.75
@@ -72,3 +72,15 @@ def w(field, temp):
 def gam(vel):
     return 1 / (1 - vel**2)**0.5
 # end: Defining relativistic gamma factor.
+
+
+# %% Defining friction source for tau.
+def Gf_tau(phi, dpdt, dpdr, T, v):
+    G = dVTdphi(phi, T) * dpdt + eta * gam(v) * (dpdt + v * dpdr) * dpdt
+    return G
+
+
+# %% Defining friction source for Z.
+def Gf_Z(phi, dpdt, dpdr, T, v):
+    G = - dVTdphi(phi, T) * dpdr - eta * (dpdt + v * dpdr) * dpdr
+    return G

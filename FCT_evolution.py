@@ -65,13 +65,13 @@ axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')
 axs[3, 0].set_xlabel(r'$r$')
-axs[3, 0].set_ylabel(r'$Ftau$')
+axs[3, 0].set_ylabel(r'$\alpha_1$')
 
 
 axs[0, 1].set_ylabel(r'$v$')
 axs[1, 1].set_ylabel(r'$T$')
 axs[2, 1].set_ylabel(r'$p$')
-axs[3, 1].set_ylabel(r'$A_tau$')
+axs[3, 1].set_ylabel(r'$\alpha_2$')
 axs[3, 1].set_xlabel(r'$r$')
 
 axs[0, 0].set_xlim(0, 1)
@@ -85,8 +85,8 @@ axs[2, 1].set_xlim(0, 1)
 axs[3, 1].set_xlim(0, 1)
 
 
-psteps = 10
-tmax = 0.15 * GeV**(-1)
+psteps = 50
+tmax = 1 * GeV**(-1)
 counter = 0
 KH = ho_advection_matrix
 phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H, taudot_H = \
@@ -111,80 +111,79 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     alpha_limiter2 = np.ndarray((N+1, 3))
     aA_tau = np.ndarray((N+1, 3))
     aA_Z = np.ndarray((N+1, 3))
-    # for i in range(N+1):
-    #    if i == 0:
-    #        indexes = [0, 1]
-    #    elif i == N:
-    #        indexes = [-1, 0]
-    #    else:
-    #        indexes = [-1, 0, 1]
-    #    for j in indexes:
-    #        Ti, Pi, vi = tauZphi2Tpv_mod(tau_bar[i][j], Z_bar[i][j], phi_L[i],
-    #                                     T_L[i], P_L[i], v_L[i])
-    #        T_mat, T_inv = T_matrices2(vi, phi_L[i], Ti)
-    #        tau_prim = T_inv[0][0] * tau_L + T_inv[0][1] * Z_L
-    #        Z_prim = T_inv[1][0] * tau_L + T_inv[1][1] * Z_L
-    #        Q1_plus_i, Q1_minus_i = Q_values(tau_prim, i)
-    #        Q1_plus_j, Q1_minus_j = Q_values(tau_prim, i+j)
-    #        Q2_plus_i, Q2_minus_i = Q_values(Z_prim, i)
-    #        Q2_plus_j, Q2_minus_j = Q_values(Z_prim, i+j)
-    #        R1_plus_i, R1_minus_i = \
-    #            R_values(Q1_plus_i, Q1_minus_i,
-    #                     P1_plus[i], P1_minus[i])
-    #        R1_plus_j, R1_minus_j = \
-    #            R_values(Q1_plus_j, Q1_minus_j,
-    #                     P1_plus[i+j], P1_minus[i+j])
-    #        R2_plus_i, R2_minus_i = \
-    #            R_values(Q2_plus_i, Q2_minus_i,
-    #                     P2_plus[i], P2_minus[i])
-    #        R2_plus_j, R2_minus_j = \
-    #            R_values(Q2_plus_j, Q2_minus_j,
-    #                     P2_plus[i+j], P2_minus[i+j])
-    #        if A1_prim[i][j] >= 0:
-    #            alpha_limiter1[i][j] = min(R1_plus_i, R1_minus_j)
-    #        else:
-    #            alpha_limiter1[i][j] = min(R1_minus_i, R1_plus_j)
-    #        if A2_prim[i][j] >= 0:
-    #            alpha_limiter2[i][j] = min(R2_plus_i, R2_minus_j)
-    #        else:
-    #            alpha_limiter2[i][j] = min(R2_minus_i, R2_plus_j)
-    #        aA_tau[i][j] = \
-    #            T_mat[0][0] * A1_prim[i][j] * alpha_limiter1[i][j] \
-    #            + T_mat[0][1] * A2_prim[i][j] * alpha_limiter2[i][j]
-    #        aA_Z[i][j] = \
-    #            T_mat[1][0] * A1_prim[i][j] * alpha_limiter1[i][j] \
-    #            + T_mat[1][1] * A2_prim[i][j] * alpha_limiter2[i][j]
+    for i in range(N+1):
+        if i == 0:
+            indexes = [0, 1]
+        elif i == N:
+            indexes = [-1, 0]
+        else:
+            indexes = [-1, 0, 1]
+        for j in indexes:
+            Ti, Pi, vi = tauZphi2Tpv_mod(tau_bar[i][j], Z_bar[i][j], phi_L[i],
+                                         T_L[i], P_L[i], v_L[i])
+            T_mat, T_inv = T_matrices2(vi, phi_L[i], Ti)
+            tau_prim = T_inv[0][0] * tau_L + T_inv[0][1] * Z_L
+            Z_prim = T_inv[1][0] * tau_L + T_inv[1][1] * Z_L
+            Q1_plus_i, Q1_minus_i = Q_values(tau_prim, i)
+            Q1_plus_j, Q1_minus_j = Q_values(tau_prim, i+j)
+            Q2_plus_i, Q2_minus_i = Q_values(Z_prim, i)
+            Q2_plus_j, Q2_minus_j = Q_values(Z_prim, i+j)
+            R1_plus_i, R1_minus_i = \
+                R_values(Q1_plus_i, Q1_minus_i,
+                         P1_plus[i], P1_minus[i])
+            R1_plus_j, R1_minus_j = \
+                R_values(Q1_plus_j, Q1_minus_j,
+                         P1_plus[i+j], P1_minus[i+j])
+            R2_plus_i, R2_minus_i = \
+                R_values(Q2_plus_i, Q2_minus_i,
+                         P2_plus[i], P2_minus[i])
+            R2_plus_j, R2_minus_j = \
+                R_values(Q2_plus_j, Q2_minus_j,
+                         P2_plus[i+j], P2_minus[i+j])
+            if A1_prim[i][j] >= 0:
+                alpha_limiter1[i][j] = min(R1_plus_i, R1_minus_j)
+            else:
+                alpha_limiter1[i][j] = min(R1_minus_i, R1_plus_j)
+            if A2_prim[i][j] >= 0:
+                alpha_limiter2[i][j] = min(R2_plus_i, R2_minus_j)
+            else:
+                alpha_limiter2[i][j] = min(R2_minus_i, R2_plus_j)
+            aA_tau[i][j] = \
+                T_mat[0][0] * A1_prim[i][j] * alpha_limiter1[i][j] \
+                + T_mat[0][1] * A2_prim[i][j] * alpha_limiter2[i][j]
+            aA_Z[i][j] = \
+                T_mat[1][0] * A1_prim[i][j] * alpha_limiter1[i][j] \
+                + T_mat[1][1] * A2_prim[i][j] * alpha_limiter2[i][j]
     deltaG = np.zeros(r.size)
-    tau_H[0] = tau_L[0] + (A_tau[0][0] + A_tau[0][1])/mass_matrix[0]
-    tau_L[0] = tau_L[0] + (A_tau[0][0] + A_tau[0][1])/mass_matrix[0]
-    Z_H[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + A_Z[0][0] + A_Z[0][1])\
+    tau_H[0] = tau_L[0] + (aA_tau[0][0] + aA_tau[0][1])/mass_matrix[0]
+    tau_L[0] = tau_L[0] + (aA_tau[0][0] + aA_tau[0][1])/mass_matrix[0]
+    Z_H[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + aA_Z[0][0] + aA_Z[0][1])\
         / mass_matrix[0]
-    Z_L[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + A_Z[0][0] + A_Z[0][1])\
+    Z_L[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + aA_Z[0][0] + aA_Z[0][1])\
         / mass_matrix[0]
     deltaG[0] = GZ_H[0] - GZ_L[0]
     for i in range(1, N):
-        tau_H[i] = tau_L[i] + (A_tau[i][-1] + A_tau[i][0] + A_tau[i][1])\
+        tau_H[i] = tau_L[i] + (aA_tau[i][-1] + aA_tau[i][0] + aA_tau[i][1])\
             / mass_matrix[i]
-        tau_L[i] = tau_L[i] + (A_tau[i][-1] + A_tau[i][0] + A_tau[i][1])\
+        tau_L[i] = tau_L[i] + (aA_tau[i][-1] + aA_tau[i][0] + aA_tau[i][1])\
             / mass_matrix[i]
-        Z_H[i] = Z_L[i]\
-            + (dt * (GZ_H[i] - GZ_L[i]) + A_Z[i][-1] + A_Z[i][0] + A_Z[i][1])\
+        Z_H[i] = Z_L[i] + \
+            (dt * (GZ_H[i] - GZ_L[i]) + aA_Z[i][-1] + aA_Z[i][0] + aA_Z[i][1])\
             / mass_matrix[i]
-        Z_L[i] = Z_L[i]\
-            + (dt * (GZ_H[i] - GZ_L[i]) + A_Z[i][-1] + A_Z[i][0] + A_Z[i][1])\
+        Z_L[i] = Z_L[i] + \
+            (dt * (GZ_H[i] - GZ_L[i]) + aA_Z[i][-1] + aA_Z[i][0] + aA_Z[i][1])\
             / mass_matrix[i]
         deltaG[i] = GZ_H[i] - GZ_L[i]
-    tau_H[N] = tau_L[N] + (A_tau[N][-1] + A_tau[N][0])\
+    tau_H[N] = tau_L[N] + (aA_tau[N][-1] + aA_tau[N][0])\
         / mass_matrix[N]
-    tau_L[N] = tau_L[N] + (A_tau[N][-1] + A_tau[N][0])\
+    tau_L[N] = tau_L[N] + (aA_tau[N][-1] + aA_tau[N][0])\
         / mass_matrix[N]
-    Z_H[N] = Z_L[N] + (dt*(GZ_H[N] - GZ_L[N]) + A_Z[N][-1] + A_Z[N][0])\
+    Z_H[N] = Z_L[N] + (dt*(GZ_H[N] - GZ_L[N]) + aA_Z[N][-1] + aA_Z[N][0])\
         / mass_matrix[N]
-    Z_L[N] = Z_L[N] + (dt*(GZ_H[N] - GZ_L[N]) + A_Z[N][-1] + A_Z[N][0])\
+    Z_L[N] = Z_L[N] + (dt*(GZ_H[N] - GZ_L[N]) + aA_Z[N][-1] + aA_Z[N][0])\
         / mass_matrix[N]
     deltaG[N] = GZ_H[N] - GZ_L[N]
     # ------plotting
-    A_tau_sum = A_tau[:, -1] + A_tau[:, 0] + A_tau[:, 1]
     colormap = plt.get_cmap('Blues')
     colors = colormap((t + dt) / tmax)
     print(A_tau[0][0] + A_tau[0][1])
@@ -201,7 +200,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                        label=str(t/Tc)+"*Tc", c=colors)
         axs[2, 1].plot(r / GeV**(-1), P_L / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        # axs[3, 0].plot(r, Ftau, c=colors)
-        axs[3, 1].plot(r, A_tau_sum, c=colors)
+        axs[3, 0].plot(r, alpha_limiter1[:, 0], c=colors)
+        axs[3, 1].plot(r, alpha_limiter2[:, 0], c=colors)
         plt.savefig('plots/FCT/plots' + str(counter + 1) + '.png')
     counter += 1

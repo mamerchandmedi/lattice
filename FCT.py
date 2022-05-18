@@ -7,7 +7,7 @@ from matrices_high_order import mass_matrix
 # end: Import matrices.
 
 # %% Import rescaled quantities.
-from lattice import N
+from lattice import N, r
 # end: Import rescaled quantities.
 
 # %% Import rescaled quantities.
@@ -22,12 +22,12 @@ from characteristic_variables import T_matrices2
 def antidiffusive_matrix(KH, KL, FH, FL, dt):
     A = np.ndarray((N + 1, 3))
     A[0][0] = dt*(KH[0][0]*FH[0] - KL[0][0]*FL[0])
-    A[0][1] = dt*(KH[0][1]*FH[0] - KL[0][1]*FL[0])
+    A[0][1] = dt*(KH[0][1]*FH[1] - KL[0][1]*FL[1])
     for j in range(1, N):
-        A[j][-1] = dt*(KH[j][-1]*FH[j] - KL[j][-1]*FL[j])
+        A[j][-1] = dt*(KH[j][-1]*FH[j-1] - KL[j][-1]*FL[j-1])
         A[j][0] = dt*(KH[j][0]*FH[j] - KL[j][0]*FL[j])
-        A[j][1] = dt*(KH[j][1]*FH[j] - KL[j][1]*FL[j])
-    A[N][-1] = dt*(KH[N][-1]*FH[N] - KL[N][-1]*FL[N])
+        A[j][1] = dt*(KH[j][1]*FH[j+1] - KL[j][1]*FL[j+1])
+    A[N][-1] = dt*(KH[N][-1]*FH[N-1] - KL[N][-1]*FL[N-1])
     A[N][0] = dt*(KH[N][0]*FH[N] - KL[N][0]*FL[N])
     return A
 
@@ -77,14 +77,16 @@ def P_vectors(A):
 
 def Q_values(U, i):
     if i == 0:
-        Q_plus = max(U[i], U[i+1]) - U[i]
-        Q_minus = min(U[i], U[i+1]) - U[i]
+        Q_plus = max(U[i]*r[i]**2, U[i+1]*r[i]**2) - U[i]*r[i]**2
+        Q_minus = min(U[i]*r[i]**2, U[i+1]*r[i]**2) - U[i]*r[i]**2
     elif i == N:
-        Q_plus = max(U[i-1], U[i]) - U[i]
-        Q_minus = min(U[i-1], U[i]) - U[i]
+        Q_plus = max(U[i-1]*r[i]**2, U[i]*r[i]**2) - U[i]*r[i]**2
+        Q_minus = min(U[i-1]*r[i]**2, U[i]*r[i]**2) - U[i]*r[i]**2
     else:
-        Q_plus = max(U[i-1], U[i], U[i+1]) - U[i]
-        Q_minus = min(U[i-1], U[i], U[i+1]) - U[i]
+        Q_plus = max(U[i-1]*r[i]**2, U[i]*r[i]**2, U[i+1]*r[i]**2)\
+                   - U[i]*r[i]**2
+        Q_minus = min(U[i-1]*r[i]**2, U[i]*r[i]**2, U[i+1]*r[i]**2)\
+            - U[i]*r[i]**2
     return Q_plus, Q_minus
 
 

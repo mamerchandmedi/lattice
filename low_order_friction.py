@@ -36,7 +36,7 @@ from matrices_field import laplacian_matrix, kinetic_matrix, gradient_matrix
 # end: Import matrices of wave equation integration scheme.
 
 # %% Import mass matrix.
-from matrices_low_order import mass_matrix
+from matrices_low_order import mass_matrix, friction_matrix
 # end: Import mass matrix.
 
 # %% Import matrices of the low order integration scheme.
@@ -83,12 +83,12 @@ axs[1, 1].set_ylabel(r'$T$')
 axs[2, 1].set_ylabel(r'$p$')
 axs[2, 1].set_xlabel(r'$r$')
 
-axs[0, 0].set_xlim(0, 4)
-axs[1, 0].set_xlim(0, 4)
-axs[2, 0].set_xlim(0, 4)
-axs[0, 1].set_xlim(0, 4)
-axs[1, 1].set_xlim(0, 4)
-axs[2, 1].set_xlim(0, 4)
+axs[0, 0].set_xlim(0, 2)
+axs[1, 0].set_xlim(0, 2)
+axs[2, 0].set_xlim(0, 2)
+axs[0, 1].set_xlim(0, 2)
+axs[1, 1].set_xlim(0, 2)
+axs[2, 1].set_xlim(0, 2)
 
 # axs[0,1].set_ylim(-1,1)
 # axs[0,0].plot(r,phi,linestyle = 'dashed')
@@ -100,7 +100,7 @@ axs[2, 1].set_xlim(0, 4)
 # axs[2,1].plot(r,P,linestyle = 'dashed')
 # plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 50
-tmax = 2.5 * GeV**(-1)
+tmax = 1 * GeV**(-1)
 counter = 0
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N+1):
@@ -144,21 +144,17 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         taudot[j] = (advection_matrix[j][-1] * Ftau[j-1] +
                      advection_matrix[j][0] * Ftau[j] +
                      advection_matrix[j][1] * Ftau[j+1] +
-                     (r[j] - r[j-1]) * high_order_advection_matrix[j][-1] *
-                     Gf_tau(phi[j], phidot[j],
-                     (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) -
-                     (r[j+1] - r[j]) * high_order_advection_matrix[j][1] *
-                     Gf_tau(phi[j], phidot[j],
+                     friction_matrix[j][-1] * Gf_tau(phi[j], phidot[j],
+                     (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) +
+                     friction_matrix[j][1] * Gf_tau(phi[j], phidot[j],
                      (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j])) / \
             mass_matrix[j]
         Zdot[j] = (advection_matrix[j][-1] * FZ[j-1] +
                    advection_matrix[j][0] * FZ[j] +
                    advection_matrix[j][1] * FZ[j+1] +
-                   (r[j] - r[j-1]) * high_order_advection_matrix[j][-1] *
-                   Gf_Z(phi[j], phidot[j],
-                   (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) -
-                   (r[j+1] - r[j]) * high_order_advection_matrix[j][1] *
-                   Gf_Z(phi[j], phidot[j],
+                   friction_matrix[j][-1] * Gf_Z(phi[j], phidot[j],
+                   (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) +
+                   friction_matrix[j][1] * Gf_Z(phi[j], phidot[j],
                    (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j]) +
                    (sources_matrix[j][-1] +
                     high_order_advection_matrix[j][-1]) * P[j-1] +
@@ -224,6 +220,6 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
         plt.savefig('plots/Friction/plots_low_order' +
-                    str(eta) + 'step' + str(counter + 1) + '.png')
+                    str(eta / Tc) + 'step' + str(counter + 1) + '.png')
 
     counter += 1

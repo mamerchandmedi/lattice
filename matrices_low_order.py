@@ -15,10 +15,16 @@ from lattice import r, N
 # end: Import rescaled quantities.
 
 advection_matrix = np.ndarray((N + 1, 2))
+friction_matrix = np.ndarray((N + 1, 3))
 mass_matrix = np.ndarray((N + 1, ))
 for j in range(1, N):
     advection_matrix[j][-1] = -4 * (r[j]**2 + r[j] * r[j-1] + r[j-1]**2)
     advection_matrix[j][0] = 4 * (r[j+1]**2 + r[j+1] * r[j] + r[j]**2)
+    friction_matrix[j][-1] = - ((r[j] - r[j-1]) *
+                                (r[j-1]**2 + 2 * r[j-1] * r[j] + 3 * r[j]**2))
+    friction_matrix[j][0] = 0
+    friction_matrix[j][1] = - ((r[j+1] - r[j]) *
+                               (3 * r[j]**2 + 2 * r[j] * r[j+1] + r[j+1]**2))
     mass_matrix[j] = (r[j+1]**2 + r[j]**2 + r[j-1]**2 + r[j+1] * r[j-1] +
                       r[j+1] * r[j] + r[j] * r[j-1]) * (r[j+1] - r[j-1])
 

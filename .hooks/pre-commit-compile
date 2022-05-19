@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# Git pre-commit compile hook. Make project and in case of error abort commit.
+# Script based on: http://benjamin-meyer.blogspot.com/2008/10/git-hooks.html
+# Make sure this script is executable and set the Makefile location MAKEFILE.
+
+# This file is part of a set of unofficial pre-commit hooks available
+# at github.
+# Link:    https://github.com/ddddavidmartin/Pre-commit-hooks
+# Contact: David Martin, ddddavidmartin@fastmail.com
+
+###########################################################
+# There should be no need to change anything below this line.
+# For configuration see pre-commit-compile.cfg and pre-commit-compile.example.cfg.
+
+. "$(dirname -- "$0")/canonicalize_filename.sh"
+
+# exit on error
+set -e
+
+# Absolute path to this script, e.g. /home/user/bin/foo.sh
+SCRIPT="$(canonicalize_filename "$0")"
+# Absolute path this script is in, e.g. /home/user/bin/
+SCRIPTPATH="$(dirname -- "$SCRIPT")"
+CONFIG="$SCRIPTPATH/pre-commit-compile.cfg"
+
+if [ ! -f "$CONFIG" ] ; then
+    echo "Missing config file $CONFIG."
+    exit 1
+else
+    . "$CONFIG"
+fi
+
+MAKEPATH="$(dirname -- "$MAKEFILE")"
+
+echo "Building project."
+if [ -f "$MAKEFILE" ] ; then
+    cd -- "$MAKEPATH"
+    make $OPTIONS -f "$MAKEFILE"
+    if [ $? != 0 ] ; then
+        echo "Build failure. Aborting commit."
+        exit 1
+    fi
+    echo "Build success."
+else
+    echo "Error: Makefile not found. Aborting commit."
+    echo "Set the correct path in $CONFIG."
+    echo "Skip pre-commit hooks with --no-verify (not recommended)."
+    exit 1
+fi
+
+exit 0

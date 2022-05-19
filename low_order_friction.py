@@ -72,7 +72,8 @@ fig.subplots_adjust(wspace=0.5)
 plt.xlim(0, 10)
 plt.rcParams["figure.dpi"] = 400
 # plt.ylim(0,0.1)
-fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " + str(dt / GeV**(-1)))
+fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
+             str(dt / GeV**(-1)) + '\eta' + str(eta/Tc))
 axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')
@@ -100,7 +101,7 @@ axs[2, 1].set_xlim(0, 2)
 # axs[2,1].plot(r,P,linestyle = 'dashed')
 # plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 50
-tmax = 1 * GeV**(-1)
+tmax = 3 * GeV**(-1)
 counter = 0
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     for j in range(N+1):
@@ -108,10 +109,6 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                                            v[j])
     Ftau = (tau + P)
     FZ = Z
-
-    # ------phi evolution (half step)
-    phi[1:] += 0.5 * dt * phidot[1:]
-    phi[0] = phi[1]
 
     # -------evaluation of advection matrix
     advection_matrix = advection(v, high_order_advection_matrix)
@@ -168,14 +165,18 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
 
+    # ------phi evolution (half step)
+    phi[1:] += 0.5 * dt * phidot[1:]
+    phi[0] = phi[1]
+
     for j in range(N+1):
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j],
                                            v[j])
 
     # phidot[1] += dt * ((laplacian_matrix[1][1] * (phi[2] - phi[1])) /
     #                   kinetic_matrix[1] - dVTdphi_mod(phi[1], T[1]))
-    phidot[1] = ((1 - dt * eta * gam(v[1]))**(-1) *
-                 ((1 + dt * gam(v[1])) * phidot[1] -
+    phidot[1] = ((1 + 0.5 * dt * eta * gam(v[1]))**(-1) *
+                 ((1 - 0.5 * dt * eta * gam(v[1])) * phidot[1] -
                   dt * (dVTdphi(phi[1], T[1]) -
                   (laplacian_matrix[1][1] * (phi[2] - phi[1])) /
                   kinetic_matrix[1] - eta * gam(v[1]) * v[1] *
@@ -185,8 +186,8 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         # phidot[j] += dt * ((laplacian_matrix[j][1] * (phi[j+1] - phi[j]) +
         #                    laplacian_matrix[j][-1] * (phi[j] - phi[j-1])) /
         #                   kinetic_matrix[j] - dVTdphi_mod(phi[j], T[j]))
-        phidot[j] = ((1 - dt * eta * gam(v[j]))**(-1) *
-                     ((1 + dt * gam(v[j])) * phidot[j] -
+        phidot[j] = ((1 + 0.5 * dt * eta * gam(v[j]))**(-1) *
+                     ((1 - 0.5 * dt * eta * gam(v[j])) * phidot[j] -
                       dt * (dVTdphi(phi[j], T[j]) -
                       (laplacian_matrix[j][1] * (phi[j+1] - phi[j]) +
                        laplacian_matrix[j][-1] * (phi[j] - phi[j-1])) /

@@ -73,7 +73,7 @@ plt.xlim(0, 10)
 plt.rcParams["figure.dpi"] = 400
 # plt.ylim(0,0.1)
 fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
-             str(dt / GeV**(-1)) + '\eta' + str(eta/Tc))
+             str(dt / GeV**(-1)) + '$\eta = $' + str(eta/Tc))
 axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')

@@ -16,4 +16,4 @@ gamma = (L+6*sigma/lc)/(6*sigma*lc*Tc**2)
 lam = 1/(3*sigma*lc**3)
 Tn = 93.
 # -----------specify friction here---------------
-eta = 0 * Tc
+eta = 0.1 * Tc

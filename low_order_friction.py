@@ -73,7 +73,7 @@ plt.xlim(0, 10)
 plt.rcParams["figure.dpi"] = 400
 # plt.ylim(0,0.1)
 fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
-             str(dt / GeV**(-1)) + '$\eta = $' + str(eta/Tc))
+             str(dt / GeV**(-1)) + ', $\eta = $' + str(eta/Tc))
 axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')
@@ -100,7 +100,7 @@ axs[2, 1].set_xlim(0, 2)
 # axs[1,1].plot(r,T,linestyle = 'dashed')
 # axs[2,1].plot(r,P,linestyle = 'dashed')
 # plt.savefig('plots/low_order/plots_low_order'+str(0))
-psteps = 50
+psteps = 100
 tmax = 3 * GeV**(-1)
 counter = 0
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
@@ -113,22 +113,24 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     # -------evaluation of advection matrix
     advection_matrix = advection(v, high_order_advection_matrix)
 
-    taudot[0] = ((advection_matrix[0][0] * Ftau[0] +
-                 advection_matrix[0][1] * Ftau[1]) / mass_matrix[0] -
-                 Gf_tau(phi[0], phidot[0], 0, T[0], v[0]))
+    taudot[0] = (advection_matrix[0][0] * Ftau[0] +
+                 advection_matrix[0][1] * Ftau[1] +
+                 friction_matrix[0][0] *
+                 Gf_tau(phi[0], phidot[0], 0, T[0], v[0])) / mass_matrix[0]
 
     taudot[N] = ((advection_matrix[N][-1] * Ftau[N-1] +
-                 advection_matrix[N][0] * Ftau[N]) / mass_matrix[N] -
+                 advection_matrix[N][0] * Ftau[N]) / mass_matrix[N] +
                  Gf_tau(phi[N], 0, (phi[N] - phi[N-1]) /
                  (r[N] - r[N-1]), T[0], v[0]))
 
-    Zdot[0] = ((advection_matrix[0][0] * FZ[0] +
+    Zdot[0] = (advection_matrix[0][0] * FZ[0] +
                advection_matrix[0][1] * FZ[1] +
                (sources_matrix[0][0] + high_order_advection_matrix[0][0]) *
                (P[0] - P_off[0]) +
                (sources_matrix[0][1] + high_order_advection_matrix[0][1]) *
-               (P[1] - P_off[1])) / mass_matrix[0] -
-               Gf_Z(phi[0], phidot[0], 0, T[0], v[0]))
+               (P[1] - P_off[1]) +
+               friction_matrix[0][0] *
+               Gf_Z(phi[0], phidot[0], 0, T[0], v[0])) / mass_matrix[0]
     Zdot[N] = ((advection_matrix[N][-1] * FZ[N-1] +
                advection_matrix[N][0] * FZ[N] +
                (sources_matrix[N][-1] + high_order_advection_matrix[N][-1]) *
@@ -141,17 +143,21 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         taudot[j] = (advection_matrix[j][-1] * Ftau[j-1] +
                      advection_matrix[j][0] * Ftau[j] +
                      advection_matrix[j][1] * Ftau[j+1] +
-                     friction_matrix[j][-1] * Gf_tau(phi[j], phidot[j],
+                     friction_matrix[j][-1] *
+                     Gf_tau(phi[j], phidot[j],
                      (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) +
-                     friction_matrix[j][1] * Gf_tau(phi[j], phidot[j],
+                     friction_matrix[j][1] *
+                     Gf_tau(phi[j], phidot[j],
                      (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j])) / \
             mass_matrix[j]
         Zdot[j] = (advection_matrix[j][-1] * FZ[j-1] +
                    advection_matrix[j][0] * FZ[j] +
-                   advection_matrix[j][1] * FZ[j+1] +
-                   friction_matrix[j][-1] * Gf_Z(phi[j], phidot[j],
+                   advection_matrix[j][1] * FZ[j+1] -
+                   friction_matrix[j][-1] *
+                   Gf_Z(phi[j], phidot[j],
                    (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) +
-                   friction_matrix[j][1] * Gf_Z(phi[j], phidot[j],
+                   friction_matrix[j][1] *
+                   Gf_Z(phi[j], phidot[j],
                    (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j]) +
                    (sources_matrix[j][-1] +
                     high_order_advection_matrix[j][-1]) * P[j-1] +
@@ -160,7 +166,6 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                    (sources_matrix[j][1] +
                     high_order_advection_matrix[j][1]) * P[j+1]) / \
             mass_matrix[j]
-
     # ------tau, Z evolution (half step)
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
@@ -178,9 +183,9 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     phidot[1] = ((1 + 0.5 * dt * eta * gam(v[1]))**(-1) *
                  ((1 - 0.5 * dt * eta * gam(v[1])) * phidot[1] -
                   dt * (dVTdphi(phi[1], T[1]) -
-                  (laplacian_matrix[1][1] * (phi[2] - phi[1])) /
-                  kinetic_matrix[1] - eta * gam(v[1]) * v[1] *
-                  (gradient_matrix[1][1] * (phi[2] - phi[1])) /
+                  (laplacian_matrix[1][1] * (phi[2] - phi[1]) -
+                   eta * gam(v[1]) * v[1] *
+                   (gradient_matrix[1][1] * (phi[2] - phi[1]))) /
                   kinetic_matrix[1])))
     for j in range(2, N):
         # phidot[j] += dt * ((laplacian_matrix[j][1] * (phi[j+1] - phi[j]) +
@@ -190,10 +195,10 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                      ((1 - 0.5 * dt * eta * gam(v[j])) * phidot[j] -
                       dt * (dVTdphi(phi[j], T[j]) -
                       (laplacian_matrix[j][1] * (phi[j+1] - phi[j]) +
-                       laplacian_matrix[j][-1] * (phi[j] - phi[j-1])) /
-                      kinetic_matrix[j] - eta * gam(v[j]) * v[j] *
-                      (gradient_matrix[j][-1] * (phi[j] - phi[j-1]) +
-                       gradient_matrix[j][1] * (phi[j+1] - phi[j])) /
+                       laplacian_matrix[j][-1] * (phi[j] - phi[j-1]) -
+                       eta * gam(v[j]) * v[j] *
+                       (gradient_matrix[j][-1] * (phi[j] - phi[j-1]) +
+                       gradient_matrix[j][1] * (phi[j+1] - phi[j]))) /
                       kinetic_matrix[j])))
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
@@ -202,23 +207,22 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     # ------tau, Z evolution (half step)
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
-
     # ------plotting
     colormap = plt.get_cmap('Blues')
     colors = colormap((t + dt) / tmax)
     if((counter + 1) % psteps == 0):
-
-        axs[0, 0].plot(r / GeV**(-1), phi / GeV,
+        xi = r/t
+        axs[0, 0].plot(r, phi / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[1, 0].plot(r / GeV**(-1), tau / (GeV**4),
+        axs[1, 0].plot(r, tau / (GeV**4),
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[2, 0].plot(r / GeV**(-1), Z / GeV**4,
+        axs[2, 0].plot(r, Z / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[0, 1].plot(r / GeV**(-1), v,
+        axs[0, 1].plot(r, v,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[1, 1].plot(r / GeV**(-1), T / GeV,
+        axs[1, 1].plot(r, T / GeV,
                        label=str(t/Tc)+"*Tc", c=colors)
-        axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
+        axs[2, 1].plot(r, P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
         plt.savefig('plots/Friction/plots_low_order' +
                     str(eta / Tc) + 'step' + str(counter + 1) + '.png')

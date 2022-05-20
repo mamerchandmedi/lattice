@@ -30,6 +30,8 @@ for j in range(1, N):
 
 advection_matrix[0][-1] = 0.
 advection_matrix[0][0] = 4 * (r[0]**2 + r[0] * r[1] + r[1]**2)
+friction_matrix[0][0] = - (3 * r[0]**2 + 2 * r[0] * r[1] + r[1]**2) * \
+                        (r[1] - r[0])
 mass_matrix[0] = (3 * r[0]**2 + 2 * r[0] * r[1] + r[1]**2) * (r[1] - r[0])
 
 advection_matrix[N][-1] = -4 * (r[N]**2 + r[N] * r[N-1] + r[N-1]**2)

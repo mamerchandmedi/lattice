@@ -13,7 +13,7 @@ from lattice import dr, dt, r, N
 # end: Import matrices of lattice definition.
 
 # %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn
+from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn, eta
 # end: Importing parameters of the model.
 
 # %% Importing initial values.
@@ -60,7 +60,8 @@ fig.subplots_adjust(wspace=0.5)
 plt.xlim(0, 10)
 plt.rcParams["figure.dpi"] = 400
 # plt.ylim(0,0.1)
-fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " + str(dt / GeV**(-1)))
+fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
+             str(dt / GeV**(-1)) + ', $\eta=$' + str(eta/Tc))
 axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')
@@ -202,5 +203,5 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                        label=str(t / Tc) + "*Tc", c=colors)
         axs[3, 0].plot(r, alpha_limiter1[:, 0], c=colors)
         axs[3, 1].plot(r, alpha_limiter2[:, 0], c=colors)
-        plt.savefig('plots/FCT/plots' + str(counter + 1) + '.png')
+        plt.savefig('plots/FCT/eta0/plots' + str(counter + 1) + '.png')
     counter += 1

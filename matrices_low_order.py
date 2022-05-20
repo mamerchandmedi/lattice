@@ -38,3 +38,5 @@ advection_matrix[N][-1] = -4 * (r[N]**2 + r[N] * r[N-1] + r[N-1]**2)
 advection_matrix[N][0] = 12 * r[N]**2
 mass_matrix[N] = (r[N-1]**2 + 2 * r[N-1] * r[N] + 3 * r[N]**2) * \
     (r[N] - r[N-1])
+friction_matrix[N][0] = - (r[N-1]**2 + 2 * r[N-1] * r[N] + 3 * r[N]**2) * \
+    (r[N] - r[N-1])

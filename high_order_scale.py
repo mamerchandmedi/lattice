@@ -58,18 +58,17 @@ phidot = np.zeros(r.size)
 taudot = np.zeros(r.size)
 Zdot = np.zeros(r.size)
 tau_temp = np.zeros(r.size)
-Z_temp= np.zeros(r.size)
+Z_temp = np.zeros(r.size)
 
-#EVOLUTION#
+# EVOLUTION#
 fig, axs = plt.subplots(3, 2)
 fig.subplots_adjust(hspace=0.5)
 fig.subplots_adjust(wspace=0.5)
-#------plotting
-plt.xlim(0,10)
+# ------plotting
+plt.xlim(0, 10)
 plt.rcParams["figure.dpi"] = 400
-#plt.ylim(0,0.1)
-fig.suptitle("dr = "+ str(dr / GeV**(-1)) + ", dt = "+str(dt / GeV**(-1))
-             + ", GeV = "+str(GeV))
+# plt.ylim(0,0.1)
+fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " + str(dt / GeV**(-1)))
 axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')
@@ -88,17 +87,17 @@ axs[1, 1].set_xlim(0, 4)
 axs[2, 1].set_xlim(0, 4)
 
 
-#axs[0,1].set_ylim(-1,1)
-#axs[0,0].plot(r,phi,linestyle = 'dashed')
-axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
-#axs[1,0].plot(r,tau,linestyle = 'dashed')
-#axs[2,0].plot(r,Z,linestyle = 'dashed')
-#axs[0,1].plot(r,v,linestyle = 'dashed')
-#axs[1,1].plot(r,T,linestyle = 'dashed')
-#axs[2,1].plot(r,P,linestyle = 'dashed')
-#plt.savefig('plots/low_order/plots_low_order'+str(0))
+# axs[0,1].set_ylim(-1,1)
+# axs[0,0].plot(r,phi,linestyle = 'dashed')
+# axs[0, 0].axhline(y = vt, color = 'gray', linestyle = 'dashed')
+# axs[1,0].plot(r,tau,linestyle = 'dashed')
+# axs[2,0].plot(r,Z,linestyle = 'dashed')
+# axs[0,1].plot(r,v,linestyle = 'dashed')
+# axs[1,1].plot(r,T,linestyle = 'dashed')
+# axs[2,1].plot(r,P,linestyle = 'dashed')
+# plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 100
-tmax = 4 * GeV**(-1)
+tmax = 1 * GeV**(-1)
 counter = 0
 
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
@@ -107,11 +106,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                                            v[j])
 
     Ftau = (tau + P)*v
-    FZ = Z *v + P
-
-    # ------phi evolution (half step)
-    phi[1:] += 0.5 * dt * phidot[1:]
-    phi[0] = phi[1]
+    FZ = Z * v + P
 
     taudot[0] = (advection_matrix[0][0] * Ftau[0] +
                  advection_matrix[0][1] * Ftau[1]) / mass_matrix[0]
@@ -145,6 +140,10 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     # ------tau, Z evolution (half step)
     tau_temp = tau - 0.5 * dt * taudot
     Z_temp = Z - 0.5 * dt * Zdot
+
+    # ------phi evolution (half step)
+    phi[1:] += 0.5 * dt * phidot[1:]
+    phi[0] = phi[1]
 
     for j in range(N+1):
         T[j], P[j], v[j] = tauZphi2Tpv_mod(tau_temp[j], Z_temp[j], phi[j],
@@ -190,9 +189,8 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
             mass_matrix[j]
 
     # ------tau, Z evolution (half step)
-    tau -=  dt * taudot
-    Z -=  dt * Zdot
-
+    tau -= dt * taudot
+    Z -= dt * Zdot
 
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
@@ -214,5 +212,6 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                        label=str(t/Tc)+"*Tc", c=colors)
         axs[2, 1].plot(r / GeV**(-1), P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        #plt.savefig('plots/high_order/plots_high_order' + str(counter + 1) + '.png')
+        plt.savefig('plots/high_order/plots_high_order' +
+                    str(counter + 1) + '.png')
     counter += 1

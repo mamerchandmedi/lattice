@@ -138,7 +138,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                (sources_matrix[N][0] + high_order_advection_matrix[N][0]) *
                (P[N] - P_off[N])) / mass_matrix[N] -
                Gf_Z(phi[N], 0, (phi[N] - phi[N-1]) /
-               (r[N] - r[N-1]), T[0], v[0]))
+               (r[N] - r[N-1]), T[N], v[N]))
     for j in range(1, N):
         taudot[j] = (advection_matrix[j][-1] * Ftau[j-1] +
                      advection_matrix[j][0] * Ftau[j] +

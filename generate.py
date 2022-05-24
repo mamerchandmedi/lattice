@@ -23,6 +23,10 @@ import sys
 import imp
 # end: Import package providing utility for importing modules by filename.
 
+# %% Importing parameters of the model.
+from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn
+# end: Importing parameters of the model.
+
 # %% Processing file name.
 data_file = sys.argv[1]
 print("Processing " + data_file + ".")
@@ -42,10 +46,6 @@ if 'eta' in locals():
 # %% Import matrices of lattice definition.
 from lattice import dr, dt, r, N
 # end: Import matrices of lattice definition.
-
-# %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn, eta
-# end: Importing parameters of the model.
 
 # %% Importing initial values.
 from initialization import phi, T, P, tau, Z, v
@@ -182,6 +182,6 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         / mass_matrix[N]
     deltaG[N] = GZ_H[N] - GZ_L[N]
     if((counter+1) % psteps == 0):
-        np.savez_compressed('profiles_eta_'+str(eta/Tc)+'_step_'+str(counter),
+        np.savez_compressed('profiles_eta_'+str(eta/Tc)+'_step_'+str(counter+1),
                             r=r, xi=r/t, v=v, T=T, P=P, tau=tau, Z=Z)
     counter += 1

@@ -53,6 +53,7 @@ from characteristic_variables import T_matrices2
 # end: Importing characteristic variables.
 
 # EVOLUTION #
+plt.figure(1)
 fig, axs = plt.subplots(4, 2)
 fig.subplots_adjust(hspace=0.5)
 fig.subplots_adjust(wspace=0.5)
@@ -86,8 +87,8 @@ axs[2, 1].set_xlim(0, 1)
 axs[3, 1].set_xlim(0, 1)
 
 
-psteps = 50
-tmax = 1 * GeV**(-1)
+psteps = 1
+tmax = 0.01 * GeV**(-1)
 counter = 0
 KH = ho_advection_matrix
 phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H, taudot_H = \
@@ -187,7 +188,6 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     # ------plotting
     colormap = plt.get_cmap('Blues')
     colors = colormap((t + dt) / tmax)
-    print(A_tau[0][0] + A_tau[0][1])
     if((counter+1) % psteps == 0):
         axs[0, 0].plot(r / GeV**(-1), phi_L / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)
@@ -204,4 +204,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         axs[3, 0].plot(r, alpha_limiter1[:, 0], c=colors)
         axs[3, 1].plot(r, alpha_limiter2[:, 0], c=colors)
         plt.savefig('plots/FCT/eta0/plots' + str(counter + 1) + '.png')
+        np.savez_compressed('profiles/profiles_eta_'+str(eta/Tc)+'/
+        t_'+str(t), r=r, xi=r/t, v=v, T=T, P=P, tau=tau, Z=Z)
     counter += 1
+

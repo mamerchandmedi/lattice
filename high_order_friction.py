@@ -53,6 +53,8 @@ from solver import tauZphi2Tpv
 # end: Importing procedure for solving algebraic relation
 #      T, p, v as function of tau, Z, phi.
 
+strength = (VT(0, T[0]) - VT(vt, T[0]))/(a*T[0]**4)
+print(strength)
 dt = 0.001 * GeV**(-1)
 
 phidot = np.zeros(r.size)
@@ -74,19 +76,19 @@ fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
 axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')
-axs[2, 0].set_xlabel(r'$r$')
+axs[2, 0].set_xlabel(r'$\xi$')
 
 axs[0, 1].set_ylabel(r'$v$')
 axs[1, 1].set_ylabel(r'$T$')
 axs[2, 1].set_ylabel(r'$p$')
-axs[2, 1].set_xlabel(r'$r$')
+axs[2, 1].set_xlabel(r'$\xi$')
 
-axs[0, 0].set_xlim(0, 1)
-axs[1, 0].set_xlim(0, 1)
-axs[2, 0].set_xlim(0, 1)
-axs[0, 1].set_xlim(0, 1)
-axs[1, 1].set_xlim(0, 1)
-axs[2, 1].set_xlim(0, 1)
+axs[0, 0].set_xlim(0, 0.3)
+axs[1, 0].set_xlim(0, 0.3)
+axs[2, 0].set_xlim(0, 0.3)
+axs[0, 1].set_xlim(0, 0.3)
+axs[1, 1].set_xlim(0, 0.3)
+axs[2, 1].set_xlim(0, 0.3)
 
 
 # axs[0,1].set_ylim(-1,1)
@@ -98,8 +100,8 @@ axs[2, 1].set_xlim(0, 1)
 # axs[1,1].plot(r,T,linestyle = 'dashed')
 # axs[2,1].plot(r,P,linestyle = 'dashed')
 # plt.savefig('plots/low_order/plots_low_order'+str(0))
-psteps = 100
-tmax = 1 * GeV**(-1)
+psteps = 500
+tmax = 30 * GeV**(-1)
 counter = 0
 
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
@@ -260,17 +262,17 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     colors = colormap((t + dt) / tmax)
     if((counter+1) % psteps == 0):
         xi = r/t
-        axs[0, 0].plot(r, phi / GeV,
+        axs[0, 0].plot(xi, phi / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[1, 0].plot(r, tau / (GeV**4),
+        axs[1, 0].plot(xi, tau / (GeV**4),
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[2, 0].plot(r, Z / GeV**4,
+        axs[2, 0].plot(xi, Z / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[0, 1].plot(r, v,
+        axs[0, 1].plot(xi, v,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[1, 1].plot(r, T / GeV,
+        axs[1, 1].plot(xi, T / GeV,
                        label=str(t/Tc)+"*Tc", c=colors)
-        axs[2, 1].plot(r, P / GeV**4,
+        axs[2, 1].plot(xi, P / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
         plt.savefig('plots/Friction/plots_high_order' +
                     str(counter + 1) + '.png')

@@ -14,6 +14,7 @@ T0 = Tc/(1+6*sigma/(L*lc))**0.5
 alpha = 1/(2/3*sigma*lc**5*Tc**2)**0.5
 gamma = (L+6*sigma/lc)/(6*sigma*lc*Tc**2)
 lam = 1/(3*sigma*lc**3)
-Tn = 93.
+Tn = 86.
 # -----------specify friction here---------------
-eta = 0.1 * Tc
+eta = 1.0 * Tc
+

@@ -14,8 +14,11 @@ from numpy import pi
 from parameters import T0, alpha, gamma, lam, eta
 # end: Importing parameters of the model.
 
-gst = 106.75
+
+#gst = 106.75
+gst = 34.25
 a = gst * pi**2 / 90
+
 
 
 # %% Defining thermally corrected potential of the model.
@@ -84,3 +87,4 @@ def Gf_tau(phi, dpdt, dpdr, T, v):
 def Gf_Z(phi, dpdt, dpdr, T, v):
     G = - dVTdphi(phi, T) * dpdr - eta * (dpdt + v * dpdr) * dpdr
     return G
+    

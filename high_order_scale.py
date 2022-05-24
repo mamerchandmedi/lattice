@@ -97,7 +97,7 @@ axs[2, 1].set_xlim(0, 4)
 # axs[2,1].plot(r,P,linestyle = 'dashed')
 # plt.savefig('plots/low_order/plots_low_order'+str(0))
 psteps = 100
-tmax = 1 * GeV**(-1)
+tmax = 5 * GeV**(-1)
 counter = 0
 
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time

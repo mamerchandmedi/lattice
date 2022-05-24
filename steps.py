@@ -8,7 +8,7 @@ import matplotlib.pylab as pl
 from tqdm import tqdm
 
 # %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn, eta
+from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn
 # end: Importing parameters of the model.
 
 # %% Importing the potetnial of the model.
@@ -57,7 +57,7 @@ from initialization import P_off
 # end: Importing initial values.
 
 
-def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
+def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot, eta):
     phidot = fidot
     taudot = np.zeros(r.size)
     Zdot = np.zeros(r.size)
@@ -251,7 +251,7 @@ def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
     return phi, tau, Z, T, v, P, phidot, Ftau, FZ, GZ, taudot
 
 
-def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
+def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot, eta):
     phidot = fidot
     taudot = np.zeros(r.size)
     Zdot = np.zeros(r.size)

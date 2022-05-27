@@ -77,17 +77,18 @@ def P_vectors(A):
 
 def Q_values(U, i):
     if i == 0:
-        Q_plus = max(U[i]*r[i]**2, U[i+1]*r[i]**2) - U[i]*r[i]**2
-        Q_minus = min(U[i]*r[i]**2, U[i+1]*r[i]**2) - U[i]*r[i]**2
+        Q_plus = max(U[i], U[i+1]) - U[i]
+        Q_minus = min(U[i], U[i+1]) - U[i]
+        return Q_plus, Q_minus
     elif i == N:
-        Q_plus = max(U[i-1]*r[i]**2, U[i]*r[i]**2) - U[i]*r[i]**2
-        Q_minus = min(U[i-1]*r[i]**2, U[i]*r[i]**2) - U[i]*r[i]**2
+        Q_plus = max(U[i-1]*r[i-1]**2, U[i]*r[i]**2) - U[i]*r[i]**2
+        Q_minus = min(U[i-1]*r[i-1]**2, U[i]*r[i]**2) - U[i]*r[i]**2
     else:
-        Q_plus = max(U[i-1]*r[i]**2, U[i]*r[i]**2, U[i+1]*r[i]**2)\
+        Q_plus = max(U[i-1]*r[i-1]**2, U[i]*r[i]**2, U[i+1]*r[i+1]**2)\
                    - U[i]*r[i]**2
-        Q_minus = min(U[i-1]*r[i]**2, U[i]*r[i]**2, U[i+1]*r[i]**2)\
+        Q_minus = min(U[i-1]*r[i-1]**2, U[i]*r[i]**2, U[i+1]*r[i+1]**2)\
             - U[i]*r[i]**2
-    return Q_plus, Q_minus
+    return Q_plus / r[i]**2, Q_minus / r[i]**2
 
 
 def R_values(Qp, Qm, Pp, Pm):

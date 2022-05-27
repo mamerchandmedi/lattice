@@ -87,8 +87,8 @@ axs[2, 1].set_xlim(0, 1)
 axs[3, 1].set_xlim(0, 1)
 
 
-psteps = 1
-tmax = 0.01 * GeV**(-1)
+psteps = 10
+tmax = 0.1 * GeV**(-1)
 counter = 0
 KH = ho_advection_matrix
 phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H, taudot_H = \
@@ -98,9 +98,9 @@ phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L = \
     cp.deepcopy(T_H), cp.deepcopy(v_H), cp.deepcopy(P_H), np.zeros(r.size),
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L, Ftau_L, FZ_L, GZ_L, KL =\
-        lo_step(phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L)
+        lo_step(phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L, eta)
     phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H, Ftau_H, FZ_H, GZ_H, taudot_H =\
-        ho_step(phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H)
+        ho_step(phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H, eta)
     tau_bar = Ubar(tau_L)
     Z_bar = Ubar(Z_L)
     A_tau = antidiffusive_matrix(KH, KL, Ftau_H, Ftau_L, dt)
@@ -204,7 +204,7 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
         axs[3, 0].plot(r, alpha_limiter1[:, 0], c=colors)
         axs[3, 1].plot(r, alpha_limiter2[:, 0], c=colors)
         plt.savefig('plots/FCT/eta0/plots' + str(counter + 1) + '.png')
-        np.savez_compressed('profiles/profiles_eta_'+str(eta/Tc)+'/
-        t_'+str(t), r=r, xi=r/t, v=v, T=T, P=P, tau=tau, Z=Z)
+        np.savez_compressed('profiles/profiles_eta_' + str(eta/Tc) +
+                            '/t_' + str(t),
+                            r=r, xi=r/t, v=v, T=T, P=P, tau=tau, Z=Z)
     counter += 1
-

@@ -97,10 +97,10 @@ phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L = \
     cp.deepcopy(phi_H), cp.deepcopy(tau_H), cp.deepcopy(Z_H),\
     cp.deepcopy(T_H), cp.deepcopy(v_H), cp.deepcopy(P_H), np.zeros(r.size),
 for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
-    phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L, Ftau_L, FZ_L, GZ_L, KL =\
+    phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L, Ftau_L, FZ_L, Gtau_L, GZ_L, KL =\
         lo_step(phi_L, tau_L, Z_L, T_L, v_L, P_L, phidot_L)
-    phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H, Ftau_H, FZ_H, GZ_H, taudot_H =\
-        ho_step(phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H)
+    phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H, Ftau_H, FZ_H, Gtau_H, GZ_H, taudot_H =\
+       ho_step(phi_H, tau_H, Z_H, T_H, v_H, P_H, phidot_H)
     tau_bar = Ubar(tau_L)
     Z_bar = Ubar(Z_L)
     A_tau = antidiffusive_matrix(KH, KL, Ftau_H, Ftau_L, dt)
@@ -157,17 +157,19 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
                 T_mat[1][0] * A1_prim[i][j] * alpha_limiter1[i][j] \
                 + T_mat[1][1] * A2_prim[i][j] * alpha_limiter2[i][j]
     deltaG = np.zeros(r.size)
-    tau_H[0] = tau_L[0] + (aA_tau[0][0] + aA_tau[0][1])/mass_matrix[0]
-    tau_L[0] = tau_L[0] + (aA_tau[0][0] + aA_tau[0][1])/mass_matrix[0]
+    tau_H[0] = tau_L[0] + (dt * (Gtau_H[0] - Gtau_L[0]) + aA_tau[0][0] + aA_tau[0][1])
+        / mass_matrix[0]
+    tau_L[0] = tau_L[0] + (dt * (Gtau_H[0] - Gtau_L[0]) + aA_tau[0][0] + aA_tau[0][1])
+        / mass_matrix[0]
     Z_H[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + aA_Z[0][0] + aA_Z[0][1])\
         / mass_matrix[0]
     Z_L[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + aA_Z[0][0] + aA_Z[0][1])\
         / mass_matrix[0]
     deltaG[0] = GZ_H[0] - GZ_L[0]
     for i in range(1, N):
-        tau_H[i] = tau_L[i] + (aA_tau[i][-1] + aA_tau[i][0] + aA_tau[i][1])\
+        tau_H[i] = tau_L[i] + (dt * (Gtau_H[i] - Gtau_L[i]) + aA_tau[i][-1] + aA_tau[i][0] + aA_tau[i][1])\
             / mass_matrix[i]
-        tau_L[i] = tau_L[i] + (aA_tau[i][-1] + aA_tau[i][0] + aA_tau[i][1])\
+        tau_L[i] = tau_L[i] + (dt * (Gtau_H[i] - Gtau_L[i]) + aA_tau[i][-1] + aA_tau[i][0] + aA_tau[i][1])\
             / mass_matrix[i]
         Z_H[i] = Z_L[i] + \
             (dt * (GZ_H[i] - GZ_L[i]) + aA_Z[i][-1] + aA_Z[i][0] + aA_Z[i][1])\
@@ -176,9 +178,9 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
             (dt * (GZ_H[i] - GZ_L[i]) + aA_Z[i][-1] + aA_Z[i][0] + aA_Z[i][1])\
             / mass_matrix[i]
         deltaG[i] = GZ_H[i] - GZ_L[i]
-    tau_H[N] = tau_L[N] + (aA_tau[N][-1] + aA_tau[N][0])\
+    tau_H[N] = tau_L[N] + (dt*(Gtau_H[N] - Gtau_L[N]) + aA_tau[N][-1] + aA_tau[N][0])\
         / mass_matrix[N]
-    tau_L[N] = tau_L[N] + (aA_tau[N][-1] + aA_tau[N][0])\
+    tau_L[N] = tau_L[N] + (dt*(Gtau_H[N] - Gtau_L[N]) + aA_tau[N][-1] + aA_tau[N][0])\
         / mass_matrix[N]
     Z_H[N] = Z_L[N] + (dt*(GZ_H[N] - GZ_L[N]) + aA_Z[N][-1] + aA_Z[N][0])\
         / mass_matrix[N]
@@ -189,17 +191,17 @@ for t in tqdm(np.arange(0., tmax, step=dt), leave=True):  # --iterate over time
     colormap = plt.get_cmap('Blues')
     colors = colormap((t + dt) / tmax)
     if((counter+1) % psteps == 0):
-        axs[0, 0].plot(r / GeV**(-1), phi_L / GeV,
+        axs[0, 0].plot(r / GeV**(-1), phi_H / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[1, 0].plot(r / GeV**(-1), tau_L / (GeV**4),
+        axs[1, 0].plot(r / GeV**(-1), tau_H / (GeV**4),
                        label=str(t / Tc)+"*Tc", c=colors)
-        axs[2, 0].plot(r / GeV**(-1), Z_L / GeV**4,
+        axs[2, 0].plot(r / GeV**(-1), Z_H / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[0, 1].plot(r / GeV**(-1), v_L,
+        axs[0, 1].plot(r / GeV**(-1), v_H,
                        label=str(t / Tc) + "*Tc", c=colors)
-        axs[1, 1].plot(r / GeV**(-1), T_L / GeV,
+        axs[1, 1].plot(r / GeV**(-1), T_H / GeV,
                        label=str(t/Tc)+"*Tc", c=colors)
-        axs[2, 1].plot(r / GeV**(-1), P_L / GeV**4,
+        axs[2, 1].plot(r / GeV**(-1), P_H / GeV**4,
                        label=str(t / Tc) + "*Tc", c=colors)
         axs[3, 0].plot(r, alpha_limiter1[:, 0], c=colors)
         axs[3, 1].plot(r, alpha_limiter2[:, 0], c=colors)

@@ -248,7 +248,7 @@ def high_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
     # ------phi evolution (half step)
     phi[1:] += 0.5 * dt * phidot[1:]
     phi[0] = phi[1]
-    return phi, tau, Z, T, v, P, phidot, Ftau, FZ, GZ, taudot
+    return phi, tau, Z, T, v, P, phidot, Ftau, FZ, Gtau, GZ, taudot
 
 
 def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
@@ -386,4 +386,4 @@ def low_order_step(fi, ti, zi, Ti, vi, Pi, fidot):
     # ------tau, Z evolution (half step)
     tau -= 0.5 * dt * taudot
     Z -= 0.5 * dt * Zdot
-    return phi, tau, Z, T, v, P, phidot, Ftau, FZ, GZ, lo_advection_matrix
+    return phi, tau, Z, T, v, P, phidot, Ftau, FZ, Gtau, GZ, lo_advection_matrix

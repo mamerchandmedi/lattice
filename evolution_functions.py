@@ -56,7 +56,7 @@ def update_Tpv(T, P, v, phi, tau, Z):
     v_new = np.zeros(r.size)
     for j in range(N+1):
         T_new[j], P_new[j], v_new[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j], v[j])
-    return: T_new, P_new, v_new
+    return T_new, P_new, v_new
 
 
 def evaluate_fluxes(tau, Z, P, v):
@@ -89,32 +89,34 @@ def ho_update_taudot(phi, phidot, T, v, Ftau):
     return taudot, Gtau
 
 
-def ho_updade_Z(phi, phidot, T, P, v, FZ):
-    GZ[0] = (sources_matrix[0][0] + ho_advection_matrix[0][0]) * P[0] +
+def ho_update_Zdot(phi, phidot, T, P, v, FZ):
+    Zdot = np.zeros(r.size)
+    GZ = np.zeros(r.size)
+    GZ[0] = ((sources_matrix[0][0] + ho_advection_matrix[0][0]) * P[0] +
             (sources_matrix[0][1] + ho_advection_matrix[0][1]) * P[1] +
-            friction_matrix[0][0] * Gf_Z(phi[0], phidot[0], 0, T[0], v[0])
-    Zdot[0] = (ho_advection_matrix[0][0] * FZ[0] +
+            friction_matrix[0][0] * Gf_Z(phi[0], phidot[0], 0, T[0], v[0]))
+    Zdot[0] = ((ho_advection_matrix[0][0] * FZ[0] +
                ho_advection_matrix[0][1] * FZ[1] +
-               GZ[0]) / mass_matrix[0]
+               GZ[0]) / mass_matrix[0])
     for j in range(1, N):
-        GZ[j] = (sources_matrix[j][-1] + ho_advection_matrix[j][-1]) * P[j-1] +
+        GZ[j] = ((sources_matrix[j][-1] + ho_advection_matrix[j][-1]) * P[j-1] +
                  (sources_matrix[j][0] + ho_advection_matrix[j][0]) * P[j] +
                  (sources_matrix[j][1] + ho_advection_matrix[j][1]) * P[j+1] +
                  friction_matrix[j][-1] * Gf_Z(phi[j], phidot[j],
                  (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) +
                  friction_matrix[j][1] * Gf_Z(phi[j], phidot[j],
-                 (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j])
-        Zdot[j] = (ho_advection_matrix[j][-1] * FZ[j-1] +
+                 (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j]))
+        Zdot[j] = ((ho_advection_matrix[j][-1] * FZ[j-1] +
                    ho_advection_matrix[j][0] * FZ[j] +
                    ho_advection_matrix[j][1] * FZ[j+1] +
-                   GZ[j] ) / mass_matrix[j]
-    GZ[N] = (sources_matrix[N][-1] + ho_advection_matrix[N][-1]) * P[N-1] +
+                   GZ[j] ) / mass_matrix[j])
+    GZ[N] = ((sources_matrix[N][-1] + ho_advection_matrix[N][-1]) * P[N-1] +
              (sources_matrix[N][0] + ho_advection_matrix[N][0]) * P[N] +
              friction_matrix[N][0] * Gf_Z(phi[N], 0, (phi[N] - phi[N-1]) /
-             (r[N] - r[N-1]), T[N], v[N])
-    Zdot[N] = (ho_advection_matrix[N][-1] * FZ[N-1] +
+             (r[N] - r[N-1]), T[N], v[N]))
+    Zdot[N] = ((ho_advection_matrix[N][-1] * FZ[N-1] +
                ho_advection_matrix[N][0] * FZ[N] +
-               GZ[N]) / mass_matrix[N]
+               GZ[N]) / mass_matrix[N])
     return Zdot, GZ
 
 

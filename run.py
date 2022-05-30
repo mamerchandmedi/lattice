@@ -36,10 +36,45 @@ from matrices_low_order_dynamically import advection
 
 # %% Import evolution functions.
 from evolution_functions import update_Tpv
-from evolution_functions import evaluate fluxes
+from evolution_functions import evaluate_fluxes
 from evolution_functions import ho_update_taudot
-from evolution_functions import ho_update_Z
+from evolution_functions import ho_update_Zdot
+from evolution_functions import update_phidot
 # end: Import evolution functions.
+
+# EVOLUTION #
+plt.figure(1)
+fig, axs = plt.subplots(4, 2)
+fig.subplots_adjust(hspace=0.5)
+fig.subplots_adjust(wspace=0.5)
+# ------plotting
+plt.xlim(0, 10)
+plt.rcParams["figure.dpi"] = 400
+# plt.ylim(0,0.1)
+fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
+             str(dt / GeV**(-1)) + ', $\eta=$' + str(eta/Tc))
+axs[0, 0].set_ylabel(r'$\phi$')
+axs[1, 0].set_ylabel(r'$\tau$')
+axs[2, 0].set_ylabel(r'$Z$')
+axs[3, 0].set_xlabel(r'$r$')
+axs[3, 0].set_ylabel(r'$Gtau$')
+
+
+axs[0, 1].set_ylabel(r'$v$')
+axs[1, 1].set_ylabel(r'$T$')
+axs[2, 1].set_ylabel(r'$p$')
+axs[3, 1].set_ylabel(r'$GZ$')
+axs[3, 1].set_xlabel(r'$r$')
+
+axs[0, 0].set_xlim(0, 1)
+axs[1, 0].set_xlim(0, 1)
+axs[2, 0].set_xlim(0, 1)
+axs[3, 0].set_xlim(0, 1)
+
+axs[0, 1].set_xlim(0, 1)
+axs[1, 1].set_xlim(0, 1)
+axs[2, 1].set_xlim(0, 1)
+axs[3, 1].set_xlim(0, 1)
 
 psteps = 10
 nsteps = 1000
@@ -55,6 +90,8 @@ phidot_L, taudot_L, Zdot_L = np.zeros(r.size), np.zeros(r.size), np.zeros(r.size
 
 # loop over time
 for k in range(nsteps):
+    t = k * dt
+    print(t)
     # ------ update variables
     T_H, P_H, v_H = update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
     Ftau_H, FZ_H = evaluate_fluxes(tau_H, Z_H, P_H, v_H)
@@ -87,3 +124,26 @@ for k in range(nsteps):
     # ------phi evolution (half step)
     phi_H[1:] += 0.5 * dt * phidot_H[1:]
     phi_H[0] = phi[1]
+    
+    colormap = plt.get_cmap('Blues')
+    colors = colormap( k * dt / psteps)
+    if((k+1) % psteps == 0):
+        axs[0, 0].plot(r / GeV**(-1), phi_H / GeV,
+                       label=str(t / Tc)+"*Tc", c=colors)
+        axs[1, 0].plot(r / GeV**(-1), tau_H / (GeV**4),
+                       label=str(t / Tc)+"*Tc", c=colors)
+        axs[2, 0].plot(r / GeV**(-1), Z_H / GeV**4,
+                       label=str(t / Tc) + "*Tc", c=colors)
+        axs[0, 1].plot(r / GeV**(-1), v_H,
+                       label=str(t / Tc) + "*Tc", c=colors)
+        axs[1, 1].plot(r / GeV**(-1), T_H / GeV,
+                       label=str(t/Tc)+"*Tc", c=colors)
+        axs[2, 1].plot(r / GeV**(-1), P_H / GeV**4,
+                       label=str(t / Tc) + "*Tc", c=colors)
+        #axs[3, 0].plot(r, alpha_limiter1[:, 0], c=colors)
+        axs[3, 0].plot(r, Gtau_H, c=colors)
+        #axs[3, 1].plot(r, alpha_limiter2[:, 0], c=colors)
+        axs[3, 1].plot(r, GZ_H, c=colors)
+        plt.savefig('plots/FCT/eta_0.3/plots' + str(k + 1) + '.png')
+        np.savez_compressed('profiles/profiles_eta_'+str(eta/Tc)+'/t_'+str(t), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H)
+    

@@ -126,7 +126,7 @@ for k in range(nsteps):
     phi_H[0] = phi[1]
     
     colormap = plt.get_cmap('Blues')
-    colors = colormap( k * dt / psteps)
+    colors = colormap( k / psteps)
     if((k+1) % psteps == 0):
         axs[0, 0].plot(r / GeV**(-1), phi_H / GeV,
                        label=str(t / Tc)+"*Tc", c=colors)

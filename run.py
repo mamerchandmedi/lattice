@@ -77,7 +77,7 @@ axs[2, 1].set_xlim(0, 1)
 axs[3, 1].set_xlim(0, 1)
 
 psteps = 10
-nsteps = 1000
+nsteps = 2000
 
 # initial values
 phi_H, tau_H, Z_H = cp.deepcopy(phi), cp.deepcopy(tau), cp.deepcopy(Z)
@@ -107,7 +107,7 @@ for k in range(nsteps):
     phi_H[0] = phi_H[1]
 
     # ------ update variables
-    T_H, P_H, v_H = update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
+    T_H, P_H, v_H = update_Tpv(T_H, P_H, v_H, phi_H, tau_temp, Z_temp)
     Ftau_H, FZ_H = evaluate_fluxes(tau_H, Z_H, P_H, v_H)
 
     phidot_H_old = cp.deepcopy(phidot_H)
@@ -123,7 +123,7 @@ for k in range(nsteps):
 
     # ------phi evolution (half step)
     phi_H[1:] += 0.5 * dt * phidot_H[1:]
-    phi_H[0] = phi[1]
+    phi_H[0] = phi_H[1]
     
     colormap = plt.get_cmap('Blues')
     colors = colormap( k / nsteps)

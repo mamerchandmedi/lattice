@@ -85,6 +85,6 @@ def Gf_tau(phi, dpdt, dpdr, T, v):
 
 # %% Defining friction source for Z.
 def Gf_Z(phi, dpdt, dpdr, T, v):
-    G = - dVTdphi(phi, T) * dpdr - eta * (dpdt + v * dpdr) * dpdr
+    G = - dVTdphi(phi, T) * dpdr - eta * gam(v) * (dpdt + v * dpdr) * dpdr
     return G
     

@@ -76,8 +76,8 @@ axs[1, 1].set_xlim(0, 1)
 axs[2, 1].set_xlim(0, 1)
 axs[3, 1].set_xlim(0, 1)
 
-psteps = 10
-nsteps = 2000
+psteps = 1000
+nsteps = 20000
 
 # initial values
 phi_H, tau_H, Z_H = cp.deepcopy(phi), cp.deepcopy(tau), cp.deepcopy(Z)
@@ -89,9 +89,8 @@ T_L, v_L, P_L = cp.deepcopy(T), cp.deepcopy(v), cp.deepcopy(P)
 phidot_L, taudot_L, Zdot_L = np.zeros(r.size), np.zeros(r.size), np.zeros(r.size)
 
 # loop over time
-for k in range(nsteps):
+for k in tqdm(range(nsteps)):
     t = k * dt
-    print(t)
     # ------ update variables
     T_H, P_H, v_H = update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
     Ftau_H, FZ_H = evaluate_fluxes(tau_H, Z_H, P_H, v_H)
@@ -103,8 +102,7 @@ for k in range(nsteps):
     Z_temp = Z_H - 0.5 * dt * Zdot_H
 
     # ------phi evolution (half step)
-    phi_H[1:] += 0.5 * dt * phidot_H[1:]
-    phi_H[0] = phi_H[1]
+    phi_H += 0.5 * dt * phidot_H
 
     # ------ update variables
     T_H, P_H, v_H = update_Tpv(T_H, P_H, v_H, phi_H, tau_temp, Z_temp)
@@ -122,9 +120,8 @@ for k in range(nsteps):
     Z_H -= dt * Zdot_H
 
     # ------phi evolution (half step)
-    phi_H[1:] += 0.5 * dt * phidot_H[1:]
-    phi_H[0] = phi_H[1]
-    
+    phi_H += 0.5 * dt * phidot_H
+
     colormap = plt.get_cmap('Blues')
     colors = colormap( k / nsteps)
     if((k+1) % psteps == 0):
@@ -144,6 +141,6 @@ for k in range(nsteps):
         axs[3, 0].plot(r, Gtau_H, c=colors)
         #axs[3, 1].plot(r, alpha_limiter2[:, 0], c=colors)
         axs[3, 1].plot(r, GZ_H, c=colors)
-        plt.savefig('plots/FCT/eta_0.3/plots' + str(k + 1) + '.png')
-        np.savez_compressed('profiles/profiles_eta_'+str(eta/Tc)+'/t_'+str(t), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H)
-    
+        #plt.savefig('plots/FCT/eta_0.3/plots' + str(k + 1) + '.png')
+        #np.savez_compressed('profiles/profiles_eta_'+str(eta/Tc)+'/t_'+str(t), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H)
+

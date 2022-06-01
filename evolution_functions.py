@@ -121,17 +121,14 @@ def ho_update_Zdot(phi, phidot, T, P, v, FZ):
 
 
 def update_phidot(phi, phidot, v, T):
-    phidot[1] = ((1 + 0.5 * dt * eta * kinetic_matrix[1]**(-1) * ((r[1]**3 - r[0]**3)*gam(v[0]) +
-                  0.25 * (r[2] - r[1]) * (3 * r[1]**2 + 2 * r[1]*r[2] + r[2]**2)*gam(v[1])))**(-1) *
-                 ((1 - 0.5 * dt * eta * kinetic_matrix[1]**(-1) * ((r[1]**3 - r[0]**3)*gam(v[0]) +
-                  0.25 * (r[2] - r[1]) * (3 * r[1]**2 + 2 * r[1]*r[2] + r[2]**2)*gam(v[1]))) * phidot[1] -
-                  dt * (dVTdphi_mod(phi[1], T[1]) -
-                  (laplacian_matrix[1][1] * (phi[2] - phi[1]) -
-                   eta * gam(v[1]) * v[1] *
-                   (gradient_matrix[1][1] * (phi[2] - phi[1]))) /
-                  kinetic_matrix[1])))
-    phidot[0] = phidot[1]
-    for j in range(2, N):
+    phidot[0] = ((1 + 0.5 * dt * eta * gam(v[0]))**(-1) *
+                     ((1 - 0.5 * dt * eta * gam(v[0])) * phidot[0] -
+                      dt * (dVTdphi(phi[0], T[0]) -
+                      (laplacian_matrix[0][1] * (phi[1] - phi[0]) -
+                       eta * gam(v[0]) * v[0] *
+                       (gradient_matrix[0][1] * (phi[1] - phi[0]))) /
+                      kinetic_matrix[0])))
+    for j in range(1, N):
         phidot[j] = ((1 + 0.5 * dt * eta * gam(v[j]))**(-1) *
                      ((1 - 0.5 * dt * eta * gam(v[j])) * phidot[j] -
                       dt * (dVTdphi(phi[j], T[j]) -

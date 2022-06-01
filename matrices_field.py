@@ -27,11 +27,11 @@ for j in range(1, N):
     kinetic_matrix[j] = (r[j+1]**2 + r[j]**2 + r[j-1]**2 + r[j+1] * r[j-1] +
                          r[j] * r[j+1] + r[j] * r[j-1]) * (r[j+1] - r[j-1]) / 4
 
-laplacian_matrix[1][-1] = 0.
-laplacian_matrix[1][0] = 0.
-laplacian_matrix[1][1] = (r[2]**3 - r[1]**3) / (r[2] - r[1])**2
-gradient_matrix[1][-1] = 0.
-gradient_matrix[1][0] = 0.
-gradient_matrix[1][1] = 3 * r[1]**2 + 2 * r[1] * r[2] + r[2]**2
-kinetic_matrix[1] = r[1]**3 - r[0]**3 + \
-    (3 * r[1]**2 + 2 * r[1] * r[2] + r[2]**2) * (r[2] - r[1]) / 4
+laplacian_matrix[0][-1] = 0.
+laplacian_matrix[0][0] = 0.
+laplacian_matrix[0][1] = (r[1]**3 - r[0]**3) / (r[1] - r[0])**2
+gradient_matrix[0][-1] = 0.
+gradient_matrix[0][0] = 0.
+gradient_matrix[0][1] = 3 * r[0]**2 + 2 * r[0] * r[1] + r[1]**2
+kinetic_matrix[0] = (3 * r[0]**2 + 2 * r[0] * r[1] + r[1]**2) * \
+    (r[1] - r[0]) / 4

@@ -51,19 +51,15 @@ from solver import tauZphi2Tpv
 #      T, p, v as function of tau, Z, phi.
 
 def update_Tpv(T, P, v, phi, tau, Z):
-    T_new = np.zeros(r.size)
-    P_new = np.zeros(r.size)
-    v_new = np.zeros(r.size)
     for j in range(N+1):
-        T_new[j], P_new[j], v_new[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j], v[j])
-    return T_new, P_new, v_new
+        T[j], P[j], v[j] = tauZphi2Tpv_mod(tau[j], Z[j], phi[j], T[j], P[j], v[j])
+    return T, P, v
 
 
 def evaluate_fluxes(tau, Z, P, v):
     Ftau = (tau + P)*v
     FZ = Z * v
     return Ftau, FZ
-
 
 def ho_update_taudot(phi, phidot, T, v, Ftau):
     taudot = np.zeros(r.size)
@@ -119,7 +115,61 @@ def ho_update_Zdot(phi, phidot, T, P, v, FZ):
                GZ[N]) / mass_matrix[N])
     return Zdot, GZ
 
+def lo_update_taudot(phi, phidot, T, v, Ftau):
+    taudot = np.zeros(r.size)
+    Gtau = np.zeros(r.size)
+    lo_advection_matrix = advection(v, ho_advection_matrix)
+    Gtau[0] = friction_matrix[0][0] * Gf_tau(phi[0], phidot[0], 0, T[0], v[0])
+    taudot[0] = (lo_advection_matrix[0][0] * Ftau[0] +
+                 lo_advection_matrix[0][1] * Ftau[1] +
+                 Gtau[0]) / mass_matrix[0]
+    for j in range(1, N):
+        Gtau[j] = (friction_matrix[j][-1] * Gf_tau(phi[j], phidot[j],
+                   (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) +
+                   friction_matrix[j][1] * Gf_tau(phi[j], phidot[j],
+                   (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j]))
+        taudot[j] = (lo_advection_matrix[j][-1] * Ftau[j-1] +
+                     lo_advection_matrix[j][0] * Ftau[j] +
+                     lo_advection_matrix[j][1] * Ftau[j+1] +
+                     Gtau[j]) / mass_matrix[j]
+    Gtau[N] = (friction_matrix[N][0] * Gf_tau(phi[N], 0, (phi[N] - phi[N-1]) /
+               (r[N] - r[N-1]), T[N], v[N]))
+    taudot[N] = (lo_advection_matrix[N][-1] * Ftau[N-1] +
+                 lo_advection_matrix[N][0] * Ftau[N] +
+                 Gtau[N]) / mass_matrix[N]
+    return taudot, Gtau
 
+def lo_update_Zdot(phi, phidot, T, P, v, FZ):
+    Zdot = np.zeros(r.size)
+    GZ = np.zeros(r.size)
+    lo_advection_matrix = advection(v, ho_advection_matrix)
+    GZ[0] = ((sources_matrix[0][0] + ho_advection_matrix[0][0]) * P[0] +
+             (sources_matrix[0][1] + ho_advection_matrix[0][1]) * P[1] +
+             friction_matrix[0][0] * Gf_Z(phi[0], phidot[0], 0, T[0], v[0]))
+    Zdot[0] = (lo_advection_matrix[0][0] * FZ[0] +
+               lo_advection_matrix[0][1] * FZ[1] +
+               GZ[0]) / mass_matrix[0]
+    for j in range(1, N):
+        GZ[j] = ((sources_matrix[j][-1] + ho_advection_matrix[j][-1]) * P[j-1] +
+                 (sources_matrix[j][0] + ho_advection_matrix[j][0]) * P[j] +
+                 (sources_matrix[j][1] + ho_advection_matrix[j][1]) * P[j+1] +
+                 friction_matrix[j][-1] * Gf_Z(phi[j], phidot[j],
+                 (phi[j] - phi[j-1])/(r[j] - r[j-1]), T[j], v[j]) +
+                 friction_matrix[j][1] * Gf_Z(phi[j], phidot[j],
+                 (phi[j+1] - phi[j])/(r[j+1] - r[j]), T[j], v[j]))
+        Zdot[j] = (lo_advection_matrix[j][-1] * FZ[j-1] +
+                   lo_advection_matrix[j][0] * FZ[j] +
+                   lo_advection_matrix[j][1] * FZ[j+1] +
+                   GZ[j]) / mass_matrix[j]
+    GZ[N] = ((sources_matrix[N][-1] + ho_advection_matrix[N][-1]) * P[N-1] +
+             (sources_matrix[N][0] + ho_advection_matrix[N][0]) * P[N] +
+             friction_matrix[N][0] * Gf_Z(phi[N], 0, (phi[N] - phi[N-1]) /
+             (r[N] - r[N-1]), T[N], v[N]))
+    Zdot[N] = (lo_advection_matrix[N][-1] * FZ[N-1] +
+               lo_advection_matrix[N][0] * FZ[N] +
+               GZ[N]) / mass_matrix[N]
+    return Zdot, GZ
+    
 def update_phidot(phi, phidot, v, T):
     phidot[1] = ((1 + 0.5 * dt * eta * kinetic_matrix[1]**(-1) * ((r[1]**3 - r[0]**3)*gam(v[0]) +
                   0.25 * (r[2] - r[1]) * (3 * r[1]**2 + 2 * r[1]*r[2] + r[2]**2)*gam(v[1])))**(-1) *
@@ -142,3 +192,4 @@ def update_phidot(phi, phidot, v, T):
                         gradient_matrix[j][1] * (phi[j+1] - phi[j]))) /
                       kinetic_matrix[j])))
     return phidot
+    

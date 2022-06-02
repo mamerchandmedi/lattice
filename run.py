@@ -59,7 +59,7 @@ from characteristic_variables import T_matrices2
 
 # EVOLUTION #
 plt.figure(1)
-fig, axs = plt.subplots(4, 2)
+fig, axs = plt.subplots(3, 2)
 fig.subplots_adjust(hspace=0.5)
 fig.subplots_adjust(wspace=0.5)
 # ------plotting
@@ -71,27 +71,20 @@ fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
 axs[0, 0].set_ylabel(r'$\phi$')
 axs[1, 0].set_ylabel(r'$\tau$')
 axs[2, 0].set_ylabel(r'$Z$')
-axs[3, 0].set_xlabel(r'$\xi$')
-axs[3, 0].set_ylabel(r'$Gtau$')
-
 
 axs[0, 1].set_ylabel(r'$v$')
 axs[1, 1].set_ylabel(r'$T$')
 axs[2, 1].set_ylabel(r'$p$')
-axs[3, 1].set_ylabel(r'$GZ$')
-axs[3, 1].set_xlabel(r'$\xi$')
 
-axs[0, 0].set_xlim(0, 0.9)
-axs[1, 0].set_xlim(0, 0.9)
-axs[2, 0].set_xlim(0, 0.9)
-axs[3, 0].set_xlim(0, 0.9)
+axs[0, 0].set_xlim(0, 0.3)
+axs[1, 0].set_xlim(0, 0.3)
+axs[2, 0].set_xlim(0, 0.3)
 
-axs[0, 1].set_xlim(0, 0.9)
-axs[1, 1].set_xlim(0, 0.9)
-axs[2, 1].set_xlim(0, 0.9)
-axs[3, 1].set_xlim(0, 0.9)
+axs[0, 1].set_xlim(0, 0.3)
+axs[1, 1].set_xlim(0, 0.3)
+axs[2, 1].set_xlim(0, 0.3)
 
-psteps = 10
+psteps = 100
 nsteps = 2500
 
 # initial values
@@ -104,9 +97,8 @@ T_L, v_L, P_L = cp.deepcopy(T), cp.deepcopy(v), cp.deepcopy(P)
 phidot_L, taudot_L, Zdot_L = np.zeros(r.size), np.zeros(r.size), np.zeros(r.size)
 
 # loop over time
-for k in range(nsteps):
+for k in tqdm(range(nsteps)):
     t = k * dt
-    print(k)
     # ############# HIGH ORDER ##################
     # ------ update variables
     T_H, P_H, v_H = update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
@@ -121,11 +113,11 @@ for k in range(nsteps):
     # ------phi evolution (half step)
     phi_H[1:] += 0.5 * dt * phidot_H[1:]
     phi_H[0] = phi_H[1]
-    
+
     # ------ update variables
     T_H, P_H, v_H = update_Tpv(T_H, P_H, v_H, phi_H, tau_temp, Z_temp)
     Ftau_H, FZ_H = evaluate_fluxes(tau_H, Z_H, P_H, v_H)
-    
+
     phidot_H_old = cp.deepcopy(phidot_H)
     phidot_H = update_phidot(phi_H, phidot_H, v_H, T_H)
     phidot_H_mean = (phidot_H + phidot_H_old) / 2
@@ -145,42 +137,46 @@ for k in range(nsteps):
     T_L, P_L, v_L = update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
     Ftau_L = tau_L + P_L
     FZ_L = Z_L
-    # ------phi evolution (half step)
-    phi_L[1:] += 0.5 * dt * phidot_L[1:]
-    phi_L[0] = phi_L[1]
-    
+
+    # ------ update variables
     taudot_L, Gtau_L = lo_update_taudot(phi_L, phidot_L, T_L, v_L, Ftau_L)
     Zdot_L, GZ_L = lo_update_Zdot(phi_L, phidot_L, T_L, P_L, v_L, FZ_L)
     KL = advection(v_L, ho_advection_matrix)
-    
-    tau_L -= 0.5 * dt * taudot_L
-    Z_L -= 0.5 * dt * Zdot_L
-    
-    T_L, P_L, v_L = update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
-    phidot_L = update_phidot(phi_L, phidot_L, v_L, T_L)
-    
+
+    # ------phi evolution (half step)
     phi_L[1:] += 0.5 * dt * phidot_L[1:]
     phi_L[0] = phi_L[1]
-    
+
     # ------tau, Z evolution (half step)
     tau_L -= 0.5 * dt * taudot_L
     Z_L -= 0.5 * dt * Zdot_L
-    
+
+    T_L, P_L, v_L = update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
+    phidot_L = update_phidot(phi_L, phidot_L, v_L, T_L)
+
+    # ------phi evolution (half step)
+    phi_L[1:] += 0.5 * dt * phidot_L[1:]
+    phi_L[0] = phi_L[1]
+
+    # ------tau, Z evolution (half step)
+    tau_L -= 0.5 * dt * taudot_L
+    Z_L -= 0.5 * dt * Zdot_L
+
     # ###########FCT###############
     KH = ho_advection_matrix
     tau_bar = Ubar(tau_L)
     Z_bar = Ubar(Z_L)
-    A_tau = antidiffusive_matrix(KH, KL, Ftau_H, Ftau_L, dt)
-    A_Z = antidiffusive_matrix(KH, KL, FZ_H, FZ_L, dt)
+    antidiffusive_flux_Z = antidiffusive_matrix(KH, KL, FZ_H, FZ_L, dt)
+    antidiffusive_flux_tau = antidiffusive_matrix(KH, KL, Ftau_H, Ftau_L, dt)
     #A1_prim, A2_prim = \
-    #    trans_am(A_tau, A_Z, tau_bar, Z_bar, phi_L, T_L, P_L, v_L)
+    #    trans_am(antidiffusive_flux_tau, antidiffusive_flux_Z, tau_bar, Z_bar, phi_L, T_L, P_L, v_L)
     #P1_plus, P1_minus = P_vectors(A1_prim)
     #P2_plus, P2_minus = P_vectors(A2_prim)
     #alpha_limiter1 = np.ndarray((N+1, 3))
     #alpha_limiter2 = np.ndarray((N+1, 3))
-    #aA_tau = np.ndarray((N+1, 3))
-    #aA_Z = np.ndarray((N+1, 3))
-    
+    #aantidiffusive_flux_tau = np.ndarray((N+1, 3))
+    #aantidiffusive_flux_Z = np.ndarray((N+1, 3))
+
     #for i in range(N+1):
     #    if i == 0:
     #        indexes = [0, 1]
@@ -218,43 +214,58 @@ for k in range(nsteps):
     #            alpha_limiter2[i][j] = min(R2_plus_i, R2_minus_j)
     #        else:
     #            alpha_limiter2[i][j] = min(R2_minus_i, R2_plus_j)
-    #        aA_tau[i][j] = \
+    #        aantidiffusive_flux_tau[i][j] = \
     #            T_mat[0][0] * A1_prim[i][j] * alpha_limiter1[i][j] \
     #            + T_mat[0][1] * A2_prim[i][j] * alpha_limiter2[i][j]
-    #        aA_Z[i][j] = \
+    #        aantidiffusive_flux_Z[i][j] = \
     #            T_mat[1][0] * A1_prim[i][j] * alpha_limiter1[i][j] \
     #            + T_mat[1][1] * A2_prim[i][j] * alpha_limiter2[i][j]
-    tau_H[0] = tau_L[0] + (dt * (Gtau_H[0] - Gtau_L[0]) + A_tau[0][0] + A_tau[0][1])\
-        / mass_matrix[0]
-    tau_L[0] = tau_L[0] + (dt * (Gtau_H[0] - Gtau_L[0]) + A_tau[0][0] + A_tau[0][1])\
-    #    / mass_matrix[0]
-    Z_H[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + A_Z[0][0] + A_Z[0][1])\
-        / mass_matrix[0]
-    Z_L[0] = Z_L[0] + (dt * (GZ_H[0] - GZ_L[0]) + A_Z[0][0] + A_Z[0][1])\
-        / mass_matrix[0]
+    #print(Z_H - Z_L + (dt * (GZ_H - GZ_L)) / mass_matrix)
+    #print(tau_H - tau_L + (dt * (Gtau_H - Gtau_L)) / mass_matrix)
+    tau_H[0] = tau_L[0] - (dt * (Gtau_H[0] - Gtau_L[0]) +
+                           antidiffusive_flux_tau[0][0] +
+                           antidiffusive_flux_tau[0][1]) / mass_matrix[0]
+    tau_L[0] = tau_H[0]
+    Z_H[0] = Z_L[0] - (dt * (GZ_H[0] - GZ_L[0]) +
+                       antidiffusive_flux_Z[0][0] +
+                       antidiffusive_flux_Z[0][1]) / mass_matrix[0]
+    Z_L[0] = Z_H[0]
+
+    phi_L[0] = phi_H[0]
+    phidot_L[0] = phidot_H[0]
+
     for i in range(1, N):
-        tau_H[i] = tau_L[i] + (dt * (Gtau_H[i] - Gtau_L[i]) + A_tau[i][-1] + A_tau[i][0] + A_tau[i][1])\
+        tau_H[i] = tau_L[i] - (dt * (Gtau_H[i] - Gtau_L[i]) +
+                               antidiffusive_flux_tau[i][-1] +
+                               antidiffusive_flux_tau[i][0] +
+                               antidiffusive_flux_tau[i][1])\
             / mass_matrix[i]
-        tau_L[i] = tau_L[i] + (dt * (Gtau_H[i] - Gtau_L[i]) + A_tau[i][-1] + A_tau[i][0] + A_tau[i][1])\
+        tau_L[i] = tau_H[i]
+        Z_H[i] = Z_L[i] - (dt * (GZ_H[i] - GZ_L[i]) +
+                           antidiffusive_flux_Z[i][-1] +
+                           antidiffusive_flux_Z[i][0] +
+                           antidiffusive_flux_Z[i][1])\
             / mass_matrix[i]
-        Z_H[i] = Z_L[i] + \
-            (dt * (GZ_H[i] - GZ_L[i]) + A_Z[i][-1] + A_Z[i][0] + A_Z[i][1])\
-            / mass_matrix[i]
-        Z_L[i] = Z_L[i] + \
-            (dt * (GZ_H[i] - GZ_L[i]) + A_Z[i][-1] + A_Z[i][0] + A_Z[i][1])\
-            / mass_matrix[i]
-    tau_H[N] = tau_L[N] + (dt*(Gtau_H[N] - Gtau_L[N]) + A_tau[N][-1] + A_tau[N][0])\
-        / mass_matrix[N]
-    tau_L[N] = tau_L[N] + (dt*(Gtau_H[N] - Gtau_L[N]) + A_tau[N][-1] + A_tau[N][0])\
-        / mass_matrix[N]
-    Z_H[N] = Z_L[N] + (dt*(GZ_H[N] - GZ_L[N]) + A_Z[N][-1] + A_Z[N][0])\
-        / mass_matrix[N]
-    Z_L[N] = Z_L[N] + (dt*(GZ_H[N] - GZ_L[N]) + A_Z[N][-1] + A_Z[N][0])\
-        / mass_matrix[N]
-        
+        Z_L[i] = Z_H[i]
+
+        phi_L[i] = phi_H[i]
+        phidot_L[i] = phidot_H[i]
+
+    tau_H[N] = tau_L[N] - (dt*(Gtau_H[N] - Gtau_L[N])
+                           + antidiffusive_flux_tau[N][-1] +
+                           antidiffusive_flux_tau[N][0]) / mass_matrix[N]
+    tau_L[N] = tau_H[N]
+    Z_H[N] = Z_L[N] - (dt*(GZ_H[N] - GZ_L[N])
+                       + antidiffusive_flux_Z[N][-1] +
+                       antidiffusive_flux_Z[N][0]) / mass_matrix[N]
+    Z_L[N] = Z_H[N]
+
+    phi_L[N] = phi_H[N]
+    phidot_L[N] = phidot_H[N]
+
     # #########PLOTTING############
     colormap = plt.get_cmap('Blues')
-    colors = colormap( k / nsteps)
+    colors = colormap(k / nsteps)
     if((k+1) % psteps == 0):
         xi = r/t
         axs[0, 0].plot(xi / GeV**(-1), phi_L / GeV,
@@ -273,6 +284,6 @@ for k in range(nsteps):
         #axs[3, 0].plot(xi, Gtau_L, c=colors)
         #axs[3, 1].plot(xi, alpha_limiter2[:, 0], c=colors)
         #axs[3, 1].plot(xi, GZ_L, c=colors)
-        plt.savefig('plots/FCT/eta_0.3/plots' + str(k + 1) + '.png')
+        #plt.savefig('plots/FCT/eta_0.3/plots' + str(k + 1) + '.png')
         #np.savez_compressed('profiles/profiles_eta_'+str(eta/Tc)+'/t_'+str(t), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H)
-    
+

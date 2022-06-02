@@ -139,6 +139,7 @@ def lo_update_taudot(phi, phidot, T, v, Ftau):
                  Gtau[N]) / mass_matrix[N]
     return taudot, Gtau
 
+
 def lo_update_Zdot(phi, phidot, T, P, v, FZ):
     Zdot = np.zeros(r.size)
     GZ = np.zeros(r.size)
@@ -169,7 +170,8 @@ def lo_update_Zdot(phi, phidot, T, P, v, FZ):
                lo_advection_matrix[N][0] * FZ[N] +
                GZ[N]) / mass_matrix[N]
     return Zdot, GZ
-    
+
+
 def update_phidot(phi, phidot, v, T):
     phidot[1] = ((1 + 0.5 * dt * eta * kinetic_matrix[1]**(-1) * ((r[1]**3 - r[0]**3)*gam(v[0]) +
                   0.25 * (r[2] - r[1]) * (3 * r[1]**2 + 2 * r[1]*r[2] + r[2]**2)*gam(v[1])))**(-1) *
@@ -192,4 +194,4 @@ def update_phidot(phi, phidot, v, T):
                         gradient_matrix[j][1] * (phi[j+1] - phi[j]))) /
                       kinetic_matrix[j])))
     return phidot
-    
+

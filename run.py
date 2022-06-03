@@ -236,7 +236,15 @@ for k in tqdm(range(nsteps)):
             R2_plus[i], R2_minus[i] = \
                 R_values(Q2_plus_i, Q2_minus_i,
                          P2_plus[i], P2_minus[i])
-    for i in range(N+1):
+    indexes = [0, 1]
+    for j in indexes:
+        limited_flux_tau[0][j] = \
+                T_mat[0][0] * A1_prim[0][j] + \
+                T_mat[0][1] * A2_prim[0][j]
+        limited_flux_Z[0][j] = \
+                T_mat[1][0] * A1_prim[0][j] + \
+                T_mat[1][1] * A2_prim[0][j]
+    for i in range(1, N+1):
         if i == 0:
             indexes = [0, 1]
         elif i == N:

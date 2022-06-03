@@ -1,12 +1,8 @@
 import numpy as np
 
 # %% Import termodynamically corrected quantities.
-from thermo import a, VT, dVTdT, d2VTdT, w, gam, p, eps
+from thermo import a, dVTdT, d2VTdT, w, gam, dpdT
 # end: Import termodynamically corrected quantities.
-
-
-def dpdT(field, T):
-    return 4 * a * T**3 - dVTdT(field, T)
 
 
 def dtaudT(v, field, T):

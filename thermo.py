@@ -71,6 +71,26 @@ def w(field, temp):
 # end: Defining barotropic parameter of the system.
 
 
+# %% Defining derivative of the pressure with respect to temperature.
+def dpdT(field, temp):
+    return 4 * a * temp**3 - dVTdT(field, temp)
+# end: Defining derivative of the pressure with respect to temperature.
+
+
+# %% Defining derivative of the energy density with respect to temperature.
+def depsdT(field, temp):
+    return 12 * a * temp**3 - temp * d2VTdT(field, temp)
+# end: Defining derivative of the energy density with respect to temperature.
+
+
+# %% Defining derivative of the barotropic parameter
+#    with respect to temperature.
+def dwdT(field, temp):
+    return depsdT(field, temp) + dpdT(field, temp)
+# end: Defining derivative of the barotropic parameter
+#      with respect to temperature.
+
+
 # %% Defining relativistic gamma factor.
 def gam(vel):
     return 1 / (1 - vel**2)**0.5

@@ -117,8 +117,8 @@ axs_diag[0, 1].set_ylim(0, 1.)
 axs_diag[1, 1].set_ylim(0, 1.)
 axs_diag[2, 1].set_ylim(0, 1.)
 
-psteps = 10
-nsteps = 100
+psteps = 100
+nsteps = 2500
 
 # initial values
 phi_H, tau_H, Z_H = cp.deepcopy(phi), cp.deepcopy(tau), cp.deepcopy(Z)
@@ -172,9 +172,9 @@ for k in tqdm(range(nsteps)):
     FZ_L = Z_L
 
     # ------ update variables
-    taudot_L, Gtau_L = lo_update_taudot(phi_L, phidot_L, T_L, v_L, Ftau_L)
-    Zdot_L, GZ_L = lo_update_Zdot(phi_L, phidot_L, T_L, P_L, v_L, FZ_L)
-    KL = advection(v_L, ho_advection_matrix)
+    KL = advection(v_L)
+    taudot_L, Gtau_L = lo_update_taudot(phi_L, phidot_L, T_L, v_L, Ftau_L, KL)
+    Zdot_L, GZ_L = lo_update_Zdot(phi_L, phidot_L, T_L, P_L, v_L, FZ_L, KL)
 
     # ------phi evolution (half step)
     phi_L[1:] += 0.5 * dt * phidot_L[1:]

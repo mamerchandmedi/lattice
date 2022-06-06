@@ -15,7 +15,7 @@ from scaled import GeV
 # end: Import rescaled quantities.
 
 rmin = 0. * GeV**(-1)
-rmax = 10. * GeV**(-1)
+rmax = 40. * GeV**(-1)
 dr = 0.01 * GeV**(-1)
 dt = 0.001 * GeV**(-1)
 N = int(np.floor((rmax - rmin) / dr))

@@ -147,7 +147,7 @@ for k in range(nsteps):
     # ################LOW ORDER##################
     T_L, P_L, v_L = update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
     Ftau_L = tau_L + P_L
-    FZ_L = Z_L
+    FZ_L = cp.deepcopy(Z_L)
 
     # ------ update variables
     KL = advection(v_L)

@@ -41,7 +41,6 @@ def thin_wall(r, v0, L, r0):
 
 fit = curve_fit(thin_wall, profile.R, profile.Phi,
                 bounds=(0, [1.5 * vt, 1, 1]))[0]
-dt = 0.002
 plt.plot(r / GeV, thin_wall(r / GeV, fit[0], fit[1], fit[2]),
          label="thin-wall approximation")
 plt.scatter(profile.R, profile.Phi, c="red", s=1, label="Numerical profile")

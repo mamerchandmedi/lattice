@@ -21,7 +21,7 @@ from cosmoTransitions.tunneling1D import SingleFieldInstanton
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from scaled import GeV
-from matrices_low_order import r
+from lattice import r
 
 # %% Importing the potetnial of the model.
 from potential import V, dV
@@ -50,9 +50,9 @@ plt.savefig('phi0')
 plt.close()
 phi_tw = []
 for i in range(len(r)):
-    #if r[i]/1.01 > profile.R[-1]:
+    # if r[i]/1.01 > profile.R[-1]:
     phi_tw.append(thin_wall(r[i] / 1.01 / GeV**(-1), fit[0], fit[1], fit[2]))
-    #else:
-    #phi_tw.append(fphi(r[i]/1.01))
+    # else:
+    # phi_tw.append(fphi(r[i]/1.01))
 phi_tw = np.array(phi_tw)
-np.savez_compressed('critical_bubble', r=r, phi = phi_tw)
+np.savez_compressed('critical_bubble', r=r, phi=phi_tw)

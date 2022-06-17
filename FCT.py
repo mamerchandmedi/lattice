@@ -2,10 +2,6 @@
 import numpy as np
 # end: Import package for numerical computations.
 
-# %% Import matrices.
-from matrices_high_order import mass_matrix
-# end: Import matrices.
-
 # %% Import rescaled quantities.
 from lattice import N, r
 # end: Import rescaled quantities.

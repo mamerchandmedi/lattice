@@ -1,32 +1,19 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy import optimize as optimize
-import scipy.integrate as integrate
-from scipy import interpolate, special
-from scipy.optimize import fsolve
 
 # %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn, eta
+from parameters import eta
 # end: Importing parameters of the model.
 
-# %% Importing the potetnial of the model.
-from potential import V, dV
-# end: Importing the potetnial of the model.
-
-# %% Import critical bubble calculated by CosmoTransitions.
-from bubble import vt, profile, fphi, phi_tw
-# end: Import critical bubble calculated by CosmoTransitions.
-
 # %% Import termodynamically corrected quantities.
-from thermo import gst, a, VT, dVTdphi, eps, p, w, gam, Gf_tau, Gf_Z
+from thermo import dVTdphi, gam, Gf_tau, Gf_Z
 # end: Import termodynamically corrected quantities.
 
 # %% Import rescaled quantities.
-from scaled import GeV, VT_mod, dVTdphi_mod, tauZphi2Tpv_mod
+from scaled import dVTdphi_mod, tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
 # %% Import matrices of lattice definition.
-from lattice import dr, dt, r, N
+from lattice import dt, r, N
 # end: Import matrices of lattice definition.
 
 # %% Import matrices of wave equation integration scheme.
@@ -39,16 +26,6 @@ from matrices_high_order import advection_matrix as ho_advection_matrix
 from matrices_high_order import mass_matrix
 from matrices_high_order import friction_matrix
 # end: Import matrices of the high order integration scheme.
-
-# %% Import matrices of the low order integration scheme.
-from matrices_low_order_dynamically import advection
-# end: Import matrices of the low order integration scheme.
-
-# %% Importing procedure for solving algebraic relation
-#    T, p, v as function of tau, Z, phi.
-from solver import tauZphi2Tpv
-# end: Importing procedure for solving algebraic relation
-#      T, p, v as function of tau, Z, phi.
 
 
 def update_Tpv(T, P, v, phi, tau, Z):
@@ -79,8 +56,8 @@ def ho_update_taudot(phi, phidot, T, v, Ftau):
                      ho_advection_matrix[j][0] * Ftau[j] +
                      ho_advection_matrix[j][1] * Ftau[j+1] +
                      Gtau[j]) / mass_matrix[j]
-    Gtau[N] = friction_matrix[N][0] * Gf_tau(phi[N], 0,
-              (phi[N] - phi[N-1])/(r[N] - r[N-1]), T[N], v[N])
+    Gtau[N] = friction_matrix[N][0] * \
+        Gf_tau(phi[N], 0, (phi[N] - phi[N-1])/(r[N] - r[N-1]), T[N], v[N])
     taudot[N] = (ho_advection_matrix[N][-1] * Ftau[N-1] +
                  ho_advection_matrix[N][0] * Ftau[N] +
                  Gtau[N]) / mass_matrix[N]
@@ -107,7 +84,7 @@ def ho_update_Zdot(phi, phidot, T, P, v, FZ):
         Zdot[j] = ((ho_advection_matrix[j][-1] * FZ[j-1] +
                    ho_advection_matrix[j][0] * FZ[j] +
                    ho_advection_matrix[j][1] * FZ[j+1] +
-                   GZ[j] ) / mass_matrix[j])
+                   GZ[j]) / mass_matrix[j])
     GZ[N] = ((sources_matrix[N][-1] + ho_advection_matrix[N][-1]) * P[N-1] +
              (sources_matrix[N][0] + ho_advection_matrix[N][0]) * P[N] +
              friction_matrix[N][0] * Gf_Z(phi[N], 0, (phi[N] - phi[N-1]) /
@@ -196,4 +173,3 @@ def update_phidot(phi, phidot, v, T):
                         gradient_matrix[j][1] * (phi[j+1] - phi[j]))) /
                       kinetic_matrix[j])))
     return phidot
-

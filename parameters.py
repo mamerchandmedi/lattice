@@ -17,4 +17,3 @@ lam = 1/(3*sigma*lc**3)
 Tn = 86.
 # -----------specify friction here---------------
 eta = 0.08 * Tc
-

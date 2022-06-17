@@ -27,7 +27,7 @@ from scaled import GeV
 # end: Import rescaled quantities.
 
 # %% Import matrices of the integration scheme.
-from matrices_low_order import r
+from lattice import r
 # end: Import matrices of the integration scheme.
 
 phi0 = phi_tw
@@ -37,7 +37,7 @@ T = Tn * np.ones(r.size)
 v = 0. * np.ones(r.size)
 P = p(phi0, T)
 tau = w(phi0, T) * gam(v)**2 - P
-#tau = tau[0]*np.exp(-2*(r-5)**2)
+# tau = tau[0]*np.exp(-2*(r-5)**2)
 
 Z = w(phi0, T) * gam(v)**2 * v
 P_off = 0 * (p(vt, Tn)) * np.ones(r.size)

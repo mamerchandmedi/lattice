@@ -2,13 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy import optimize as optimize
-import scipy.integrate as integrate
-from scipy import interpolate, special
-from scipy.optimize import fsolve
-import matplotlib.pylab as pl
-from tqdm import tqdm
 import copy as cp
 
 # %% Import system dependent functionality.
@@ -24,7 +17,7 @@ import imp
 # end: Import package providing utility for importing modules by filename.
 
 # %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn
+from parameters import Tc
 # end: Importing parameters of the model.
 
 # %% Processing file name.
@@ -39,16 +32,16 @@ parameters_data = imp.load_source('parameters_data', data_file)
 from parameters_data import *
 # end: Importing file with parameters of the model.
 
-import parameters 
+import parameters
 if 'eta' in locals():
     parameters.eta = eta
 
 # %% Import matrices of lattice definition.
-from lattice import dr, dt, r, N
+from lattice import dt, r, N
 # end: Import matrices of lattice definition.
 
 # %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn, eta
+from parameters import eta
 # end: Importing parameters of the model.
 
 # %% Importing initial values.
@@ -56,12 +49,10 @@ from initialization import phi, T, P, tau, Z, v
 # end: Importing initial values.
 
 # %% Import rescaled quantities.
-from scaled import GeV, tauZphi2Tpv_mod
-from solver import tauZphi2Tpv
+from scaled import tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
 # %% Import matrices of the high order integration scheme.
-from matrices_high_order import sources_matrix as sm
 from matrices_high_order import advection_matrix as ho_advection_matrix
 from matrices_high_order import mass_matrix
 # end: Import matrices of the high order integration scheme.
@@ -81,20 +72,21 @@ from evolution_functions import update_phidot
 # end: Import evolution functions.
 
 # %% Importing FCT variables.
-from FCT import antidiffusive_matrix
-from FCT import Ubar
+from FCT import antidiffusive_matrix, Ubar, P_vectors, Q_values, R_values
 from FCT import trans_antidiffusive_matrix as trans_am
-from FCT import P_vectors
-from FCT import Q_values
-from FCT import R_values
 # end: Importing FCT variable.
 
 # %% Importing characteristic variables.
 from characteristic_variables import T_matrices2
 # end: Importing characteristic variables.
 
-# EVOLUTION #
+# Prepare output folder.
+path = 'profiles_eta_'+str(eta/Tc)
+if not os.path.isdir(path):
+    os.mkdir(path)
+# Prepare output folder.
 
+# EVOLUTION #
 psteps = 10
 nsteps = 250
 
@@ -217,11 +209,11 @@ for k in range(nsteps):
     indexes = [0, 1]
     for j in indexes:
         limited_flux_tau[0][j] = \
-                T_mat[0][0] * A1_prim[0][j] + \
-                T_mat[0][1] * A2_prim[0][j]
+            T_mat[0][0] * A1_prim[0][j] + \
+            T_mat[0][1] * A2_prim[0][j]
         limited_flux_Z[0][j] = \
-                T_mat[1][0] * A1_prim[0][j] + \
-                T_mat[1][1] * A2_prim[0][j]
+            T_mat[1][0] * A1_prim[0][j] + \
+            T_mat[1][1] * A2_prim[0][j]
     for i in range(1, N+1):
         if i == 0:
             indexes = [0, 1]
@@ -289,4 +281,6 @@ for k in range(nsteps):
 
     # #########SAVING############
     if((k+1) % psteps == 0):
-        np.savez_compressed('profiles_eta_'+str(eta/Tc)+'/t_'+str(t), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H)
+        np.savez_compressed(path + '/t_'+str(t), r=r, xi=r/t,
+                            phi=phi_H, v=v_H, T=T_H,
+                            P=P_H, tau=tau_H, Z=Z_H)

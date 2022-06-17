@@ -1,34 +1,19 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy import optimize as optimize
-import scipy.integrate as integrate
-from scipy import interpolate, special
-from scipy.optimize import fsolve
-import matplotlib.pylab as pl
-from tqdm import tqdm
 
 # %% Importing parameters of the model.
-from parameters import Tc, L, sigma, lc, T0, alpha, gamma, lam, Tn, eta
+from parameters import eta
 # end: Importing parameters of the model.
 
-# %% Importing the potetnial of the model.
-from potential import V, dV
-# end: Importing the potetnial of the model.
-
-# %% Import critical bubble calculated by CosmoTransitions.
-from bubble import vt, profile, fphi, phi_tw
-# end: Import critical bubble calculated by CosmoTransitions.
-
 # %% Import termodynamically corrected quantities.
-from thermo import gst, a, VT, dVTdphi, eps, p, w, gam, Gf_tau, Gf_Z
+from thermo import dVTdphi, gam, Gf_tau, Gf_Z
 # end: Import termodynamically corrected quantities.
 
 # %% Import rescaled quantities.
-from scaled import GeV, VT_mod, dVTdphi_mod, tauZphi2Tpv_mod
+from scaled import dVTdphi_mod, tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
 # %% Import matrices of lattice definition.
-from lattice import dr, dt, r, N
+from lattice import dt, r, N
 # end: Import matrices of lattice definition.
 
 # %% Import matrices of wave equation integration scheme.
@@ -45,12 +30,6 @@ from matrices_high_order import friction_matrix
 # %% Import matrices of the low order integration scheme.
 from matrices_low_order_dynamically import advection
 # end: Import matrices of the low order integration scheme.
-
-# %% Importing procedure for solving algebraic relation
-#    T, p, v as function of tau, Z, phi.
-from solver import tauZphi2Tpv
-# end: Importing procedure for solving algebraic relation
-#      T, p, v as function of tau, Z, phi.
 
 # %% Importing initial values.
 from initialization import P_off

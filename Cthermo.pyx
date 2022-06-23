@@ -51,6 +51,14 @@ cdef inline double d2VTdT(double field, double temp):
 #      thermally corrected potential of the model.
 
 
+# %% Defining third derivative with respect to the temperature of
+#    thermally corrected potential of the model.
+cdef inline double d3VTdT(double field, double temp):
+    return 0.
+# end: Defining third derivative with respect to the temperature of
+#      thermally corrected potential of the model.
+
+
 # %% Defining energy density of the system.
 cdef inline double eps(double field, double temp):
     return 3 * a * temp**4 + VT(field, temp) - temp * dVTdT(field, temp)
@@ -75,10 +83,22 @@ cdef inline double dpdT(double field, double temp):
 # end: Defining derivative of the pressure with respect to temperature.
 
 
+# %% Defining seond derivative of the pressure with respect to temperature.
+cdef inline double d2pdT(double field, double temp):
+    return 12 * a * temp**2 - d2VTdT(field, temp)
+# end: Defining second derivative of the pressure with respect to temperature.
+
+
 # %% Defining derivative of the energy density with respect to temperature.
 cdef inline double depsdT(double field, double temp):
     return 12 * a * temp**3 - temp * d2VTdT(field, temp)
 # end: Defining derivative of the energy density with respect to temperature.
+
+
+# %% Defining second derivative of the energy density with respect to temperature.
+cdef inline double d2epsdT(double field, double temp):
+    return 36 * a * temp**2 - d2VTdT(field, temp) - temp * d3VTdT(field, temp)
+# end: Defining second derivative of the energy density with respect to temperature.
 
 
 # %% Defining derivative of the barotropic parameter
@@ -86,6 +106,14 @@ cdef inline double depsdT(double field, double temp):
 cdef inline double dwdT(double field, double temp):
     return depsdT(field, temp) + dpdT(field, temp)
 # end: Defining derivative of the barotropic parameter
+#      with respect to temperature.
+
+
+# %% Defining second derivative of the barotropic parameter
+#    with respect to temperature.
+cdef inline double d2wdT(double field, double temp):
+    return d2epsdT(field, temp) + d2pdT(field, temp)
+# end: Defining second derivative of the barotropic parameter
 #      with respect to temperature.
 
 

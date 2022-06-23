@@ -28,6 +28,12 @@ cdef double d2VTdT(double field, double temp)
 # end: Defining second derivative with respect to the temperature of
 #      thermally corrected potential of the model.
 
+# %% Defining third derivative with respect to the temperature of
+#    thermally corrected potential of the model.
+cdef double d3VTdT(double field, double temp)
+# end: Defining third derivative with respect to the temperature of
+#      thermally corrected potential of the model.
+
 
 # %% Defining energy density of the system.
 cdef double eps(double field, double temp)
@@ -49,15 +55,32 @@ cdef double dpdT(double field, double temp)
 # end: Defining derivative of the pressure with respect to temperature.
 
 
+# %% Defining second derivative of the pressure with respect to temperature.
+cdef double d2pdT(double field, double temp)
+# end: Defining second derivative of the pressure with respect to temperature.
+
+
 # %% Defining derivative of the energy density with respect to temperature.
 cdef double depsdT(double field, double temp)
 # end: Defining derivative of the energy density with respect to temperature.
+
+
+# %% Defining second derivative of the energy density with respect to temperature.
+cdef double d2epsdT(double field, double temp)
+# end: Defining second derivative of the energy density with respect to temperature.
 
 
 # %% Defining derivative of the barotropic parameter
 #    with respect to temperature.
 cdef double dwdT(double field, double temp)
 # end: Defining derivative of the barotropic parameter
+#      with respect to temperature.
+
+
+# %% Defining second derivative of the barotropic parameter
+#    with respect to temperature.
+cdef double d2wdT(double field, double temp)
+# end: Defining second derivative of the barotropic parameter
 #      with respect to temperature.
 
 
@@ -75,3 +98,5 @@ cdef double Gf_tau(double phi, double dphidt, double dphidr, double T,
 # %% Defining friction source for Z.
 cdef double Gf_Z(double phi, double dphidt, double dphidr, double T, double v)
 # end: Defining friction source for Z.
+
+cdef double a

@@ -39,6 +39,10 @@ from Cscaled cimport tauZphi2Tpv_mod
 from matrices_high_order import advection_matrix
 # end: Import matrices of the high order integration scheme.
 
+# %% Import matrices of the high order integration scheme.
+from flux_corrected_transport import maxima_matrix
+# end: Import matrices of the high order integration scheme.
+
 # %% Importing characteristic variables.
 from Ccharacteristic_variables cimport T_matrices
 # end: Importing characteristic variables.
@@ -51,6 +55,9 @@ cdef int n_N = N
 
 advection_num_np = np.array(advection_matrix, dtype=float)
 cdef double[:, ::1] advection_num = advection_num_np
+
+maxima_num_np = np.array(maxima_matrix, dtype=float)
+cdef double[::1] maxima_num = maxima_num_np
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
@@ -200,24 +207,18 @@ def limit_fluxes(np.ndarray[double, ndim=2] A1_prim,
         #                     &T, &P, &v)
         #     T_matrices(v, phi_bar[i][j], T, T_mat, T_inv)
         for k in neighbours:
-            if i != 0:
-                tau_prim[k] = tau_L[i + k] * r[i + k]**2
-                tau_old[k] = tau[i + k] * r[i + k]**2
-                Z_prim[k] = Z_L[i + k] * r[i + k]**2
-                Z_old[k] = Z[i + k] * r[i + k]**2
-            else:
-                tau_prim[k] = tau_L[i + k]
-                tau_old[k] = tau[i + k]
-                Z_prim[k] = Z_L[i + k]
-                Z_old[k] = Z[i + k]
+            tau_prim[k] = tau_L[i + k] * maxima_num[i + k]
+            tau_old[k] = tau[i + k] * maxima_num[i + k]
+            Z_prim[k] = Z_L[i + k] * maxima_num[i + k]
+            Z_old[k] = Z[i + k] * maxima_num[i + k]
         Q1_plus = fmax(Q_values_plus(tau_prim, i),
-                       Q_values_plus(tau_old, i)) / r[i]**2
+                       Q_values_plus(tau_old, i)) / maxima_num[i]
         Q1_minus = fmin(Q_values_minus(tau_prim, i),
-                        Q_values_minus(tau_old, i)) / r[i]**2
+                        Q_values_minus(tau_old, i)) / maxima_num[i]
         Q2_plus = fmax(Q_values_plus(Z_prim, i),
-                       Q_values_plus(Z_old, i)) / r[i]**2
+                       Q_values_plus(Z_old, i)) / maxima_num[i]
         Q2_minus = fmin(Q_values_minus(Z_prim, i),
-                        Q_values_minus(Z_old, i)) / r[i]**2
+                        Q_values_minus(Z_old, i)) / maxima_num[i]
         R1_plus[i] = R_values(Q1_plus, P1_plus[i])
         R1_minus[i] = R_values(Q1_minus, P1_minus[i])
         R2_plus[i] = R_values(Q2_plus, P2_plus[i])

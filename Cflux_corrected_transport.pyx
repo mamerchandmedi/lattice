@@ -36,7 +36,7 @@ from Cscaled cimport tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
 # %% Import matrices of the high order integration scheme.
-from matrices_high_order import advection_matrix
+from matrices_high_order import advection_matrix, mass_matrix
 # end: Import matrices of the high order integration scheme.
 
 # %% Importing characteristic variables.
@@ -51,6 +51,9 @@ cdef int n_N = N
 
 advection_num_np = np.array(advection_matrix, dtype=float)
 cdef double[:, ::1] advection_num = advection_num_np
+
+mass_num_np = np.array(mass_matrix, dtype=float)
+cdef double[::1] mass_num = mass_num_np
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
@@ -200,24 +203,18 @@ def limit_fluxes(np.ndarray[double, ndim=2] A1_prim,
         #                     &T, &P, &v)
         #     T_matrices(v, phi_bar[i][j], T, T_mat, T_inv)
         for k in neighbours:
-            if i != 0:
-                tau_prim[k] = tau_L[i + k] * r[i + k]**2
-                tau_old[k] = tau[i + k] * r[i + k]**2
-                Z_prim[k] = Z_L[i + k] * r[i + k]**2
-                Z_old[k] = Z[i + k] * r[i + k]**2
-            else:
-                tau_prim[k] = tau_L[i + k]
-                tau_old[k] = tau[i + k]
-                Z_prim[k] = Z_L[i + k]
-                Z_old[k] = Z[i + k]
+            tau_prim[k] = tau_L[i + k] * mass_num[i + k]
+            tau_old[k] = tau[i + k] * mass_num[i + k]
+            Z_prim[k] = Z_L[i + k] * mass_num[i + k]
+            Z_old[k] = Z[i + k] * mass_num[i + k]
         Q1_plus = fmax(Q_values_plus(tau_prim, i),
-                       Q_values_plus(tau_old, i)) / r[i]**2
+                       Q_values_plus(tau_old, i)) / mass_num[i]
         Q1_minus = fmin(Q_values_minus(tau_prim, i),
-                        Q_values_minus(tau_old, i)) / r[i]**2
+                        Q_values_minus(tau_old, i)) / mass_num[i]
         Q2_plus = fmax(Q_values_plus(Z_prim, i),
-                       Q_values_plus(Z_old, i)) / r[i]**2
+                       Q_values_plus(Z_old, i)) / mass_num[i]
         Q2_minus = fmin(Q_values_minus(Z_prim, i),
-                        Q_values_minus(Z_old, i)) / r[i]**2
+                        Q_values_minus(Z_old, i)) / mass_num[i]
         R1_plus[i] = R_values(Q1_plus, P1_plus[i])
         R1_minus[i] = R_values(Q1_minus, P1_minus[i])
         R2_plus[i] = R_values(Q2_plus, P2_plus[i])
@@ -242,10 +239,6 @@ def limit_fluxes(np.ndarray[double, ndim=2] A1_prim,
                 alpha_limiter2[i][j] = fmin(R2_plus[i], R2_minus[i + j])
             else:
                 alpha_limiter2[i][j] = fmin(R2_minus[i], R2_plus[i + j])
-            alpha_limiter1[0][0] = 1.
-            alpha_limiter1[0][1] = 1.
-            alpha_limiter2[0][0] = 1.
-            alpha_limiter2[0][1] = 1.
             limited_flux_tau[i][j] = A1_prim[i][j] * alpha_limiter1[i][j]
             limited_flux_Z[i][j] = A2_prim[i][j] * alpha_limiter2[i][j]
     # PyMem_Free(T_mat)

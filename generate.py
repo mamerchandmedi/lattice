@@ -48,10 +48,6 @@ from parameters import eta
 from initialization import phi, T, P, tau, Z, v
 # end: Importing initial values.
 
-# %% Import rescaled quantities.
-from scaled import tauZphi2Tpv_mod
-# end: Import rescaled quantities.
-
 # %% Import matrices of the high order integration scheme.
 from matrices_high_order import advection_matrix as ho_advection_matrix
 from matrices_high_order import mass_matrix
@@ -60,11 +56,6 @@ from matrices_high_order import mass_matrix
 # %% Import matrices of the low order integration scheme.
 from matrices_low_order_dynamically import advection
 # end: Import matrices of the low order integration scheme.
-
-# # %% Import matrices of the low order integration scheme.
-from matrices_low_order_dynamically import advection
-# # end: Import matrices of the low order integration scheme.
-
 
 # %% Import package for dynamical compilation of Cython code.
 import pyximport
@@ -87,9 +78,7 @@ from flux_corrected_transport import R_values
 from Cflux_corrected_transport import limit_fluxes
 # end: Importing FCT variable.
 
-# %% Importing characteristic variables.
-from characteristic_variables import T_matrices2
-# end: Importing characteristic variables.
+
 
 
 # Prepare output folder.
@@ -337,6 +326,6 @@ for k in range(nsteps):
 
     # #########SAVING############
     if((k+1) % psteps == 0):
-        np.savez_compressed(path + '/t_'+str(t), r=r, xi=r/t,
+        np.savez_compressed(path + '_t_'+str(t), r=r, xi=r/t,
                             phi=phi_H, phidot=phidot_H, v=v_H, T=T_H,
                             P=P_H, tau=tau_H, Z=Z_H)

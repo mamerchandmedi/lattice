@@ -14,10 +14,6 @@ import numpy as np
 from parameters import Tn
 # end: Importing parameters of the model.
 
-# %% Import critical bubble calculated by CosmoTransitions.
-from bubble import vt, phi_tw
-# end: Import critical bubble calculated by CosmoTransitions.
-
 # %% Import termodynamically corrected quantities.
 from thermo import p, w, gam
 # end: Import termodynamically corrected quantities.
@@ -30,7 +26,15 @@ from scaled import GeV
 from lattice import r
 # end: Import matrices of the integration scheme.
 
-phi0 = phi_tw
+try:
+	# %% Import critical bubble calculated by CosmoTransitions.
+	from bubble import vt, phi_tw
+	# end: Import critical bubble calculated by CosmoTransitions.
+	phi0 = phi_tw
+except:
+	data = np.load("/home/2/mzych/repo_lattice/lattice/critical_bubble.npz")
+	phi0 = data["phi"]
+
 phi = phi0
 N = len(phi)-1
 T = Tn * np.ones(r.size)

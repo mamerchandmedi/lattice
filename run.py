@@ -114,8 +114,8 @@ axs_diag[0, 1].set_ylim(0, 1.)
 axs_diag[1, 1].set_ylim(0, 1.)
 axs_diag[2, 1].set_ylim(0, 1.)
 
-psteps = 100
-nsteps = 10000
+psteps = 10
+nsteps = 100
 
 # initial values
 phidot = np.zeros((N + 1, ), dtype=float)

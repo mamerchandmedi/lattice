@@ -29,10 +29,14 @@ from matrices_high_order import mass_matrix
 from matrices_low_order_dynamically import advection
 # # end: Import matrices of the low order integration scheme.
 
+# %% Turning on html files generation from Cython.
+from Cython.Compiler import Options
+Options.annotate = True
+# end: Turning on html files generation from Cython.
 
 # %% Import package for dynamical compilation of Cython code.
 import pyximport
-pyximport.install(inplace=True, language_level='3')
+pyximport.install(inplace=True, language_level='3', build_in_temp=False)
 # end: Import package for dynamical compilation of Cython code.
 
 # %% Import evolution functions.
@@ -114,8 +118,8 @@ axs_diag[0, 1].set_ylim(0, 1.)
 axs_diag[1, 1].set_ylim(0, 1.)
 axs_diag[2, 1].set_ylim(0, 1.)
 
-psteps = 10
-nsteps = 100
+psteps = 1000
+nsteps = 30000
 
 # initial values
 phidot = np.zeros((N + 1, ), dtype=float)

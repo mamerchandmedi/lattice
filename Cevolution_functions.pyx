@@ -46,6 +46,7 @@ from Cscaled cimport tauZphi2Tpv_mod
 
 # %% Fixing a datatype for numpy arrays.
 DTYPE = np.double
+ctypedef np.double_t DTYPE_t
 # end: Fixing a datatype for numpy arrays.
 
 cdef int n_N = N
@@ -56,35 +57,35 @@ cdef double n_eta = eta
 r_num_np = np.array(r, dtype=float)
 cdef double[::1] r_num = r_num_np
 
-laplacian_num_np = np.array(laplacian_matrix, dtype=float)
+laplacian_num_np = np.array(laplacian_matrix, dtype=DTYPE)
 cdef double[:, ::1] laplacian_num = laplacian_num_np
 
-kinetic_num_np = np.array(kinetic_matrix, dtype=float)
+kinetic_num_np = np.array(kinetic_matrix, dtype=DTYPE)
 cdef double[::1] kinetic_num = kinetic_num_np
 
-gradient_np = np.array(gradient_matrix, dtype=float)
+gradient_np = np.array(gradient_matrix, dtype=DTYPE)
 cdef double[:, ::1] gradient_num = gradient_np
 
-pressure_num_np = np.array(pressure_matrix, dtype=float)
+pressure_num_np = np.array(pressure_matrix, dtype=DTYPE)
 cdef double[:, ::1] pressure_num = pressure_num_np
 
-mass_num_np = np.array(mass_matrix, dtype=float)
+mass_num_np = np.array(mass_matrix, dtype=DTYPE)
 cdef double[::1] mass_num = mass_num_np
 
-sources_num_np = np.array(sources_matrix, dtype=float)
+sources_num_np = np.array(sources_matrix, dtype=DTYPE)
 cdef double[:, ::1] sources_num = sources_num_np
 
-advection_num_np = np.array(advection_matrix, dtype=float)
+advection_num_np = np.array(advection_matrix, dtype=DTYPE)
 cdef double[:, ::1] advection_num = advection_num_np
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.
-def update_Tpv(np.ndarray[double, ndim=1] T,
-               np.ndarray[double, ndim=1] P,
-               np.ndarray[double, ndim=1] v,
-               np.ndarray[double, ndim=1] phi,
-               np.ndarray[double, ndim=1] tau,
-               np.ndarray[double, ndim=1] Z):
+def update_Tpv(np.ndarray[DTYPE_t, ndim=1] T,
+               np.ndarray[DTYPE_t, ndim=1] P,
+               np.ndarray[DTYPE_t, ndim=1] v,
+               np.ndarray[DTYPE_t, ndim=1] phi,
+               np.ndarray[DTYPE_t, ndim=1] tau,
+               np.ndarray[DTYPE_t, ndim=1] Z):
     cdef int j
     for j in range(n_N + 1):
         tauZphi2Tpv_mod(tau[j], Z[j], phi[j], &(T[j]), &(P[j]), &(v[j]))
@@ -92,26 +93,27 @@ def update_Tpv(np.ndarray[double, ndim=1] T,
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.
-def evaluate_fluxes(np.ndarray[double, ndim=1] tau,
-                    np.ndarray[double, ndim=1] Z,
-                    np.ndarray[double, ndim=1] P,
-                    np.ndarray[double, ndim=1] v,
-                    np.ndarray[double, ndim=1] Ftau,
-                    np.ndarray[double, ndim=1] FZ):
+def evaluate_fluxes(np.ndarray[DTYPE_t, ndim=1] tau,
+                    np.ndarray[DTYPE_t, ndim=1] Z,
+                    np.ndarray[DTYPE_t, ndim=1] P,
+                    np.ndarray[DTYPE_t, ndim=1] v,
+                    np.ndarray[DTYPE_t, ndim=1] Ftau,
+                    np.ndarray[DTYPE_t, ndim=1] FZ):
     cdef int j
     for j in range(n_N + 1):
         Ftau[j] = (tau[j] + P[j]) * v[j]
         FZ[j] = Z[j] * v[j]
 
 
+@cython.cdivision(True)
 @cython.boundscheck(False)  # Deactivate bounds checking
-def ho_update_taudot(np.ndarray[double, ndim=1] phi,
-                     np.ndarray[double, ndim=1] phidot,
-                     np.ndarray[double, ndim=1] T,
-                     np.ndarray[double, ndim=1] v,
-                     np.ndarray[double, ndim=1] Ftau,
-                     np.ndarray[double, ndim=1] taudot,
-                     np.ndarray[double, ndim=1] Gtau):
+def ho_update_taudot(np.ndarray[DTYPE_t, ndim=1] phi,
+                     np.ndarray[DTYPE_t, ndim=1] phidot,
+                     np.ndarray[DTYPE_t, ndim=1] T,
+                     np.ndarray[DTYPE_t, ndim=1] v,
+                     np.ndarray[DTYPE_t, ndim=1] Ftau,
+                     np.ndarray[DTYPE_t, ndim=1] taudot,
+                     np.ndarray[DTYPE_t, ndim=1] Gtau):
     Gtau[0] = sources_num[0][0] * Gf_tau(phi[0], phidot[0], 0, T[0], v[0])
     taudot[0] = (advection_num[0][0] * Ftau[0] +
                  advection_num[0][1] * Ftau[1] +
@@ -133,15 +135,17 @@ def ho_update_taudot(np.ndarray[double, ndim=1] phi,
                  advection_num[n_N][0] * Ftau[n_N] +
                  Gtau[n_N]) / mass_num[n_N]
 
+
+@cython.cdivision(True)
 @cython.boundscheck(False)  # Deactivate bounds checking
-def ho_update_Zdot(np.ndarray[double, ndim=1] phi,
-                   np.ndarray[double, ndim=1] phidot,
-                   np.ndarray[double, ndim=1] T,
-                   np.ndarray[double, ndim=1] P,
-                   np.ndarray[double, ndim=1] v,
-                   np.ndarray[double, ndim=1] FZ,
-                   np.ndarray[double, ndim=1] Zdot,
-                   np.ndarray[double, ndim=1] GZ):
+def ho_update_Zdot(np.ndarray[DTYPE_t, ndim=1] phi,
+                   np.ndarray[DTYPE_t, ndim=1] phidot,
+                   np.ndarray[DTYPE_t, ndim=1] T,
+                   np.ndarray[DTYPE_t, ndim=1] P,
+                   np.ndarray[DTYPE_t, ndim=1] v,
+                   np.ndarray[DTYPE_t, ndim=1] FZ,
+                   np.ndarray[DTYPE_t, ndim=1] Zdot,
+                   np.ndarray[DTYPE_t, ndim=1] GZ):
 
     GZ[0] = ((pressure_num[0][0]) * P[0] +
              (pressure_num[0][1]) * P[1] +
@@ -158,7 +162,7 @@ def ho_update_Zdot(np.ndarray[double, ndim=1] phi,
                  (phi[j] - phi[j - 1]) / (r_num[j] - r_num[j - 1]), T[j], v[j]) +
                  sources_num[j][1] * Gf_Z(phi[j], phidot[j],
                  (phi[j + 1] - phi[j])/(r_num[j + 1] - r_num[j]), T[j], v[j]))
-        Zdot[j] = ((advection_num[j][-1] * FZ[j-1] +
+        Zdot[j] = ((advection_num[j][-1] * FZ[j - 1] +
                    advection_num[j][0] * FZ[j] +
                    advection_num[j][1] * FZ[j + 1] +
                    GZ[j]) / mass_num[j])
@@ -169,18 +173,20 @@ def ho_update_Zdot(np.ndarray[double, ndim=1] phi,
              (r_num[n_N] - r_num[n_N - 1]), T[n_N], v[n_N]))
     Zdot[n_N] = ((advection_num[n_N][-1] * FZ[n_N - 1] +
                advection_num[n_N][0] * FZ[n_N] +
-               GZ[N]) / mass_num[n_N])
+               GZ[n_N]) / mass_num[n_N])
 
+
+@cython.cdivision(True)
 @cython.boundscheck(False)  # Deactivate bounds checking
-def lo_update_taudot(np.ndarray[double, ndim=1] phi,
-                     np.ndarray[double, ndim=1] phidot,
-                     np.ndarray[double, ndim=1] T,
-                     np.ndarray[double, ndim=1] v,
-                     np.ndarray[double, ndim=1] Ftau,
-                     np.ndarray[double, ndim=2] lo_advection_matrix,
-                     np.ndarray[double, ndim=1] taudot,
-                     np.ndarray[double, ndim=1] Gtau):
-    Gtau[0] = sources_matrix[0][0] * Gf_tau(phi[0], phidot[0], 0, T[0], v[0])
+def lo_update_taudot(np.ndarray[DTYPE_t, ndim=1] phi,
+                     np.ndarray[DTYPE_t, ndim=1] phidot,
+                     np.ndarray[DTYPE_t, ndim=1] T,
+                     np.ndarray[DTYPE_t, ndim=1] v,
+                     np.ndarray[DTYPE_t, ndim=1] Ftau,
+                     np.ndarray[DTYPE_t, ndim=2] lo_advection_matrix,
+                     np.ndarray[DTYPE_t, ndim=1] taudot,
+                     np.ndarray[DTYPE_t, ndim=1] Gtau):
+    Gtau[0] = sources_num[0][0] * Gf_tau(phi[0], phidot[0], 0, T[0], v[0])
     taudot[0] = (lo_advection_matrix[0][0] * Ftau[0] +
                  lo_advection_matrix[0][1] * Ftau[1] +
                  Gtau[0]) / mass_num[0]
@@ -193,24 +199,26 @@ def lo_update_taudot(np.ndarray[double, ndim=1] phi,
         taudot[j] = (lo_advection_matrix[j][-1] * Ftau[j - 1] +
                      lo_advection_matrix[j][0] * Ftau[j] +
                      lo_advection_matrix[j][1] * Ftau[j + 1] +
-                     Gtau[j]) / mass_matrix[j]
+                     Gtau[j]) / mass_num[j]
     Gtau[n_N] = (sources_num[n_N][0] *
                  Gf_tau(phi[n_N], 0, (phi[n_N] - phi[n_N - 1]) /
                (r_num[n_N] - r_num[n_N-1]), T[n_N], v[n_N]))
     taudot[n_N] = (lo_advection_matrix[n_N][-1] * Ftau[n_N - 1] +
                  lo_advection_matrix[n_N][0] * Ftau[n_N] +
-                 Gtau[n_N]) / mass_matrix[n_N]
+                 Gtau[n_N]) / mass_num[n_N]
 
+
+@cython.cdivision(True)
 @cython.boundscheck(False)  # Deactivate bounds checking
-def lo_update_Zdot(np.ndarray[double, ndim=1] phi,
-                   np.ndarray[double, ndim=1] phidot,
-                   np.ndarray[double, ndim=1] T,
-                   np.ndarray[double, ndim=1] P,
-                   np.ndarray[double, ndim=1] v,
-                   np.ndarray[double, ndim=1] FZ,
-                   np.ndarray[double, ndim=2] lo_advection_matrix,
-                   np.ndarray[double, ndim=1] Zdot,
-                   np.ndarray[double, ndim=1] GZ):
+def lo_update_Zdot(np.ndarray[DTYPE_t, ndim=1] phi,
+                   np.ndarray[DTYPE_t, ndim=1] phidot,
+                   np.ndarray[DTYPE_t, ndim=1] T,
+                   np.ndarray[DTYPE_t, ndim=1] P,
+                   np.ndarray[DTYPE_t, ndim=1] v,
+                   np.ndarray[DTYPE_t, ndim=1] FZ,
+                   np.ndarray[DTYPE_t, ndim=2] lo_advection_matrix,
+                   np.ndarray[DTYPE_t, ndim=1] Zdot,
+                   np.ndarray[DTYPE_t, ndim=1] GZ):
     GZ[0] = ((pressure_num[0][0]) * P[0] +
              (pressure_num[0][1]) * P[1] +
              sources_num[0][0] * Gf_Z(phi[0], phidot[0], 0, T[0], v[0]))
@@ -233,16 +241,18 @@ def lo_update_Zdot(np.ndarray[double, ndim=1] phi,
     GZ[n_N] = ((pressure_num[n_N][-1]) * P[n_N - 1] +
              (pressure_num[n_N][0]) * P[n_N] +
              sources_num[n_N][0] * Gf_Z(phi[n_N], 0, (phi[n_N] - phi[n_N - 1]) /
-             (r_num[n_N] - r[n_N - 1]), T[n_N], v[n_N]))
+             (r_num[n_N] - r_num[n_N - 1]), T[n_N], v[n_N]))
     Zdot[n_N] = (lo_advection_matrix[n_N][-1] * FZ[n_N - 1] +
                lo_advection_matrix[n_N][0] * FZ[n_N] +
                GZ[n_N]) / mass_num[n_N]
 
+
+@cython.cdivision(True)
 @cython.boundscheck(False)  # Deactivate bounds checking
-def update_phidot(np.ndarray[double, ndim=1] phi,
-                  np.ndarray[double, ndim=1] phidot,
-                  np.ndarray[double, ndim=1] v,
-                  np.ndarray[double, ndim=1] T):
+def update_phidot(np.ndarray[DTYPE_t, ndim=1] phi,
+                  np.ndarray[DTYPE_t, ndim=1] phidot,
+                  np.ndarray[DTYPE_t, ndim=1] v,
+                  np.ndarray[DTYPE_t, ndim=1] T):
     phidot[1] = ((1 + 0.5 * n_dt * n_eta * kinetic_num[1]**(-1) *
                   ((r_num[1]**3 - r_num[0]**3) * gam(v[0]) +
                    0.25 * (3 * r_num[1]**2 + 2 * r_num[1] * r_num[2] + r_num[2]**2) *

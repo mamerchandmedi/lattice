@@ -49,49 +49,52 @@ from Ccharacteristic_variables cimport T_matrices
 
 # %% Fixing a datatype for numpy arrays.
 DTYPE = np.double
+ctypedef np.double_t DTYPE_t
 # end: Fixing a datatype for numpy arrays.
 
 cdef int n_N = N
 
-advection_num_np = np.array(advection_matrix, dtype=float)
+advection_num_np = np.array(advection_matrix, dtype=DTYPE)
 cdef double[:, ::1] advection_num = advection_num_np
 
-maxima_num_np = np.array(maxima_matrix, dtype=float)
+maxima_num_np = np.array(maxima_matrix, dtype=DTYPE)
 cdef double[::1] maxima_num = maxima_num_np
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
-def antidiffusive_matrix(np.ndarray[double, ndim=2] KL,
-                         np.ndarray[double, ndim=1] FH,
-                         np.ndarray[double, ndim=1] FL,
+@cython.wraparound(False)   # Deactivate negative indexing.
+def antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] KL,
+                         np.ndarray[DTYPE_t, ndim=1] FH,
+                         np.ndarray[DTYPE_t, ndim=1] FL,
                          double dt,
-                         np.ndarray[double, ndim=2] A):
-    A[0][-1] = 0
+                         np.ndarray[DTYPE_t, ndim=2] A):
+    A[0][2] = 0  # index -1 = 2
     A[0][0] = -dt * (advection_num[0][0] * FH[0] - KL[0][0] * FL[0])
     A[0][1] = -dt * (advection_num[0][1] * FH[1] - KL[0][1] * FL[1])
     cdef int j
     for j in range(1, n_N):
-        A[j][-1] = -dt * (advection_num[j][-1] * FH[j - 1] -
-                         KL[j][-1] * FL[j - 1])
+        A[j][2] = -dt * (advection_num[j][2] * FH[j - 1] -
+                         KL[j][2] * FL[j - 1]) # index -1 = 2
         A[j][0] = -dt * (advection_num[j][0] * FH[j] -
                          KL[j][0] * FL[j])
         A[j][1] = -dt * (advection_num[j][1] * FH[j + 1]-
                         KL[j][1] * FL[j + 1])
-    A[n_N][-1] =  -dt * (advection_num[n_N][-1] * FH[n_N - 1] -
-                      KL[n_N][-1] * FL[n_N - 1])
+    A[n_N][2] =  -dt * (advection_num[n_N][2] * FH[n_N - 1] -
+                      KL[n_N][2] * FL[n_N - 1]) # index -1 = 2
     A[n_N][0] = -dt * (advection_num[n_N][0] * FH[n_N] -
                       KL[n_N][0] * FL[n_N])
     A[n_N][1] = 0
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
-def trans_antidiffusive_matrix(np.ndarray[double, ndim=2] A1,
-                               np.ndarray[double, ndim=2] A2,
-                               np.ndarray[double, ndim=2] tau,
-                               np.ndarray[double, ndim=2] Z,
-                               np.ndarray[double, ndim=2] phi,
-                               np.ndarray[double, ndim=2] AT1,
-                               np.ndarray[double, ndim=2] AT2):
+@cython.wraparound(False)   # Deactivate negative indexing.
+def trans_antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] A1,
+                               np.ndarray[DTYPE_t, ndim=2] A2,
+                               np.ndarray[DTYPE_t, ndim=2] tau,
+                               np.ndarray[DTYPE_t, ndim=2] Z,
+                               np.ndarray[DTYPE_t, ndim=2] phi,
+                               np.ndarray[DTYPE_t, ndim=2] AT1,
+                               np.ndarray[DTYPE_t, ndim=2] AT2):
     cdef double T
     cdef double P
     cdef double v
@@ -113,10 +116,10 @@ def trans_antidiffusive_matrix(np.ndarray[double, ndim=2] A1,
             T_matrices(v, phi[i][j], T, T_mat, T_inv)
             AT1[i][j] = T_inv[0] * A1[i][j] + T_inv[1] * A2[i][j]
             AT2[i][j] = T_inv[2] * A1[i][j] + T_inv[3] * A2[i][j]
-    tauZphi2Tpv_mod(tau[N][-1], Z[N][-1], phi[N][-1], &T, &P, &v)
-    T_matrices(v, phi[N][-1], T, T_mat, T_inv)
-    AT1[N][-1] = T_inv[0] * A1[N][-1] + T_inv[1] * A2[N][-1]
-    AT2[N][-1] = T_inv[2] * A1[N][-1] + T_inv[3] * A2[N][-1]
+    tauZphi2Tpv_mod(tau[N][2], Z[N][2], phi[N][2], &T, &P, &v)  # index -1 = 2
+    T_matrices(v, phi[N][2], T, T_mat, T_inv)  # index -1 = 2
+    AT1[N][2] = T_inv[0] * A1[N][2] + T_inv[1] * A2[N][2]  # index -1 = 2
+    AT2[N][2] = T_inv[2] * A1[N][2] + T_inv[3] * A2[N][2]  # index -1 = 2
     tauZphi2Tpv_mod(tau[N][0], Z[N][0], phi[N][0], &T, &P, &v)
     T_matrices(v, phi[N][0], T, T_mat, T_inv)
     AT1[N][0] = T_inv[0] * A1[N][0] + T_inv[1] * A2[N][0]
@@ -161,22 +164,24 @@ cdef array.array Z_old_array = array.array('d', [0, 0, 0])
 cdef double[:] tau_old = tau_old_array
 cdef double[:] Z_old = Z_old_array
 
+
+@cython.cdivision(True)
 @cython.boundscheck(False)  # Deactivate bounds checking
-def limit_fluxes(np.ndarray[double, ndim=2] A1_prim,
-                 np.ndarray[double, ndim=2] A2_prim,
-                 np.ndarray[double, ndim=1] tau,
-                 np.ndarray[double, ndim=1] Z,
-                 np.ndarray[double, ndim=1] phi,
-                 np.ndarray[double, ndim=1] tau_L,
-                 np.ndarray[double, ndim=1] Z_L,
-                 np.ndarray[double, ndim=1] phi_L,
+def limit_fluxes(np.ndarray[DTYPE_t, ndim=2] A1_prim,
+                 np.ndarray[DTYPE_t, ndim=2] A2_prim,
+                 np.ndarray[DTYPE_t, ndim=1] tau,
+                 np.ndarray[DTYPE_t, ndim=1] Z,
+                 np.ndarray[DTYPE_t, ndim=1] phi,
+                 np.ndarray[DTYPE_t, ndim=1] tau_L,
+                 np.ndarray[DTYPE_t, ndim=1] Z_L,
+                 np.ndarray[DTYPE_t, ndim=1] phi_L,
                  # np.ndarray[double, ndim=2] tau_bar,
                  # np.ndarray[double, ndim=2] Z_bar,
                  # np.ndarray[double, ndim=2] phi_bar,
-                 np.ndarray[double, ndim=2] alpha_limiter1,
-                 np.ndarray[double, ndim=2] alpha_limiter2,
-                 np.ndarray[double, ndim=2] limited_flux_tau,
-                 np.ndarray[double, ndim=2] limited_flux_Z):
+                 np.ndarray[DTYPE_t, ndim=2] alpha_limiter1,
+                 np.ndarray[DTYPE_t, ndim=2] alpha_limiter2,
+                 np.ndarray[DTYPE_t, ndim=2] limited_flux_tau,
+                 np.ndarray[DTYPE_t, ndim=2] limited_flux_Z):
     P_vectors(A1_prim, P1_plus, P1_minus)
     P_vectors(A2_prim, P2_plus, P2_minus)
 
@@ -252,38 +257,45 @@ def limit_fluxes(np.ndarray[double, ndim=2] A1_prim,
     # PyMem_Free(T_mat)
     # PyMem_Free(T_inv)
 
+
 @cython.boundscheck(False)  # Deactivate bounds checking
-cdef inline void P_vectors(np.ndarray[double, ndim=2] A,
+@cython.wraparound(False)   # Deactivate negative indexing.
+cdef inline void P_vectors(np.ndarray[DTYPE_t, ndim=2] A,
                            double[:] P_plus,
                            double[:] P_minus):
     P_plus[0] = fmax(0, A[0][1])
     P_minus[0] = fmin(0, A[0][1])
     cdef int j
     for j in range(1, n_N):
-        P_plus[j] = fmax(0, A[j][-1]) + fmax(0, A[j][1])
-        P_minus[j] = fmin(0, A[j][-1]) + fmin(0, A[j][1])
-    P_plus[n_N] = fmax(0, A[n_N][-1])
-    P_minus[n_N] = fmin(0, A[n_N][-1])
+        P_plus[j] = fmax(0, A[j][2]) + fmax(0, A[j][1]) # index -1 = 2
+        P_minus[j] = fmin(0, A[j][2]) + fmin(0, A[j][1]) # index -1 = 2
+    P_plus[n_N] = fmax(0, A[n_N][2]) # index -1 = 2
+    P_minus[n_N] = fmin(0, A[n_N][2]) # index -1 = 2
 
 
+@cython.boundscheck(False)  # Deactivate bounds checking
+@cython.wraparound(False)   # Deactivate negative indexing.
 cdef inline double Q_values_plus(double[:] U, int i):
     if i == 0:
         return fmax(U[0], U[1]) - U[0]
     elif i == n_N:
-        return fmax(U[-1], U[0]) - U[0]
+        return fmax(U[2], U[0]) - U[0] # index -1 = 2
     else:
-        return fmax(fmax(U[-1], U[0]), U[1]) - U[0]
+        return fmax(fmax(U[2], U[0]), U[1]) - U[0] # index -1 = 2
 
 
+@cython.boundscheck(False)  # Deactivate bounds checking
+@cython.wraparound(False)   # Deactivate negative indexing.
 cdef inline double Q_values_minus(double[:] U, int i):
     if i == 0:
         return fmin(U[0], U[1]) - U[0]
     elif i == n_N:
-        return fmin(U[-1], U[0]) - U[0]
+        return fmin(U[2], U[0]) - U[0] # index -1 = 2
     else:
-        return fmin(fmin(U[-1], U[0]), U[1]) - U[0]
+        return fmin(fmin(U[2], U[0]), U[1]) - U[0] # index -1 = 2
 
 
+@cython.cdivision(True)
 cdef inline double R_values(double Q, double P):
     cdef double R
     if P != 0:

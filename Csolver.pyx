@@ -3,10 +3,9 @@ Created on Tue Apr 26 12:37:31 2022
 
 @author: Tomasz Krajewski
 """
-
-# %% Importing procedure for solving nonlinear equations.
-from scipy.optimize import fsolve
-# end: Importing procedure for solving nonlinear equations.
+# %% Importing Cython for decorators.
+cimport cython
+# end: Importing Cython for decorators.
 
 # %% Importing used function.
 from libc.math cimport fabs, sqrt
@@ -21,10 +20,13 @@ cdef inline double solve_func(double x, double t, double f, double z):
     return t + p(f, x) - 0.5 * (w(f, x) + sqrt(w(f, x) * w(f, x) + 4 * z * z))
 
 
+@cython.cdivision(True)
 cdef inline double solve_func_prime(double x, double t, double f, double z):
     return dpdT(f, x) - 0.5 * (dwdT(f, x) + (w(f, x) * dwdT(f, x)) /
                                sqrt(w(f, x) * w(f, x) + 4 * z * z))
 
+
+@cython.cdivision(True)
 cdef inline double solve_func_prime2(double x, double t, double f, double z):
     return d2pdT(f, x) - 0.5 * (d2wdT(f, x) +
                                 ((w(f, x) * d2wdT(f, x) + dwdT(f, x)**2) *
@@ -35,6 +37,7 @@ cdef inline double solve_func_prime2(double x, double t, double f, double z):
                                (w(f, x) * w(f, x) + 4 * z * z))
 
 
+@cython.cdivision(True)
 cdef void tauZphi2Tpv_new(double tau, double Z, double phi,
                           double* T, double* P, double* v):
     cdef int maxiter = 100

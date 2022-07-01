@@ -1,3 +1,7 @@
+# %% Importing Cython for decorators.
+cimport cython
+# end: Importing Cython for decorators.
+
 # %% Import numpy.
 import numpy as np
 cimport numpy as np
@@ -41,21 +45,27 @@ cdef inline double determinant(double v, double field, double T):
         dtaudT(v, field, T) * dZdv(v, field, T)
 
 
+@cython.cdivision(True)
 cdef inline double dvdtau(double v, double field, double T):
     return dZdT(v, field, T) / determinant(v, field, T)
 
 
+@cython.cdivision(True)
 cdef inline double dvdZ(double v, double field, double T):
     return -dtaudT(v, field, T) / determinant(v, field, T)
 
 
+@cython.cdivision(True)
 cdef inline double dTdtau(double v, double field, double T):
     return -dZdv(v, field, T) / determinant(v, field, T)
 
 
+@cython.cdivision(True)
 cdef inline double dTdZ(double v, double field, double T):
     return dtaudv(v, field, T) / determinant(v, field, T)
 
+
+@cython.cdivision(True)
 cdef void T_matrices(double v,
                      double field,
                      double T,

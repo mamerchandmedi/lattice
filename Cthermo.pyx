@@ -13,8 +13,18 @@ from libc.math cimport pi
 # end: Importing mathematical constants.
 
 # %% Importing parameters of the model.
-from parameters import T0, alpha, gamma, lam, eta
+from parameters import T0 as pyT0
+from parameters import alpha as pyalpha
+from parameters import gamma as pygamma
+from parameters import lam as pylam
+from parameters import eta as pyeta
 # end: Importing parameters of the model.
+
+cdef double T0 = pyT0
+cdef double alpha = pyalpha
+cdef double gamma = pygamma
+cdef double lam = pylam
+cdef double eta = pyeta
 
 cdef double gst = 34.25
 cdef double a = gst * pi**2 / 90
@@ -22,7 +32,7 @@ cdef double a = gst * pi**2 / 90
 # %% Defining thermally corrected potential of the model.
 cdef inline double VT(double field, double temp):
     return 0.5 * gamma * (temp**2 - T0**2) * field**2 - \
-        (1 / 3) * alpha * temp * field**3 + 0.25 * lam * field**4
+        (1. / 3.) * alpha * temp * field**3 + 0.25 * lam * field**4
 # end: Defining thermally corrected potential of the model.
 
 
@@ -118,6 +128,7 @@ cdef inline double d2wdT(double field, double temp):
 
 
 # %% Defining relativistic gamma factor.
+@cython.cdivision(True)
 cdef inline double gam(double vel):
     return 1 / (1 - vel**2)**0.5
 # end: Defining relativistic gamma factor.

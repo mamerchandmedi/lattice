@@ -3,6 +3,9 @@ Created on Tue Apr 26 10:49:33 2022
 
 @author: Tomasz Krajewski
 """
+# %% Importing Cython for decorators.
+cimport cython
+# end: Importing Cython for decorators.
 
 # %% Import termodynamically corrected quantities.
 from Cthermo cimport VT, dVTdphi
@@ -20,17 +23,20 @@ cdef double GeV = 1.  # Value of GeV in terms of simulation units.
 
 
 # %% Defining the rescaled potential.
+@cython.cdivision(True)
 cdef double VT_mod(double field, double temp):
     return VT(field / GeV, temp / GeV) * GeV**4
 # end: Defining the rescaled potential.
 
 
 # %% Defining rescaled derivative of the potential.
+@cython.cdivision(True)
 cdef double dVTdphi_mod(double field, double temp):
     return dVTdphi(field / GeV, temp / GeV) * GeV**3
 # end: Defining rescaled derivative of the potential.
 
 
+@cython.cdivision(True)
 cdef void tauZphi2Tpv_mod(double tau, double Z, double phi,
                           double* T, double* P, double* v):
     cdef double newT = T[0] / GeV

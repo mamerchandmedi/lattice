@@ -68,22 +68,29 @@ def antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] KL,
                          np.ndarray[DTYPE_t, ndim=1] FL,
                          double dt,
                          np.ndarray[DTYPE_t, ndim=2] A):
-    A[0][2] = 0  # index -1 = 2
-    A[0][0] = -dt * (advection_num[0][0] * FH[0] - KL[0][0] * FL[0])
-    A[0][1] = -dt * (advection_num[0][1] * FH[1] - KL[0][1] * FL[1])
+    A[0][2] = 0.  # index -1 = 2
+    A[0][0] = 0.
+    A[0][1] = -dt * (advection_num[0][1] * FH[1] -
+                     advection_num[1][2] * FH[0] - # index -1 = 2
+                     KL[0][1] * FL[1] +
+                     KL[1][2] * FL[0]) # index -1 = 2
     cdef int j
     for j in range(1, n_N):
-        A[j][2] = -dt * (advection_num[j][2] * FH[j - 1] -
-                         KL[j][2] * FL[j - 1]) # index -1 = 2
-        A[j][0] = -dt * (advection_num[j][0] * FH[j] -
-                         KL[j][0] * FL[j])
-        A[j][1] = -dt * (advection_num[j][1] * FH[j + 1]-
-                        KL[j][1] * FL[j + 1])
-    A[n_N][2] =  -dt * (advection_num[n_N][2] * FH[n_N - 1] -
-                      KL[n_N][2] * FL[n_N - 1]) # index -1 = 2
-    A[n_N][0] = -dt * (advection_num[n_N][0] * FH[n_N] -
-                      KL[n_N][0] * FL[n_N])
-    A[n_N][1] = 0
+        A[j][2] = -dt * (advection_num[j][2] * FH[j - 1] - # index -1 = 2
+                         advection_num[j - 1][1] * FH[j] -
+                         KL[j][2] * FL[j - 1] + # index -1 = 2
+                         KL[j - 1][1] * FL[j])
+        A[j][0] = 0.
+        A[j][1] = -dt * (advection_num[j][1] * FH[j + 1] -
+                         advection_num[j + 1][2] * FH[j] -  # index -1 = 2
+                        KL[j][1] * FL[j + 1] +
+                        KL[j + 1][2] * FL[j]) # index -1 = 2
+    A[n_N][2] =  -dt * (advection_num[n_N][2] * FH[n_N - 1] -  # index -1 = 2
+                        advection_num[n_N - 1][1] * FH[n_N] -
+                      KL[n_N][2] * FL[n_N - 1] + # index -1 = 2
+                      KL[n_N - 1][1] * FL[n_N])
+    A[n_N][0] = 0.
+    A[n_N][1] = 0.
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking

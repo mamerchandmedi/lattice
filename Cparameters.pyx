@@ -16,4 +16,4 @@ cdef double gamma = (L + 6. * sigma / lc)/(6. * sigma * lc * Tc**2)
 cdef double lam = 1. / (3. * sigma * lc**3)
 cdef double Tn = 86.
 # -----------specify friction here---------------
-cdef double eta = 0.08 * Tc
+cdef double eta = 0 * Tc

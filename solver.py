@@ -35,7 +35,7 @@ def tauZphi2Tpv_old(tau, Z, phi, T, P, v):
 
 def tauZphi2Tpv_new(tau, Z, phi, T, P, v):
     sol = newton(lambda x: solve_func(x, tau, phi, Z), T,
-                 fprime=lambda x: solve_func_prime(x, tau, phi, Z, v))
+                 fprime=lambda x: solve_func_prime(x, tau, phi, Z, v), tol=10**(-10))
     T = sol
     P = p(phi, T)
     v = Z / (tau + P)

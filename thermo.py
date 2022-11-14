@@ -14,6 +14,8 @@ from numpy import pi
 from parameters import T0, alpha, gamma, lam, eta
 # end: Importing parameters of the model.
 
+import matplotlib.pyplot as plt
+import numpy as np
 
 #gst = 106.75
 gst = 34.25
@@ -49,6 +51,13 @@ def dVTdT(field, temp):
 #    thermally corrected potential of the model.
 def d2VTdT(field, temp):
     return gamma * field**2
+# end: Defining second derivative with respect to the temperature of
+#      thermally corrected potential of the model.
+
+# %% Defining second mixed derivative of
+#    thermally corrected potential of the model.
+def d2VTdphidT(field, temp):
+    return 2 * gamma * field - alpha * field**2
 # end: Defining second derivative with respect to the temperature of
 #      thermally corrected potential of the model.
 
@@ -107,3 +116,23 @@ def Gf_tau(phi, dpdt, dpdr, T, v):
 def Gf_Z(phi, dpdt, dpdr, T, v):
     G = - dVTdphi(phi, T) * dpdr - eta * gam(v) * (dpdt + v * dpdr) * dpdr
     return G
+    
+##########################################
+
+def dvdtau(field, temp, v, p):
+    return (1 - v**2)**2 / (2 * (eps(field, temp) + p) * v)
+   
+def dpdtau(v):
+    return (1 - v**2) / (v**2)
+    
+def dTdtau(field, temp, v):
+    return (gam(v)**2 * (depsdT(field, temp) + dpdT(field, temp)))**(-1)
+
+def dFtaudtau(v):
+    return 1 + dpdtau(v)
+    
+def dGtaudtau(field, temp, v, p, dfdt, dfdr):
+    return (d2VTdphidT(field, temp) * dTdtau(field, temp, v) * dfdt 
+           + eta * 2*v/(1 - v**2)**2 * dvdtau(field, temp, v, p) * (dfdt + v * dfdr) * dfdt
+           + eta * gam(v) * (dfdt + dvdtau(field, temp, v, p) * dfdr) * dfdt)
+

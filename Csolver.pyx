@@ -41,8 +41,8 @@ cdef inline double solve_func_prime2(double x, double t, double f, double z):
 cdef void tauZphi2Tpv_new(double tau, double Z, double phi,
                           double* T, double* P, double* v):
     cdef int maxiter = 100
-    cdef double tol=0.
-    cdef double rtol=1.11e-16
+    cdef double tol=1.11e-16
+    cdef double rtol=1.48e-8
 
     cdef double x = T[0]
     cdef double x0 = T[0]

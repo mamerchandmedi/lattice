@@ -7,4 +7,5 @@ cd "$PBS_O_WORKDIR"
 
 echo "Running script for" $FILE"."
 cd $(dirname "$FILE")
-$BASEDIR/generator.py $(basedir "$FILE")
+~/repo_lattice/lattice_cython/sym_dr_010/generate.py $FILE
+

@@ -32,11 +32,11 @@ try:
 	# end: Import critical bubble calculated by CosmoTransitions.
 	phi0 = phi_tw
 except:
-	data = np.load("/home/2/mzych/repo_lattice/lattice_cython/critical_bubble.npz")
+	data = np.load("/home/2/mzych/repo_lattice/lattice_cython/sym_dr_010/critical_bubble.npz")
 	phi0 = data["phi"]
 
 phi = phi0
-N = len(phi)-1
+#N = len(phi)-1
 T = Tn * np.ones(r.size)
 v = 0. * np.ones(r.size)
 P = p(phi0, T)
@@ -46,9 +46,9 @@ tau = w(phi0, T) * gam(v)**2 - P
 Z = w(phi0, T) * gam(v)**2 * v
 P_off = 0 * np.ones(r.size)
 
-phi *= GeV
-T *= GeV
-P *= GeV**4
-tau *= GeV**4
-Z *= GeV**4
-P_off *= GeV**4
+#phi *= GeV
+#T *= GeV
+#P *= GeV**4
+#tau *= GeV**4
+#Z *= GeV**4
+#P_off *= GeV**4

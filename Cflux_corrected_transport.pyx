@@ -28,7 +28,7 @@ cimport numpy as np
 # end: Import numpy.
 
 # %% Import rescaled quantities.
-from lattice import N, r
+from lattice import N, r, dr, dt
 # end: Import rescaled quantities.
 
 # %% Import rescaled quantities.
@@ -92,7 +92,19 @@ def antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] KL,
     A[n_N][0] = 0.
     A[n_N][1] = 0.
 
-
+@cython.boundscheck(False)  # Deactivate bounds checking
+def prelimiting(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] u):
+    if A[0][1] * (u[0] - u[1]) < 0.:
+        A[0][1] = 0.
+    cdef int j
+    for j in range(1, n_N):
+        if A[j][-1] * (u[j] - u[j - 1]) < 0.:
+            A[j][-1] = 0.
+        if A[j][1] * (u[j] - u[j + 1]) < 0.:
+            A[j][1] = 0.
+    if A[n_N][-1] * (u[n_N] - u[n_N-1]) < 0.:
+        A[n_N][-1] = 0.
+        
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.
 def trans_antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] A1,
@@ -161,13 +173,13 @@ cdef double[:] R1_minus = R1_minus_array
 cdef double[:] R2_plus = R2_plus_array
 cdef double[:] R2_minus = R2_minus_array
 
-cdef array.array tau_prim_array = array.array('d', [0, 0, 0])
-cdef array.array Z_prim_array = array.array('d', [0, 0, 0])
+cdef array.array tau_prim_array = array.array('d', [0, 0, 0, 0, 0])
+cdef array.array Z_prim_array = array.array('d', [0, 0, 0, 0, 0])
 cdef double[:] tau_prim = tau_prim_array
 cdef double[:] Z_prim = Z_prim_array
 
-cdef array.array tau_old_array = array.array('d', [0, 0, 0])
-cdef array.array Z_old_array = array.array('d', [0, 0, 0])
+cdef array.array tau_old_array = array.array('d', [0, 0, 0, 0, 0])
+cdef array.array Z_old_array = array.array('d', [0, 0, 0, 0, 0])
 cdef double[:] tau_old = tau_old_array
 cdef double[:] Z_old = Z_old_array
 
@@ -179,6 +191,7 @@ def limit_fluxes(np.ndarray[DTYPE_t, ndim=2] A1_prim,
                  np.ndarray[DTYPE_t, ndim=1] tau,
                  np.ndarray[DTYPE_t, ndim=1] Z,
                  np.ndarray[DTYPE_t, ndim=1] phi,
+                 np.ndarray[DTYPE_t, ndim=1] v,
                  np.ndarray[DTYPE_t, ndim=1] tau_L,
                  np.ndarray[DTYPE_t, ndim=1] Z_L,
                  np.ndarray[DTYPE_t, ndim=1] phi_L,
@@ -199,12 +212,12 @@ def limit_fluxes(np.ndarray[DTYPE_t, ndim=2] A1_prim,
     cdef int k
     cdef double T
     cdef double P
-    cdef double v
+    #cdef double v
     cdef double Q1_plus
     cdef double Q1_minus
     cdef double Q2_plus
     cdef double Q2_minus
-    for i in range(n_N + 1):
+    for i in range(1, n_N + 1):
         if i == 0:
             indexes = [0, 1]
             neighbours = [0, 1]
@@ -219,18 +232,18 @@ def limit_fluxes(np.ndarray[DTYPE_t, ndim=2] A1_prim,
         #                     &T, &P, &v)
         #     T_matrices(v, phi_bar[i][j], T, T_mat, T_inv)
         for k in neighbours:
-            tau_prim[k] = tau_L[i + k] * maxima_num[i + k]
-            tau_old[k] = tau[i + k] * maxima_num[i + k]
-            Z_prim[k] = Z_L[i + k] * maxima_num[i + k]
-            Z_old[k] = Z[i + k] * maxima_num[i + k]
-        Q1_plus = fmax(Q_values_plus(tau_prim, i),
-                       Q_values_plus(tau_old, i)) / maxima_num[i]
-        Q1_minus = fmin(Q_values_minus(tau_prim, i),
-                        Q_values_minus(tau_old, i)) / maxima_num[i]
-        Q2_plus = fmax(Q_values_plus(Z_prim, i),
-                       Q_values_plus(Z_old, i)) / maxima_num[i]
-        Q2_minus = fmin(Q_values_minus(Z_prim, i),
-                        Q_values_minus(Z_old, i)) / maxima_num[i]
+            tau_prim[k] = tau_L[i + k] * r[i + k]**2
+            tau_old[k] = tau[i + k] * r[i + k]**2
+            Z_prim[k] = Z_L[i + k] * r[i + k]**2
+            Z_old[k] = Z[i + k] *  r[i + k]**2
+        Q1_plus = dr * Q_values_plus(tau_old, tau_prim, i, v[i])/ r[i]**2
+                       #Q_values_plus(tau_old, i)) / maxima_num[i]
+        Q1_minus = dr * Q_values_minus(tau_old, tau_prim, i, v[i]) / r[i]**2
+                        #Q_values_minus(tau_old, i)) / maxima_num[i]
+        Q2_plus = dr * Q_values_plus(tau_old, tau_prim, i, v[i]) / r[i]**2
+                       #Q_values_plus(Z_old, i)) / maxima_num[i]
+        Q2_minus = dr * Q_values_minus(tau_old, tau_prim, i, v[i]) / r[i]**2
+                        #Q_values_minus(Z_old, i)) / maxima_num[i]
         R1_plus[i] = R_values(Q1_plus, P1_plus[i])
         R1_minus[i] = R_values(Q1_minus, P1_minus[i])
         R2_plus[i] = R_values(Q2_plus, P2_plus[i])
@@ -259,6 +272,10 @@ def limit_fluxes(np.ndarray[DTYPE_t, ndim=2] A1_prim,
             alpha_limiter1[0][1] = 1.
             alpha_limiter2[0][0] = 1.
             alpha_limiter2[0][1] = 1.
+            alpha_limiter1[N][0] = 1.
+            alpha_limiter1[N][-1] = 1.
+            alpha_limiter2[N][0] = 1.
+            alpha_limiter2[N][-1] = 1.
             limited_flux_tau[i][j] = A1_prim[i][j] * alpha_limiter1[i][j]
             limited_flux_Z[i][j] = A2_prim[i][j] * alpha_limiter2[i][j]
     # PyMem_Free(T_mat)
@@ -270,42 +287,94 @@ def limit_fluxes(np.ndarray[DTYPE_t, ndim=2] A1_prim,
 cdef inline void P_vectors(np.ndarray[DTYPE_t, ndim=2] A,
                            double[:] P_plus,
                            double[:] P_minus):
-    P_plus[0] = fmax(0, A[0][1])
+    P_plus[0] =  fmax(0, A[0][1])
     P_minus[0] = fmin(0, A[0][1])
     cdef int j
     for j in range(1, n_N):
         P_plus[j] = fmax(0, A[j][2]) + fmax(0, A[j][1]) # index -1 = 2
-        P_minus[j] = fmin(0, A[j][2]) + fmin(0, A[j][1]) # index -1 = 2
+        P_minus[j] = fmin(0, A[j][1]) + fmin(0, A[j][2]) # index -1 = 2
     P_plus[n_N] = fmax(0, A[n_N][2]) # index -1 = 2
     P_minus[n_N] = fmin(0, A[n_N][2]) # index -1 = 2
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
-@cython.wraparound(False)   # Deactivate negative indexing.
-cdef inline double Q_values_plus(double[:] U, int i):
+#@cython.wraparound(False)   # Deactivate negative indexing.
+cdef inline double Q_values_plus(double[:] U, double[:] U_d, int i, double v):
+
     if i == 0:
-        return fmax(U[0], U[1]) - U[0]
+        return fmax(U_d[0], U[0]) - U_d[0]
     elif i == n_N:
-        return fmax(U[2], U[0]) - U[0] # index -1 = 2
+        return fmax(U_d[0], U[0]) - U_d[0]
     else:
-        return fmax(fmax(U[2], U[0]), U[1]) - U[0] # index -1 = 2
+        if v > 0:
+            if U[-1] - U[-2] > 0 and U[1] - U[0] < 0 and U[-1] - U[-2] > U[0] - U[-1] and U[1] - U[0] < U[0] - U[-1]:
+                delta_r = dr * ((U[0] - U[-1]) + (U[1] - U[0])) / (U[-1] - U[-2] + U[1] - U[0])
+                if delta_r > dt:
+                    U_peak_m = fmax(fmax(U[-1], (U[-1] - U[-2]) * dt / dr), (U[0] - U[-1]) * dt / dr)
+                else:
+                    U_peak_m = ((U[-1] - U[-2]) * U[0] + (U[1] - U[0]) * U[-1])/(U[1] - U[0] + U[-1] - U[-2])
+            else:
+                U_peak_m = fmax(U[-1], U[-1] + (U[0] - U[-1]) * dt / dr)
+                
+                
+            q_max_minus = fmax(U[0], U_peak_m)
+            return fmax(U_d[0], q_max_minus) - U_d[0]  
+            
+        else:    #v < 0
+            if U[0] - U[-1] > 0 and U[2] - U[1] < 0 and U[0] - U[-1] > U[1] - U[0] and U[2] - U[1] < U[1] - U[0]:
+                delta_r = dr * ((U[1] - U[0]) + (U[2] - U[1])) / (U[0] - U[-1] + U[2] - U[1])
+                if delta_r > dt:
+                    U_peak_p = fmax(fmax(U[0], (U[0] - U[-1]) * dt / dr), (U[1] - U[0]) * dt / dr)
+                else:
+                    U_peak_p = ((U[0] - U[-1]) * U[1] + (U[2] - U[1]) * U[0])/(U[2] - U[1] + U[0] - U[1])
+            else:
+                U_peak_p = fmax(U[0], U[0] + (U[1] - U[0]) * dt / dr)
+                
+            q_max_plus = fmax(U[0], U_peak_p)
+            return fmax(U_d[0], q_max_plus) - U_d[0]
 
 
 @cython.boundscheck(False)  # Deactivate bounds checking
-@cython.wraparound(False)   # Deactivate negative indexing.
-cdef inline double Q_values_minus(double[:] U, int i):
+#@cython.wraparound(False)   # Deactivate negative indexing.
+cdef inline double Q_values_minus(double[:] U, double[:] U_d, int i, v):
+        
     if i == 0:
-        return fmin(U[0], U[1]) - U[0]
+        return fmin(U_d[0], U[0]) - U_d[0]
     elif i == n_N:
-        return fmin(U[2], U[0]) - U[0] # index -1 = 2
+        return fmin(U_d[0], U[0]) - U_d[0]
     else:
-        return fmin(fmin(U[2], U[0]), U[1]) - U[0] # index -1 = 2
+        if v > 0:
+            if U[-1] - U[-2] < 0 and U[1] - U[0] > 0 and U[-1] - U[-2] < U[0] - U[-1] and U[1] - U[0] > U[0] - U[-1]:
+                delta_r = dr * ((U[0] - U[-1]) + (U[1] - U[0])) / (U[-1] - U[-2] + U[1] - U[0])
+                if delta_r > dt:
+                    U_peak_m = fmin(fmin(U[-1], (U[-1] - U[-2]) * dt / dr), (U[0] - U[-1]) * dt / dr)
+                else:
+                    U_peak_m = ((U[-1] - U[-2]) * U[0] + (U[1] - U[0]) * U[-1])/(U[1] - U[0] + U[-1] - U[-2])
+            else:
+                U_peak_m = fmin(U[-1], U[-1] + (U[0] - U[-1]) * dt / dr)
+                
+                
+            q_min_minus = fmin(U[0], U_peak_m)
+            return fmin(U_d[0], q_min_minus) - U_d[0] 
+            
+        else:    #v < 0
+            if U[0] - U[-1] < 0 and U[2] - U[1] > 0 and U[0] - U[-1] < U[1] - U[0] and U[2] - U[1] > U[1] - U[0]:
+                delta_r = dr * ((U[1] - U[0]) + (U[2] - U[1])) / (U[0] - U[-1] + U[2] - U[1])
+                if delta_r > dt:
+                    U_peak_p = fmin(fmin(U[0], (U[0] - U[-1]) * dt / dr), (U[1] - U[0]) * dt / dr)
+                else:
+                    U_peak_p = ((U[0] - U[-1]) * U[1] + (U[2] - U[1]) * U[0])/(U[2] - U[1] + U[0] - U[1])
+            else:
+                U_peak_p = fmin(U[0],  U[0] + (U[1] - U[0]) * dt / dr)
+                
+            q_min_plus = fmin(U[0], U_peak_p)
+            return fmin(U_d[0], q_min_plus) - U_d[0]
 
 
 @cython.cdivision(True)
 cdef inline double R_values(double Q, double P):
     cdef double R
-    if P != 0:
+    if P != 0.:
         R = fmin(1, Q / P)
     else:
         R = 1

@@ -53,6 +53,7 @@ from flux_corrected_transport import P_vectors
 from flux_corrected_transport import Q_values
 from flux_corrected_transport import R_values
 from Cflux_corrected_transport import limit_fluxes
+from Cflux_corrected_transport import prelimiting
 # end: Importing FCT variable.
 
 # %% Importing characteristic variables.
@@ -95,31 +96,31 @@ fig_diag.subplots_adjust(wspace=0.5)
 axs_diag[0, 0].set_ylabel(r'$\alpha 1_{-1}$')
 axs_diag[1, 0].set_ylabel(r'$\alpha 1_{0}$')
 axs_diag[2, 0].set_ylabel(r'$\alpha 1_{1}$')
-axs_diag[2, 0].set_xlabel(r'$r$')
+axs_diag[2, 0].set_xlabel(r'$\xi$')
 
 axs_diag[0, 1].set_ylabel(r'$\alpha 2_{-1}$')
 axs_diag[1, 1].set_ylabel(r'$\alpha 2_{0}$')
 axs_diag[2, 1].set_ylabel(r'$\alpha 2_{1}$')
-axs_diag[2, 1].set_xlabel(r'$r$')
+axs_diag[2, 1].set_xlabel(r'$\xi$')
 
-axs_diag[0, 0].set_xlim(0, 2.)
-axs_diag[1, 0].set_xlim(0, 2.)
-axs_diag[2, 0].set_xlim(0, 2.)
+axs_diag[0, 0].set_xlim(0, 1)
+axs_diag[1, 0].set_xlim(0, 1)
+axs_diag[2, 0].set_xlim(0, 1)
 
-axs_diag[0, 1].set_xlim(0, 2.)
-axs_diag[1, 1].set_xlim(0, 2.)
-axs_diag[2, 1].set_xlim(0, 2.)
+axs_diag[0, 1].set_xlim(0, 1)
+axs_diag[1, 1].set_xlim(0, 1)
+axs_diag[2, 1].set_xlim(0, 1)
 
-axs_diag[0, 0].set_ylim(0, 1.)
-axs_diag[1, 0].set_ylim(0, 1.)
-axs_diag[2, 0].set_ylim(0, 1.)
+axs_diag[0, 0].set_ylim(0, 1)
+axs_diag[1, 0].set_ylim(0, 1)
+axs_diag[2, 0].set_ylim(0, 1)
 
 axs_diag[0, 1].set_ylim(0, 1.)
 axs_diag[1, 1].set_ylim(0, 1.)
 axs_diag[2, 1].set_ylim(0, 1.)
 
 psteps = 1000
-nsteps = 30000
+nsteps = 200000
 
 # initial values
 phidot = np.zeros((N + 1, ), dtype=float)
@@ -230,8 +231,10 @@ for k in tqdm(range(nsteps)):
     antidiffusive_matrix(KL, Ftau_H, Ftau_L, dt, antidiffusive_flux_tau)
     # trans_am(antidiffusive_flux_tau, antidiffusive_flux_Z,
     #          tau_bar, Z_bar, phi_bar, A1_prim, A2_prim)
+    prelimiting(antidiffusive_flux_tau, tau_L)
+    prelimiting(antidiffusive_flux_Z, Z_L)
     limit_fluxes(antidiffusive_flux_tau, antidiffusive_flux_Z,
-                 tau, Z, phi,
+                 tau, Z, phi, v,
                  tau_L, Z_L, phi_L,# tau_bar, Z_bar, phi_bar,
                  alpha_limiter1, alpha_limiter2,
                  limited_flux_tau, limited_flux_Z)
@@ -351,14 +354,12 @@ for k in tqdm(range(nsteps)):
         axs[0, 1].plot(xi / GeV**(-1), v_H, c=colors)
         axs[1, 1].plot(xi / GeV**(-1), T_H / GeV, c=colors)
         axs[2, 1].plot(xi / GeV**(-1), P_H / GeV**4, c=colors)
-        #fig.savefig('plots/eta_0.08/plots' + str(k + 1) + '.png')
-        axs_diag[0, 0].plot(r, alpha_limiter1[:, -1], c=colors)
-        axs_diag[0, 1].plot(r, alpha_limiter2[:, -1], c=colors)
-        axs_diag[1, 0].plot(r, alpha_limiter1[:, 0], c=colors)
-        axs_diag[1, 1].plot(r, alpha_limiter2[:, 0], c=colors)
-        axs_diag[2, 0].plot(r, alpha_limiter1[:, 1], c=colors)
-        axs_diag[2, 1].plot(r, alpha_limiter2[:, 1], c=colors)
-        # plt.savefig('plots/eta_0.08/limiter' + str(k + 1) + '.png')
-        #np.savez_compressed('values/profiles_eta_'+str(eta/Tc)+'_step'+str(k),
-        #                    r=r, xi=r/t,
-        #                    phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H)
+        fig.savefig('plots/kruk_eta_0/plots' + str(k + 1) + '.png')
+        axs_diag[0, 0].plot(xi, alpha_limiter1[:, -1], c=colors)
+        axs_diag[0, 1].plot(xi, alpha_limiter2[:, -1], c=colors)
+        axs_diag[1, 0].plot(xi, alpha_limiter1[:, 0], c=colors)
+        axs_diag[1, 1].plot(xi, alpha_limiter2[:, 0], c=colors)
+        axs_diag[2, 0].plot(xi, alpha_limiter1[:, 1], c=colors)
+        axs_diag[2, 1].plot(xi, alpha_limiter2[:, 1], c=colors)
+        plt.savefig('plots/kruk_eta_0/limiter' + str(k + 1) + '.png')
+        np.savez_compressed('values/profiles_eta_'+str(eta/Tc)+'_step'+str(k), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H, limiter1_m = alpha_limiter1[:, -1], limiter1_0 = alpha_limiter1[:, 0], limiter1_p = alpha_limiter1[:, 1], limiter2_m = alpha_limiter2[:, -1], limiter2_0 = alpha_limiter2[:, 0], limiter2_p = alpha_limiter2[:, 1])

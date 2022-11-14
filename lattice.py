@@ -14,8 +14,13 @@ import numpy as np
 from scaled import GeV
 # end: Import rescaled quantities.
 
+
+c_alpha = 0.
+c_beta = 0.
+c_gamma = 0.
+
 rmin = 0. * GeV**(-1)
-rmax = 30. * GeV**(-1)
+rmax = 5. * GeV**(-1)
 dr = 0.01 * GeV**(-1)
 dt = 0.001 * GeV**(-1)
 N = int(np.floor((rmax - rmin) / dr))

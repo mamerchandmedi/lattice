@@ -15,24 +15,24 @@ def advection(velocity):
     KH = np.ndarray((N + 1, 3))
     KH[0][0] = -high_order_advection_matrix[0][0] * velocity[0]
     KH[0][1] = -high_order_advection_matrix[0][1] * velocity[1]
-    for j in range(1, N):
+    for j in range(1, N-1):
         KH[j][-1] = -high_order_advection_matrix[j][-1] * velocity[j-1]
         KH[j][0] = -high_order_advection_matrix[j][0] * velocity[j]
         KH[j][1] = -high_order_advection_matrix[j][1] * velocity[j+1]
-    KH[N][-1] = -high_order_advection_matrix[N][-1] * velocity[N-1]
-    KH[N][0] = -high_order_advection_matrix[N][0] * velocity[N]
+    KH[N-1][-1] = -high_order_advection_matrix[N-1][-1] * velocity[N-2]
+    KH[N-1][0] = -high_order_advection_matrix[N-1][0] * velocity[N-1]
 
     diffusion_matrix = np.ndarray((N + 1, 3))
     diffusion_matrix[0][1] = max(0, -KH[0][1], -KH[1][-1])
     diffusion_matrix[0][0] = - diffusion_matrix[0][1]
-    for j in range(1, N):
+    for j in range(1, N-1):
         diffusion_matrix[j][-1] = max(0, -KH[j][-1], -KH[j-1][1])
         diffusion_matrix[j][1] = max(0, -KH[j][1], -KH[j+1][-1])
-    for j in range(1, N):
+    for j in range(1, N-1):
         diffusion_matrix[j][0] = - diffusion_matrix[j][-1] - \
             diffusion_matrix[j][1]
-    diffusion_matrix[N][-1] = max(0, -KH[N][-1], -KH[N-1][1])
-    diffusion_matrix[N][0] = - diffusion_matrix[N][-1]
+    diffusion_matrix[N-1][-1] = max(0, -KH[N-1][-1], -KH[N-2][1])
+    diffusion_matrix[N-1][0] = - diffusion_matrix[N-1][-1]
 
     advection_matrix = KH + diffusion_matrix
 

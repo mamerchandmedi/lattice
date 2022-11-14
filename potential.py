@@ -9,6 +9,8 @@ Created on Tue Apr 26 10:26:59 2022
 # %% Importing parameters of the model.
 from parameters import T0, alpha, gamma, lam, Tn
 # end: Importing parameters of the model.
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 # %% Defining potential of the model.
@@ -22,3 +24,7 @@ def V(phi):
 def dV(phi):
     return gamma * (Tn**2 - T0**2) * phi - alpha * Tn * phi**2 + lam * phi**3
 # end: Defining derivative of the potential of the model.
+
+#vec_phi = np.array(range(0,50000))*0.01
+#plt.plot(vec_phi, V(vec_phi))
+#plt.savefig('potential.png')

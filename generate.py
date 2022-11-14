@@ -37,29 +37,39 @@ if 'eta' in locals():
     parameters.eta = eta
 
 # %% Import matrices of lattice definition.
-from lattice import dt, r, N
+from lattice import dr, dt, r, N
 # end: Import matrices of lattice definition.
 
 # %% Importing parameters of the model.
-from parameters import eta
+from parameters import Tc, eta
 # end: Importing parameters of the model.
 
 # %% Importing initial values.
 from initialization import phi, T, P, tau, Z, v
 # end: Importing initial values.
 
-# %% Import matrices of the high order integration scheme.
+# %% Import rescaled quantities.
+from scaled import GeV, tauZphi2Tpv_mod
+# end: Import rescaled quantities.
+
+# # %% Import matrices of the high order integration scheme.
+#from matrices_high_order import sources_matrix as sm
 from matrices_high_order import advection_matrix as ho_advection_matrix
 from matrices_high_order import mass_matrix
-# end: Import matrices of the high order integration scheme.
+# # end: Import matrices of the high order integration scheme.
 
-# %% Import matrices of the low order integration scheme.
+# # %% Import matrices of the low order integration scheme.
 from matrices_low_order_dynamically import advection
-# end: Import matrices of the low order integration scheme.
+# # end: Import matrices of the low order integration scheme.
+
+# %% Turning on html files generation from Cython.
+from Cython.Compiler import Options
+Options.annotate = True
+# end: Turning on html files generation from Cython.
 
 # %% Import package for dynamical compilation of Cython code.
 import pyximport
-pyximport.install(inplace=True, language_level='3')
+pyximport.install(inplace=True, language_level='3', build_in_temp=False)
 # end: Import package for dynamical compilation of Cython code.
 
 # %% Import evolution functions.
@@ -78,6 +88,10 @@ from flux_corrected_transport import R_values
 from Cflux_corrected_transport import limit_fluxes
 # end: Importing FCT variable.
 
+# %% Importing characteristic variables.
+from characteristic_variables import T_matrices2
+# end: Importing characteristic variables.
+
 
 
 
@@ -88,8 +102,8 @@ if not os.path.isdir(path):
 # Prepare output folder.
 
 # EVOLUTION #
-psteps = 100
-nsteps = 30000
+psteps = 500
+nsteps = 250000
 
 # initial values
 phidot = np.zeros((N + 1, ), dtype=float)
@@ -133,7 +147,6 @@ for k in range(nsteps):
     t = k * dt
     # ############# HIGH ORDER ##################
     # ------ update variables
-    update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
     evaluate_fluxes(tau_H, Z_H, P_H, v_H, Ftau_H, FZ_H)
     ho_update_taudot(phi_H, phidot_H, T_H, v_H, Ftau_H, taudot_H, Gtau_H)
     ho_update_Zdot(phi_H, phidot_H, T_H, P_H, v_H, FZ_H, Zdot_H, GZ_H)
@@ -166,7 +179,6 @@ for k in range(nsteps):
     phi_H[0] = phi_H[1]
 
     # ################LOW ORDER##################
-    update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
     Ftau_L = tau_L + P_L
     FZ_L = cp.deepcopy(Z_L)
 
@@ -277,55 +289,44 @@ for k in range(nsteps):
     tau_H[0] = tau_L[0] + (-dt * (Gtau_H[0] - Gtau_L[0]) +
                            limited_flux_tau[0][0] +
                            limited_flux_tau[0][1]) / mass_matrix[0]
-    tau_L[0] = tau_H[0]
-    tau[0] = tau_H[0]
     Z_H[0] = Z_L[0] + (-dt * (GZ_H[0] - GZ_L[0]) +
                        limited_flux_Z[0][0] +
                        limited_flux_Z[0][1]) / mass_matrix[0]
-    Z_L[0] = Z_H[0]
-    Z[0] = Z_H[0]
-
-    phi_L[0] = phi_H[0]
-    phi[0] = phi_H[0]
-    phidot_L[0] = phidot_H[0]
-    phidot[0] = phidot_H[0]
 
     for i in range(1, N):
         tau_H[i] = tau_L[i] + (-dt * (Gtau_H[i] - Gtau_L[i]) +
                                limited_flux_tau[i][-1] +
                                limited_flux_tau[i][0] +
                                limited_flux_tau[i][1]) / mass_matrix[i]
-        tau_L[i] = tau_H[i]
-        tau[i] = tau_H[i]
         Z_H[i] = Z_L[i] + (-dt * (GZ_H[i] - GZ_L[i]) +
                            limited_flux_Z[i][-1] +
                            limited_flux_Z[i][0] +
                            limited_flux_Z[i][1]) / mass_matrix[i]
-        Z_L[i] = Z_H[i]
-        Z[i] = Z_H[i]
-        phi_L[i] = phi_H[i]
-        phi[i] = phi_H[i]
-        phidot_L[i] = phidot_H[i]
-        phidot[i] = phidot_H[i]
 
     tau_H[N] = tau_L[N] + (-dt * (Gtau_H[N] - Gtau_L[N]) +
                            limited_flux_tau[N][-1] +
                            limited_flux_tau[N][0]) / mass_matrix[N]
-    tau_L[N] = tau_H[N]
-    tau[N] = tau_H[N]
     Z_H[N] = Z_L[N] + (-dt * (GZ_H[N] - GZ_L[N]) +
                        limited_flux_Z[N][0] +
                        limited_flux_Z[N][-1]) / mass_matrix[N]
-    Z_L[N] = Z_H[N]
-    Z[N] = Z_H[N]
 
-    phi_L[N] = phi_H[N]
-    phi[N] = phi_H[N]
-    phidot_L[N] = phidot_H[N]
-    phidot[N] = phidot_H[N]
+    update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
+
+    tau_L = cp.deepcopy(tau_H)
+    tau = cp.deepcopy(tau_H)
+    Z_L = cp.deepcopy(Z_H)
+    Z = cp.deepcopy(Z_H)
+    phi_L = cp.deepcopy(phi_H)
+    phi = cp.deepcopy(phi_H)
+    phidot_L = cp.deepcopy(phidot_H)
+    phidot = cp.deepcopy(phidot_H)
+    T_L = cp.deepcopy(T_H)
+    P_L = cp.deepcopy(P_H)
+    v_L = cp.deepcopy(v_H)
 
     # #########SAVING############
     if((k+1) % psteps == 0):
-        np.savez_compressed(path + '_t_'+str(t), r=r, xi=r/t,
-                            phi=phi_H, phidot=phidot_H, v=v_H, T=T_H,
-                            P=P_H, tau=tau_H, Z=Z_H)
+        np.savez_compressed('grid_dr_0.010/' + 'time_'+str(format(t+dt, ".3f")),
+                            r=r, xi=r/t, phi=phi_H, phidot=phidot_H,
+                            v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H, 
+                            alpha1=alpha_limiter1, alpha2=alpha_limiter2)

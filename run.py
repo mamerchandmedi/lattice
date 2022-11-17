@@ -1,3 +1,5 @@
+import gc
+gc.collect()
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -40,9 +42,9 @@ pyximport.install(inplace=True, language_level='3', build_in_temp=False)
 # end: Import package for dynamical compilation of Cython code.
 
 # %% Import evolution functions.
-from Cevolution_functions import update_Tpv, evaluate_fluxes,\
+from Cevolution_functions import update_Tpv, evaluate_fluxes, evaluate_psi,\
     ho_update_taudot, ho_update_Zdot, update_phidot, lo_update_taudot, \
-    lo_update_Zdot
+    lo_update_Zdot, lo_newton
 # end: Import evolution functions.
 
 # %% Importing FCT variables.
@@ -119,18 +121,20 @@ axs_diag[0, 1].set_ylim(0, 1.)
 axs_diag[1, 1].set_ylim(0, 1.)
 axs_diag[2, 1].set_ylim(0, 1.)
 
-psteps = 1000
-nsteps = 200000
+psteps = 500
+nsteps = 40000
 
 # initial values
 phidot = np.zeros((N + 1, ), dtype=float)
 phi_H, tau_H, Z_H = cp.deepcopy(phi), cp.deepcopy(tau), cp.deepcopy(Z)
 T_H, v_H, P_H = cp.deepcopy(T), cp.deepcopy(v), cp.deepcopy(P)
 phidot_H, taudot_H, Zdot_H = np.zeros(r.size), np.zeros(r.size), np.zeros(r.size)
+psi_H = np.zeros(r.size)
 
 phi_L, tau_L, Z_L = cp.deepcopy(phi), cp.deepcopy(tau), cp.deepcopy(Z)
 T_L, v_L, P_L = cp.deepcopy(T), cp.deepcopy(v), cp.deepcopy(P)
 phidot_L, taudot_L, Zdot_L = np.zeros(r.size), np.zeros(r.size), np.zeros(r.size)
+psi_L = np.zeros(r.size)
 
 Ftau_H = np.ndarray((N + 1, ), dtype=float)
 FZ_H = np.ndarray((N + 1, ), dtype=float)
@@ -150,6 +154,17 @@ Gtau_L = np.ndarray((N + 1, ), dtype=float)
 Zdot_L = np.ndarray((N + 1, ), dtype=float)
 GZ_L = np.ndarray((N + 1, ), dtype=float)
 
+tautemp_L = np.ndarray((N + 1, ), dtype=float)
+Ztemp_L = np.ndarray((N + 1, ), dtype=float)
+phitemp_L = np.ndarray((N + 1, ), dtype=float)
+
+tau_old = np.ndarray((N + 1, ), dtype=float)
+Z_old = np.ndarray((N + 1, ), dtype=float)
+v_old = np.ndarray((N + 1, ), dtype=float)
+
+Tf_L = np.zeros((2*N, 2*N), dtype=float)
+Tf_L_banded = np.zeros((7, 2*N), dtype=float)
+
 antidiffusive_flux_Z = np.ndarray((N + 1, 3))
 antidiffusive_flux_tau = np.ndarray((N + 1, 3))
 A1_prim = np.ndarray((N + 1, 3))
@@ -164,64 +179,87 @@ for k in tqdm(range(nsteps)):
     t = k * dt
     # ############# HIGH ORDER ##################
     # ------ update variables
+    evaluate_psi(phi_H, psi_H)
     evaluate_fluxes(tau_H, Z_H, P_H, v_H, Ftau_H, FZ_H)
-    ho_update_taudot(phi_H, phidot_H, T_H, v_H, Ftau_H, taudot_H, Gtau_H)
-    ho_update_Zdot(phi_H, phidot_H, T_H, P_H, v_H, FZ_H, Zdot_H, GZ_H)
+    ho_update_taudot(phi_H, phidot_H, psi_H, T_H, v_H, Ftau_H, taudot_H, Gtau_H)
+    ho_update_Zdot(phi_H, phidot_H, psi_H, T_H, P_H, v_H, FZ_H, Zdot_H, GZ_H)
 
     # ------tau, Z evolution (temporary values)
     tau_temp = tau_H - 0.5 * dt * taudot_H
     Z_temp = Z_H - 0.5 * dt * Zdot_H
 
     # ------phi evolution (half step)
-    phi_H[1:] += 0.5 * dt * phidot_H[1:]
-    phi_H[0] = phi_H[1]
+    phi_H += 0.5 * dt * phidot_H
 
     # ------ update variables
     update_Tpv(T_H, P_H, v_H, phi_H, tau_temp, Z_temp)
     evaluate_fluxes(tau_H, Z_H, P_H, v_H, Ftau_H, FZ_H)
 
     phidot_H_old = cp.deepcopy(phidot_H)
-    update_phidot(phi_H, phidot_H, v_H, T_H)
+    update_phidot(phi_H, phidot_H, psi_H, v_H, T_H)
     phidot_H_mean = (phidot_H + phidot_H_old) / 2
-
-    ho_update_taudot(phi_H, phidot_H_mean, T_H, v_H, Ftau_H, taudot_H, Gtau_H)
-    ho_update_Zdot(phi_H, phidot_H_mean, T_H, P_H, v_H, FZ_H, Zdot_H, GZ_H)
+    evaluate_psi(phi_H, psi_H)
+    
+    ho_update_taudot(phi_H, phidot_H_mean, psi_H, T_H, v_H, Ftau_H, taudot_H, Gtau_H)
+    ho_update_Zdot(phi_H, phidot_H_mean, psi_H, T_H, P_H, v_H, FZ_H, Zdot_H, GZ_H)
 
     # ------tau, Z evolution (full step)
-    # tau_H -= dt * taudot_H # Not needed when FCT used.
-    # Z_H -= dt * Zdot_H # Not needed when FCT used.
+    #tau_H -= dt * taudot_H # Not needed when FCT used.
+    #Z_H -= dt * Zdot_H # Not needed when FCT used.
 
     # ------phi evolution (half step)
-    phi_H[1:] += 0.5 * dt * phidot_H[1:]
-    phi_H[0] = phi_H[1]
+    phi_H += 0.5 * dt * phidot_H
 
     # ################LOW ORDER##################
+    update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
     Ftau_L = tau_L + P_L
     FZ_L = cp.deepcopy(Z_L)
+    
+    v_old = cp.deepcopy(v_L)
+    tau_old = cp.deepcopy(tau_L)
+    Z_old = cp.deepcopy(Z_L)
 
     # ------ update variables
     KL = advection(v_L)
-    lo_update_taudot(phi_L, phidot_L, T_L, v_L, Ftau_L, KL, taudot_L, Gtau_L)
-    lo_update_Zdot(phi_L, phidot_L, T_L, P_L, v_L, FZ_L, KL, Zdot_L, GZ_L)
+    evaluate_psi(phi_L, psi_L)
+    lo_update_taudot(phi_L, phidot_L, psi_L, T_L, v_L, Ftau_L, KL, taudot_L, Gtau_L)
+    lo_update_Zdot(phi_L, phidot_L, psi_L, T_L, P_L, v_L, FZ_L, KL, Zdot_L, GZ_L)
 
     # ------phi evolution (half step)
-    phi_L[1:] += 0.5 * dt * phidot_L[1:]
-    phi_L[0] = phi_L[1]
+    phi_L += 0.5 * dt * phidot_L
 
     # ------tau, Z evolution (half step)
     tau_L -= 0.5 * dt * taudot_L
     Z_L -= 0.5 * dt * Zdot_L
 
-    update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
-    update_phidot(phi_L, phidot_L, v_L, T_L)
+    #update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
+    update_phidot(phi_L, phidot_L, psi_L, v_L, T_L)
 
     # ------phi evolution (half step)
-    phi_L[1:] += 0.5 * dt * phidot_L[1:]
-    phi_L[0] = phi_L[1]
+    phi_L += 0.5 * dt * phidot_L
 
     # ------tau, Z evolution (half step)
     tau_L -= 0.5 * dt * taudot_L
     Z_L -= 0.5 * dt * Zdot_L
+    
+    #print(tau_L[0], Z_L[0])
+    KL_old = advection(v_old)
+    rtol = 1.e-5 #1.e-6
+    atol = 1.e-5
+    #print("Newton method: ")
+    while(True):
+        tau_Lm = cp.deepcopy(tau_L)
+        Z_Lm = cp.deepcopy(Z_L)
+        Ftau_L = tau_L + P_L
+        FZ_L = cp.deepcopy(Z_L)
+        lo_update_taudot(phi_L, phidot_L, psi_L, T_L, v_L, Ftau_L, KL, taudot_L, Gtau_L)
+        lo_update_Zdot(phi_L, phidot_L, psi_L, T_L, P_L, v_L, FZ_L, KL, Zdot_L, GZ_L) 
+        update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
+        lo_newton(tau_old, tau_L, taudot_L, Z_old, Z_L, Zdot_L, Tf_L, Tf_L_banded, phi_L, phidot_L, psi_L, T_L, v_L, P_L, KL_old)
+        tau_mean = np.mean(tau_L[0:-2]**2 + tau_Lm[0:-2]**2)
+        Z_mean = np.mean(Z_L[0:-2]**2 + Z_Lm[0:-2]**2)
+        if max(abs((tau_L[0:-2] - tau_Lm[0:-2])/np.sqrt(tau_L[0:-2]**2 + tau_Lm[0:-2]**2 + atol*np.sqrt(tau_mean)))) <=rtol and max(abs((Z_L[0:-2] - Z_Lm[0:-2])/np.sqrt(Z_L[0:-2]**2 + Z_Lm[0:-2]**2 + atol*np.sqrt(Z_mean)))) <= rtol: break
+    #print("Success!")
 
     # ###########FCT###############
     # tau_bar = Ubar(tau_L)
@@ -312,7 +350,7 @@ for k in tqdm(range(nsteps)):
                        limited_flux_Z[0][0] +
                        limited_flux_Z[0][1]) / mass_matrix[0]
 
-    for i in range(1, N):
+    for i in range(1, N-1):
         tau_H[i] = tau_L[i] + (-dt * (Gtau_H[i] - Gtau_L[i]) +
                                limited_flux_tau[i][-1] +
                                limited_flux_tau[i][0] +
@@ -322,12 +360,12 @@ for k in tqdm(range(nsteps)):
                            limited_flux_Z[i][0] +
                            limited_flux_Z[i][1]) / mass_matrix[i]
 
-    tau_H[N] = tau_L[N] + (-dt * (Gtau_H[N] - Gtau_L[N]) +
-                           limited_flux_tau[N][-1] +
-                           limited_flux_tau[N][0]) / mass_matrix[N]
-    Z_H[N] = Z_L[N] + (-dt * (GZ_H[N] - GZ_L[N]) +
-                       limited_flux_Z[N][0] +
-                       limited_flux_Z[N][-1]) / mass_matrix[N]
+    tau_H[N-1] = tau_L[N-1] + (-dt * (Gtau_H[N-1] - Gtau_L[N-1]) +
+                           limited_flux_tau[N-1][-1] +
+                           limited_flux_tau[N-1][0]) / mass_matrix[N-1]
+    Z_H[N-1] = Z_L[N-1] + (-dt * (GZ_H[N-1] - GZ_L[N-1]) +
+                       limited_flux_Z[N-1][0] +
+                       limited_flux_Z[N-1][-1]) / mass_matrix[N-1]
 
     update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
 
@@ -354,12 +392,12 @@ for k in tqdm(range(nsteps)):
         axs[0, 1].plot(xi / GeV**(-1), v_H, c=colors)
         axs[1, 1].plot(xi / GeV**(-1), T_H / GeV, c=colors)
         axs[2, 1].plot(xi / GeV**(-1), P_H / GeV**4, c=colors)
-        fig.savefig('plots/kruk_eta_0/plots' + str(k + 1) + '.png')
+        fig.savefig('plots/FCT/plots' + str(k + 1) + '.png')
         axs_diag[0, 0].plot(xi, alpha_limiter1[:, -1], c=colors)
         axs_diag[0, 1].plot(xi, alpha_limiter2[:, -1], c=colors)
         axs_diag[1, 0].plot(xi, alpha_limiter1[:, 0], c=colors)
         axs_diag[1, 1].plot(xi, alpha_limiter2[:, 0], c=colors)
         axs_diag[2, 0].plot(xi, alpha_limiter1[:, 1], c=colors)
         axs_diag[2, 1].plot(xi, alpha_limiter2[:, 1], c=colors)
-        plt.savefig('plots/kruk_eta_0/limiter' + str(k + 1) + '.png')
-        np.savez_compressed('values/profiles_eta_'+str(eta/Tc)+'_step'+str(k), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H, limiter1_m = alpha_limiter1[:, -1], limiter1_0 = alpha_limiter1[:, 0], limiter1_p = alpha_limiter1[:, 1], limiter2_m = alpha_limiter2[:, -1], limiter2_0 = alpha_limiter2[:, 0], limiter2_p = alpha_limiter2[:, 1])
+        plt.savefig('plots/FCT/limiter' + str(k + 1) + '.png')
+        np.savez_compressed('values/profiles_FCT_dense_eta_'+str(eta/Tc)+'_step'+str(k), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H, limiter1_m = alpha_limiter1[:, -1], limiter1_0 = alpha_limiter1[:, 0], limiter1_p = alpha_limiter1[:, 1], limiter2_m = alpha_limiter2[:, -1], limiter2_0 = alpha_limiter2[:, 0], limiter2_p = alpha_limiter2[:, 1])

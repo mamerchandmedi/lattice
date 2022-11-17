@@ -288,6 +288,7 @@ def lo_newton(np.ndarray[DTYPE_t, ndim=1] tau_old,
               np.ndarray[DTYPE_t, ndim=1] Z,
               np.ndarray[DTYPE_t, ndim=1] Zdot,
               np.ndarray[DTYPE_t, ndim=2] Tf,
+              np.ndarray[DTYPE_t, ndim=2] Tf_banded,
               np.ndarray[DTYPE_t, ndim=1] phi,
               np.ndarray[DTYPE_t, ndim=1] phidot,
               np.ndarray[DTYPE_t, ndim=1] psi,
@@ -354,10 +355,17 @@ def lo_newton(np.ndarray[DTYPE_t, ndim=1] tau_old,
     Tf[2*(n_N-1)+1, 2*(n_N-1)+1] = 1 + dt * (lo_advection_matrix[n_N-1][0] * 1 +
                         gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (dpdZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1])) + sources_num[n_N-1][0] * dGZdZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
 
-      
+
+    for j in range(2*n_N):
+        for k in range(-3,4):
+            if j >= -k and j < 2*n_N - k:
+                Tf_banded[3+k,j] = Tf[j+k,j]
+            else: 
+                Tf_banded[3+k,j] = 0  
     #cdef double[::1] dU = np.zeros(2*n_N)
-    dU = spsolve(csc_matrix(Tf), fU)
+    #dU = spsolve(csc_matrix(Tf), fU)
     #dU = splu(csc_matrix(Tf)).solve(fU)
+    dU = solve_banded((3, 3), Tf_banded, fU)
     #U = U - dU
     for j in range(n_N):
        tau[j] = U[2*j] - dU[2*j]

@@ -75,7 +75,7 @@ def antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] KL,
                      KL[0][1] * FL[1] +
                      KL[1][2] * FL[0]) # index -1 = 2
     cdef int j
-    for j in range(1, n_N):
+    for j in range(1, n_N-1):
         A[j][2] = -dt * (advection_num[j][2] * FH[j - 1] - # index -1 = 2
                          advection_num[j - 1][1] * FH[j] -
                          KL[j][2] * FL[j - 1] + # index -1 = 2
@@ -85,25 +85,25 @@ def antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] KL,
                          advection_num[j + 1][2] * FH[j] -  # index -1 = 2
                         KL[j][1] * FL[j + 1] +
                         KL[j + 1][2] * FL[j]) # index -1 = 2
-    A[n_N][2] =  -dt * (advection_num[n_N][2] * FH[n_N - 1] -  # index -1 = 2
-                        advection_num[n_N - 1][1] * FH[n_N] -
-                      KL[n_N][2] * FL[n_N - 1] + # index -1 = 2
-                      KL[n_N - 1][1] * FL[n_N])
-    A[n_N][0] = 0.
-    A[n_N][1] = 0.
+    A[n_N-1][2] =  -dt * (advection_num[n_N-1][2] * FH[n_N - 2] -  # index -1 = 2
+                        advection_num[n_N - 2][1] * FH[n_N-1] -
+                      KL[n_N-1][2] * FL[n_N - 2] + # index -1 = 2
+                      KL[n_N - 2][1] * FL[n_N-1])
+    A[n_N-1][0] = 0.
+    A[n_N-1][1] = 0.
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 def prelimiting(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] u):
     if A[0][1] * (u[0] - u[1]) < 0.:
         A[0][1] = 0.
     cdef int j
-    for j in range(1, n_N):
+    for j in range(1, n_N-1):
         if A[j][-1] * (u[j] - u[j - 1]) < 0.:
             A[j][-1] = 0.
         if A[j][1] * (u[j] - u[j + 1]) < 0.:
             A[j][1] = 0.
-    if A[n_N][-1] * (u[n_N] - u[n_N-1]) < 0.:
-        A[n_N][-1] = 0.
+    if A[n_N-1][-1] * (u[n_N-1] - u[n_N-2]) < 0.:
+        A[n_N-1][-1] = 0.
         
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.
@@ -129,20 +129,20 @@ def trans_antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] A1,
     AT2[0][1] = T_inv[2] * A1[0][1] + T_inv[3] * A2[0][1]
     cdef int i
     cdef int j
-    for i in range(1, N):
+    for i in range(1, N-1):
         for j in [-1, 0, 1]:
             tauZphi2Tpv_mod(tau[i][j], Z[i][j], phi[i][j], &T, &P, &v)
             T_matrices(v, phi[i][j], T, T_mat, T_inv)
             AT1[i][j] = T_inv[0] * A1[i][j] + T_inv[1] * A2[i][j]
             AT2[i][j] = T_inv[2] * A1[i][j] + T_inv[3] * A2[i][j]
-    tauZphi2Tpv_mod(tau[N][2], Z[N][2], phi[N][2], &T, &P, &v)  # index -1 = 2
-    T_matrices(v, phi[N][2], T, T_mat, T_inv)  # index -1 = 2
-    AT1[N][2] = T_inv[0] * A1[N][2] + T_inv[1] * A2[N][2]  # index -1 = 2
-    AT2[N][2] = T_inv[2] * A1[N][2] + T_inv[3] * A2[N][2]  # index -1 = 2
-    tauZphi2Tpv_mod(tau[N][0], Z[N][0], phi[N][0], &T, &P, &v)
-    T_matrices(v, phi[N][0], T, T_mat, T_inv)
-    AT1[N][0] = T_inv[0] * A1[N][0] + T_inv[1] * A2[N][0]
-    AT2[N][0] = T_inv[2] * A1[N][0] + T_inv[3] * A2[N][0]
+    tauZphi2Tpv_mod(tau[N-1][2], Z[N-1][2], phi[N-1][2], &T, &P, &v)  # index -1 = 2
+    T_matrices(v, phi[N-1][2], T, T_mat, T_inv)  # index -1 = 2
+    AT1[N-2][2] = T_inv[0] * A1[N-1][2] + T_inv[1] * A2[N-1][2]  # index -1 = 2
+    AT2[N-2][2] = T_inv[2] * A1[N-1][2] + T_inv[3] * A2[N-1][2]  # index -1 = 2
+    tauZphi2Tpv_mod(tau[N-1][0], Z[N-1][0], phi[N-1][0], &T, &P, &v)
+    T_matrices(v, phi[N-1][0], T, T_mat, T_inv)
+    AT1[N-1][0] = T_inv[0] * A1[N-1][0] + T_inv[1] * A2[N-1][0]
+    AT2[N-1][0] = T_inv[2] * A1[N-1][0] + T_inv[3] * A2[N-1][0]
 
     PyMem_Free(T_mat)
     PyMem_Free(T_inv)

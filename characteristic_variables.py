@@ -1,0 +1,93 @@
+import numpy as np
+
+# %% Import termodynamically corrected quantities.
+from thermo import dVTdT, d2VTdT, w, gam, dpdT
+# end: Import termodynamically corrected quantities.
+
+
+def dtaudT(v, field, T):
+    return gam(v)**2 * (16 * a * T**3 - dVTdT(field, T) -
+                        T * d2VTdT(field, T)) - dpdT(field, T)
+
+
+def dtaudv(v, field, T):
+    return 2 * w(field, T) * v * gam(v)**4
+
+
+def dZdT(v, field, T):
+    return v * gam(v)**2 * (16 * a * T**3 - dVTdT(field, T) -
+                            T * d2VTdT(field, T))
+
+
+def dZdv(v, field, T):
+    return w(field, T) * (1 + v**2) * gam(v)**4
+
+
+def determinant(v, field, T):
+    return dtaudv(v, field, T) * dZdT(v, field, T) - \
+        dtaudT(v, field, T) * dZdv(v, field, T)
+
+
+def dvdtau(v, field, T):
+    return dZdT(v, field, T) / determinant(v, field, T)
+
+
+def dvdZ(v, field, T):
+    return -dtaudT(v, field, T) / determinant(v, field, T)
+
+
+def dTdtau(v, field, T):
+    return -dZdv(v, field, T) / determinant(v, field, T)
+
+
+def dTdZ(v, field, T):
+    return dtaudv(v, field, T) / determinant(v, field, T)
+
+
+def Jacobian(v, field, T, tau, Z, P):
+    J = np.ndarray((2, 2))
+    J[0][0] = v + v * dpdT(field, T) * dTdtau(v, field, T) + \
+        (tau + P) * dvdtau(v, field, T)
+    J[0][1] = v * dpdT(field, T) * dTdZ(v, field, T) + \
+        (tau + P) * dvdZ(v, field, T)
+    J[1][0] = Z * dvdtau(v, field, T)
+    J[1][1] = v + Z * dvdZ(v, field, T)
+    return J
+
+
+def T_matrices(v, field, T, tau, Z, P):
+    A = Jacobian(v, field, T, tau, Z, P)
+    T_mat = np.ndarray((2, 2))
+    T_inv = np.ndarray((2, 2))
+    delta = (A[0][0] - A[1][1])**2 + 4 * A[0][1] * A[1][0]
+    norm = (4 * abs(A[1][0] * delta**0.5))**(-0.5)
+    print(norm)
+    T_mat[0][0] = norm * (A[0][0] - A[1][1] + delta**0.5)
+    T_mat[0][1] = norm * (A[0][0] - A[1][1] - delta**0.5)
+    T_mat[1][0] = norm * 2 * A[1][0]
+    T_mat[1][1] = norm * 2 * A[1][0]
+
+    T_inv[0][0] = norm * 2 * A[1][0]
+    T_inv[0][1] = norm * (A[1][1] - A[0][0] + delta**0.5)
+    T_inv[1][0] = norm * 2 * A[1][0]
+    T_inv[1][1] = norm * (A[0][0] - A[1][1] + delta**0.5)
+
+    return T_mat, T_inv
+
+
+def T_matrices2(v, field, T):
+    T_mat = np.ndarray((2, 2))
+    T_inv = np.ndarray((2, 2))
+    T_mat[0][0] = - dpdT(field, T)*dTdZ(v, field, T)\
+        * (dpdT(field, T)*dTdtau(v, field, T))**(-1)
+    T_mat[0][1] = 1
+    T_mat[1][0] = 1
+    T_mat[1][1] = 0
+
+    T_inv[0][0] = 0
+    T_inv[0][1] = 1
+    T_inv[1][0] = 1
+    T_inv[1][1] = dpdT(field, T)*dTdZ(v, field, T)\
+        * (dpdT(field, T)*dTdtau(v, field, T))**(-1)
+
+    return T_mat, T_inv

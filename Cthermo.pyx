@@ -16,8 +16,9 @@ from libc.math cimport fabs
 
 # %% Importing parameters of the model.
 from parameters import lam as pylam
-from parameters import m0 as pym0
-from parameters import q as pyq
+from parameters import etaV as pyetaV
+from parameters import y as pyy
+from parameters import v as pyv
 from parameters import Tc as pyTc
 from parameters import eta as pyeta
 # end: Importing parameters of the model.
@@ -28,40 +29,33 @@ from parameters import eta as pyeta
 # end: Import package for dynamical compilation of Cython code.
 
 import numpy as np
-from Cthermal_functions cimport Jb
+from Cthermal_functions cimport Jf, oldJf, J
 
 cdef double lam = pylam
-cdef double m0 = pym0
-cdef double q = pyq
+cdef double etaV = pyetaV
+cdef double y = pyy
 cdef double eta = pyeta
-cdef double mu2 = m0**2/2
-cdef double v = (mu2/lam)**(0.5)
-cdef double mA = q*v
+cdef double v = pyv
 cdef double Tc = pyTc
 cdef double epsilon
 
 
 cdef inline double V0(double phi):
-    return -0.5*mu2*phi**2 + 0.25*lam*phi**4 
+    return lam*(0.5*etaV*v**2*phi**2 - (1+etaV)/3*v*phi**3 + 0.25*phi**4)
 	
-cdef inline double m2(double phi, double T):
-    return -mu2 + 3*lam*phi**2 + (lam/3 + 0.25*q**2)*T**2
+cdef inline double mf2(double phi, double T):
+    return y**2*phi**2
 	
-cdef inline double mAl2(double phi, double T):
-    return q**2*phi**2 + 1/3 * q**2 * T**2
-	
-cdef inline double mAt2(double phi, double T):
-    return q**2*phi**2 
 
-cdef inline double Vtherm(double phi, double T):
-    return T**4/(2*np.pi**2) * Jb(m2(phi,T)/T**2) +  T**4/(2*np.pi**2) * Jb(mAl2(phi,T)/T**2) + 2*T**4/(2*np.pi**2) * Jb(mAt2(phi,T)/T**2)
-cdef inline double VCW(double phi, double T):
-    return 1/(64*pi**2) * (m2(phi,T)**2*(log(fabs(m2(phi,T)/m0**2) + 1e-100 ) - 1.5) + 2*m2(phi,T)*m0**2) + 1/(64*pi**2) * (mAl2(phi,T)**2*(log(mAl2(phi,T)/(mA**2) + 1e-100) - 1.5) + 2*mAl2(phi,T)*(mA**2)) +  2/(64*pi**2) * (mAt2(phi,T)**2*(log(mAt2(phi,T)/(mA**2) + 1e-100) - 1.5) + 2*mAt2(phi,T)*(mA**2))
-	
+cdef inline double Vtherm(double phi, double T): 
+    #return T**4/(2*pi**2) * Jf(mf2(phi,T)/T**2)
+    return T**4/(2*pi**2) * J(mf2(phi,T)/T**2)
+
+
 	
 # %% Defining thermally corrected potential of the model.
 cdef inline double VT(double field, double temp):
-    return V0(field) + Vtherm(field, temp) + VCW(field, temp)
+    return V0(field) + Vtherm(field, temp)
 # end: Defining thermally corrected potential of the model.
 
 
@@ -69,7 +63,8 @@ cdef inline double VT(double field, double temp):
 #    thermally corrected potential of the model.
 cdef inline double dVTdphi(double field, double temp):
     epsilon = 0.001*v
-    return (-VT(field+2*epsilon, temp) + 8*VT(field+epsilon, temp) - 8*VT(field-epsilon, temp) + VT(field-2*epsilon, temp))/(12*epsilon)
+    #return (-VT(field+2*epsilon, temp) + 8*VT(field+epsilon, temp) - 8*VT(field-epsilon, temp) + VT(field-2*epsilon, temp))/(12*epsilon)
+    return (-VT(field-epsilon, temp) + VT(field+epsilon, temp)) / (2*epsilon) 
 # end: Defining derivative with respect to the field of
 #      thermally corrected potential of the model.
 
@@ -78,14 +73,16 @@ cdef inline double dVTdphi(double field, double temp):
 #    thermally corrected potential of the model.
 cdef inline double dVTdT(double field, double temp):
     epsilon = 0.001*Tc
-    return (-VT(field, temp+2*epsilon) + 8*VT(field, temp+epsilon) - 8*VT(field, temp-epsilon) + VT(field, temp-2*epsilon))/(12*epsilon)
+    #return (-VT(field, temp+2*epsilon) + 8*VT(field, temp+epsilon) - 8*VT(field, temp-epsilon) + VT(field, temp-2*epsilon))/(12*epsilon)
+    return (-VT(field, temp-epsilon) + VT(field, temp+epsilon)) / (2*epsilon)
 # end: Defining first derivative with respect to the temperature of
 #      thermally corrected potential of the model.
 
 # %% Defining second mixed derivative of thermally corrected potential of the model.
 cdef inline double d2VTdphidT(double field, double temp):
     epsilon = 0.001*Tc
-    return (-dVTdphi(field, temp+2*epsilon) + 8*dVTdphi(field, temp+epsilon) - 8*dVTdphi(field, temp-epsilon) + dVTdphi(field, temp-2*epsilon))/(12*epsilon)
+    #return (-dVTdphi(field, temp+2*epsilon) + 8*dVTdphi(field, temp+epsilon) - 8*dVTdphi(field, temp-epsilon) + dVTdphi(field, temp-2*epsilon))/(12*epsilon)
+    return (-dVTdphi(field, temp-epsilon) + dVTdphi(field, temp+epsilon)) / (2*epsilon)
 # end: Defining second mixed derivative of thermally corrected potential of the model.
 
 
@@ -93,7 +90,8 @@ cdef inline double d2VTdphidT(double field, double temp):
 #    thermally corrected potential of the model.
 cdef inline double d2VTdT(double field, double temp):
     epsilon = 0.001*Tc
-    return (-dVTdT(field, temp+2*epsilon) + 8*dVTdT(field, temp+epsilon) - 8*dVTdT(field, temp-epsilon) + dVTdT(field, temp-2*epsilon))/(12*epsilon)
+    #return (-dVTdT(field, temp+2*epsilon) + 8*dVTdT(field, temp+epsilon) - 8*dVTdT(field, temp-epsilon) + dVTdT(field, temp-2*epsilon))/(12*epsilon)
+    return (-dVTdT(field, temp-epsilon)  + dVTdT(field, temp+epsilon)) / (2*epsilon)
 # end: Defining second derivative with respect to the temperature of
 #      thermally corrected potential of the model.
 
@@ -102,7 +100,8 @@ cdef inline double d2VTdT(double field, double temp):
 #    thermally corrected potential of the model.
 cdef inline double d3VTdT(double field, double temp):
     epsilon = 0.001*Tc
-    return (-d2VTdT(field, temp+2*epsilon) + 8*d2VTdT(field, temp+epsilon) - 8*d2VTdT(field, temp-epsilon) + d2VTdT(field, temp-2*epsilon))/(12*epsilon)
+    #return (-d2VTdT(field, temp+2*epsilon) + 8*d2VTdT(field, temp+epsilon) - 8*d2VTdT(field, temp-epsilon) + d2VTdT(field, temp-2*epsilon))/(12*epsilon)
+    return (-d2VTdT(field, temp-epsilon) + d2VTdT(field, temp+epsilon)) / (2*epsilon)
 # end: Defining third derivative with respect to the temperature of
 #      thermally corrected potential of the model.
 

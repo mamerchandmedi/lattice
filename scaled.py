@@ -7,7 +7,7 @@ Created on Tue Apr 26 10:49:33 2022
 """
 
 # %% Import termodynamically corrected quantities.
-from thermo import VT, dVTdphi
+#from thermo import VT, dVTdphi
 # end: Import termodynamically corrected quantities.
 
 # %% Importing procedure for solving algebraic relation
@@ -22,14 +22,14 @@ GeV = 1  # Value of GeV i therms of simulation units.
 
 
 # %% Defining the rescaled potential.
-def VT_mod(field, temp):
-    return VT(field / GeV, temp / GeV) * GeV**4
+#def VT_mod(field, temp):
+#    return VT(field / GeV, temp / GeV) * GeV**4
 # end: Defining the rescaled potential.
 
 
 # %% Defining rescaled derivative of the potential.
-def dVTdphi_mod(field, temp):
-    return dVTdphi(field / GeV, temp / GeV) * GeV**3
+#def dVTdphi_mod(field, temp):
+#    return dVTdphi(field / GeV, temp / GeV) * GeV**3
 # end: Defining rescaled derivative of the potential.
 
 

@@ -128,14 +128,14 @@ def evaluate_psi(np.ndarray[DTYPE_t, ndim=1] phi,
                  np.ndarray[DTYPE_t, ndim=1] psi):
     cdef int j
     cdef double rp 
-    rp = (3/4) * (r[1]**4 - r[0]**4) / (r[1]**3 - r[0]**3)
+    rp = (0.75) * (r_num[1]**4 - r_num[0]**4) / (r_num[1]**3 - r_num[0]**3)
     psi[0] = derivative_minus_num[1]*(phi[1]-phi[0])*(rp - r[0])/(r[1] - r[0])
     for j in range(1, n_N-1):
-        rp = (3/4) * (r[j+1]**4 - r[j]**4) / (r[j+1]**3 - r[j]**3)
-        psi[j] = (derivative_plus_num[j]*(phi[j]-phi[j-1])*(r[j+1] - rp)/(r[j+1] - r[j]) +
-                  derivative_minus_num[j+1]*(phi[j+1]-phi[j])*(rp - r[j])/(r[j+1] - r[j]))
-    rp = (3/4) * (r[n_N]**4 - r[n_N-1]**4) / (r[n_N]**3 - r[n_N-1]**3)
-    psi[n_N-1] = derivative_plus_num[n_N-1]*(phi[n_N-1]-phi[n_N-2])*(r[n_N] - rp)/(r[n_N] - r[n_N-1])
+        rp = (0.75) * (r_num[j+1]**4 - r_num[j]**4) / (r_num[j+1]**3 - r_num[j]**3)
+        psi[j] = (derivative_plus_num[j]*(phi[j]-phi[j-1])*(r_num[j+1] - rp)/(r_num[j+1] - r_num[j]) +
+                  derivative_minus_num[j+1]*(phi[j+1]-phi[j])*(rp - r_num[j])/(r_num[j+1] - r_num[j]))
+    rp = (0.75) * (r_num[n_N]**4 - r_num[n_N-1]**4) / (r_num[n_N]**3 - r_num[n_N-1]**3)
+    psi[n_N-1] = derivative_plus_num[n_N-1]*(phi[n_N-1]-phi[n_N-2])*(r_num[n_N] - rp)/(r_num[n_N] - r_num[n_N-1])
     
 
 @cython.cdivision(True)
@@ -297,9 +297,9 @@ def lo_newton(np.ndarray[DTYPE_t, ndim=1] tau_old,
               np.ndarray[DTYPE_t, ndim=1] P,
               np.ndarray[DTYPE_t, ndim=2] lo_advection_matrix):
               
-    #cdef double[::1] U_old = np.zeros(2*n_N)
-    #cdef double[::1] U = np.zeros(2*n_N)
-    #cdef double[::1] fU = np.zeros(2*n_N)
+    #cdef double[::1] U_old = np.zeros(2.*n_N)
+    #cdef double[::1] U = np.zeros(2.*n_N)
+    #cdef double[::1] fU = np.zeros(2.*n_N)
     cdef int j 
     for j in range(n_N):
         U_old[2*j] = tau_old[j]
@@ -309,7 +309,7 @@ def lo_newton(np.ndarray[DTYPE_t, ndim=1] tau_old,
         fU[2*j] = tau[j] - tau_old[j] + dt * taudot[j]  
         fU[2*j + 1] = Z[j] - Z_old[j] + dt * Zdot[j]
 
-    Tf[0, 0] = 1 + dt * (lo_advection_matrix[0][0] * dFtaudtau(v[0], phi[0], T[0], P[0]) +
+    Tf[0, 0] = 1. + dt * (lo_advection_matrix[0][0] * dFtaudtau(v[0], phi[0], T[0], P[0]) +
                   sources_num[0][0] * dGtaudtau(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
     Tf[1, 0] = dt * (lo_advection_matrix[0][0] * dFtaudZ(v[0], phi[0], T[0], P[0]) +
                   sources_num[0][0] * dGtaudZ(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
@@ -318,14 +318,14 @@ def lo_newton(np.ndarray[DTYPE_t, ndim=1] tau_old,
         
      
     Tf[0, 1] = dt * (gradient_num_plus[0] * derivative_plus_num[0] * (dpdtau(v[0], phi[0], T[0], P[0])) + gradient_num_minus[0] * derivative_minus_num[1] * (- dpdtau(v[0], phi[0], T[0], P[0])) + sources_num[0][0] * dGZdtau(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
-    Tf[1, 1] = 1 + dt * (lo_advection_matrix[0][0] * 1  + gradient_num_plus[0] * derivative_plus_num[0] * (dpdZ(v[0], phi[0], T[0], P[0])) + gradient_num_minus[0] * derivative_minus_num[1] * (- dpdZ(v[0], phi[0], T[0], P[0])) + sources_num[0][0] * dGZdZ(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
+    Tf[1, 1] = 1. + dt * (lo_advection_matrix[0][0]  + gradient_num_plus[0] * derivative_plus_num[0] * (dpdZ(v[0], phi[0], T[0], P[0])) + gradient_num_minus[0] * derivative_minus_num[1] * (- dpdZ(v[0], phi[0], T[0], P[0])) + sources_num[0][0] * dGZdZ(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
     Tf[2, 1] = dt * ((gradient_num_minus[0] * derivative_minus_num[1] * (dpdtau(v[1], phi[1], T[1], P[1])))/mass_num[0])
-    Tf[3, 1] = dt * (lo_advection_matrix[0][1] * 1 +
+    Tf[3, 1] = dt * (lo_advection_matrix[0][1] +
                             (gradient_num_minus[0] * derivative_minus_num[1] * (dpdZ(v[1], phi[1], T[1], P[1]))) / mass_num[0])                 
     for j in range(1, n_N-1):
         Tf[2*j-2, 2*j] = dt * (lo_advection_matrix[j][-1] * dFtaudtau(v[j-1], phi[j-1], T[j-1], P[j-1]))/mass_num[j]
         Tf[2*j-1, 2*j] = dt * (lo_advection_matrix[j][-1] * dFtaudZ(v[j-1], phi[j-1], T[j-1], P[j-1]))/mass_num[j]
-        Tf[2*j, 2*j] = 1 + dt * (lo_advection_matrix[j][0] * dFtaudtau(v[j], phi[j], T[j], P[j]) +
+        Tf[2*j, 2*j] = 1. + dt * (lo_advection_matrix[j][0] * dFtaudtau(v[j], phi[j], T[j], P[j]) +
                   sources_num[j][0] * dGtaudtau(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
         Tf[2*j+1, 2*j] = dt * (lo_advection_matrix[j][0] * dFtaudZ(v[j], phi[j], T[j], P[j]) +
                   sources_num[j][0] * dGtaudZ(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
@@ -333,26 +333,26 @@ def lo_newton(np.ndarray[DTYPE_t, ndim=1] tau_old,
         Tf[2*j+3, 2*j] = dt * (lo_advection_matrix[j][1] * dFtaudZ(v[j+1], phi[j+1], T[j+1], P[j+1]))/mass_num[j]
         
         Tf[2*j-2, 2*j+1] = dt * (gradient_num_plus[j] * derivative_plus_num[j] * (-dpdtau(v[j-1], phi[j-1], T[j-1], P[j-1])))/mass_num[j]
-        Tf[2*j-1, 2*j+1] = dt * (lo_advection_matrix[j][-1] * 1 +
+        Tf[2*j-1, 2*j+1] = dt * (lo_advection_matrix[j][-1] +
                             gradient_num_plus[j] * derivative_plus_num[j] * (- dpdZ(v[j-1], phi[j-1], T[j-1], P[j-1]))) / mass_num[j]
         Tf[2*j, 2*j+1] = dt * (gradient_num_plus[j] * derivative_plus_num[j] * (dpdtau(v[j], phi[j], T[j], P[j])) + gradient_num_minus[j] * derivative_minus_num[j+1] * (- dpdtau(v[j], phi[j], T[j], P[j])) + sources_num[j][0] * dGZdtau(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
-        Tf[2*j+1, 2*j+1] = 1 + dt * (lo_advection_matrix[j][0] * 1  + gradient_num_plus[j] * derivative_plus_num[j] * (dpdZ(v[j], phi[j], T[j], P[j])) + gradient_num_minus[j] * derivative_minus_num[j+1] * (- dpdZ(v[j], phi[j], T[j], P[j])) + sources_num[j][0] * dGZdZ(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
+        Tf[2*j+1, 2*j+1] = 1. + dt * (lo_advection_matrix[j][0]  + gradient_num_plus[j] * derivative_plus_num[j] * (dpdZ(v[j], phi[j], T[j], P[j])) + gradient_num_minus[j] * derivative_minus_num[j+1] * (- dpdZ(v[j], phi[j], T[j], P[j])) + sources_num[j][0] * dGZdZ(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
         Tf[2*j+2, 2*j+1] = dt * ((gradient_num_minus[j] * derivative_minus_num[j+1] * (dpdtau(v[j+1], phi[j+1], T[j+1], P[j+1])))/mass_num[j])
-        Tf[2*j+3, 2*j+1] = dt * (lo_advection_matrix[j][1] * 1 +
+        Tf[2*j+3, 2*j+1] = dt * (lo_advection_matrix[j][1] +
                             (gradient_num_minus[j] * derivative_minus_num[j+1] * (dpdZ(v[j+1], phi[j+1], T[j+1], P[j+1]))) / mass_num[j])
     
     Tf[2*(n_N-1)-2, 2*(n_N-1)] = dt*(lo_advection_matrix[n_N-1][-1] * dFtaudtau(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))/mass_num[n_N-1] 
     Tf[2*(n_N-1)-1, 2*(n_N-1)] = dt*(lo_advection_matrix[n_N-1][-1] * dFtaudZ(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))/mass_num[n_N-1]
-    Tf[2*(n_N-1), 2*(n_N-1)] = 1 + dt * (lo_advection_matrix[n_N-1][0] * dFtaudtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]) +
+    Tf[2*(n_N-1), 2*(n_N-1)] = 1. + dt * (lo_advection_matrix[n_N-1][0] * dFtaudtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]) +
                    sources_num[n_N-1][0] * dGtaudtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
     Tf[2*(n_N-1)+1, 2*(n_N-1)] = dt * (lo_advection_matrix[n_N-1][0] * dFtaudZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]) +
                    sources_num[n_N-1][0] * dGtaudZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
     
     Tf[2*(n_N-1)-2, 2*(n_N-1)+1] = dt * (gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (-dpdtau(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2])))/mass_num[n_N-1]
-    Tf[2*(n_N-1)-1, 2*(n_N-1)+1] = dt * (lo_advection_matrix[n_N-1][-1] * 1 +
+    Tf[2*(n_N-1)-1, 2*(n_N-1)+1] = dt * (lo_advection_matrix[n_N-1][-1] +
                             gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (- dpdZ(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))) / mass_num[n_N-1]         
     Tf[2*(n_N-1), 2*(n_N-1)+1] = dt * ((gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (dpdtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]))) + sources_num[n_N-1][0] * dGZdtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
-    Tf[2*(n_N-1)+1, 2*(n_N-1)+1] = 1 + dt * (lo_advection_matrix[n_N-1][0] * 1 +
+    Tf[2*(n_N-1)+1, 2*(n_N-1)+1] = 1 + dt * (lo_advection_matrix[n_N-1][0] +
                         gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (dpdZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1])) + sources_num[n_N-1][0] * dGZdZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
 
 
@@ -371,6 +371,9 @@ def lo_newton(np.ndarray[DTYPE_t, ndim=1] tau_old,
 
 @cython.cdivision(True)
 @cython.boundscheck(False)  # Deactivate bounds checking
+@cython.initializedcheck(False)
+@cython.binding(False)
+@cython.nonecheck(False) 
 def lo_newton_fast(np.ndarray[DTYPE_t, ndim=1] tau_old,
               np.ndarray[DTYPE_t, ndim=1] tau,
               np.ndarray[DTYPE_t, ndim=1] taudot,
@@ -386,76 +389,77 @@ def lo_newton_fast(np.ndarray[DTYPE_t, ndim=1] tau_old,
               np.ndarray[DTYPE_t, ndim=1] P,
               np.ndarray[DTYPE_t, ndim=2] lo_advection_matrix):
               
-    #cdef double[::1] U_old = np.zeros(2*n_N)
-    #cdef double[::1] U = np.zeros(2*n_N)
-    #cdef double[::1] fU = np.zeros(2*n_N)
+    #cdef double[::1] U_old = np.zeros(2.*n_N)
+    #cdef double[::1] U = np.zeros(2.*n_N)
+    #cdef double[::1] fU = np.zeros(2.*n_N)
+    cdef double[:, ::1] lo_advection_matrix_num = lo_advection_matrix
     cdef int j 
     for j in range(n_N):
         U_old[2*j] = tau_old[j]
         U_old[2*j + 1] = Z_old[j]
         U[2*j] = tau[j]
         U[2*j+1] = Z[j]
-        fU[2*j] = tau[j] - tau_old[j] + dt * taudot[j]  
-        fU[2*j + 1] = Z[j] - Z_old[j] + dt * Zdot[j]    
+        fU[2*j] = tau[j] - tau_old[j] + n_dt * taudot[j]  
+        fU[2*j + 1] = Z[j] - Z_old[j] + n_dt * Zdot[j]    
     
-    Tf_banded[0,0] = 0
-    Tf_banded[1,0] = 0
-    Tf_banded[2,0] = 0
-    Tf_banded[3,0] = 1 + dt * (lo_advection_matrix[0][0] * dFtaudtau(v[0], phi[0], T[0], P[0]) +
+    Tf_banded[0,0] = 0.
+    Tf_banded[1,0] = 0.
+    Tf_banded[2,0] = 0.
+    Tf_banded[3,0] = 1. + n_dt * (lo_advection_matrix_num[0][0] * dFtaudtau(v[0], phi[0], T[0], P[0]) +
                   sources_num[0][0] * dGtaudtau(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
-    Tf_banded[4, 0] = dt * (lo_advection_matrix[0][0] * dFtaudZ(v[0], phi[0], T[0], P[0]) +
+    Tf_banded[4, 0] = n_dt * (lo_advection_matrix_num[0][0] * dFtaudZ(v[0], phi[0], T[0], P[0]) +
                   sources_num[0][0] * dGtaudZ(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
-    Tf_banded[5, 0] = dt * (lo_advection_matrix[0][1] * dFtaudtau(v[1], phi[1], T[1], P[1]))/mass_num[0]
-    Tf_banded[6, 0] = dt * (lo_advection_matrix[0][1] * dFtaudZ(v[1], phi[1], T[1], P[1]))/mass_num[0]
+    Tf_banded[5, 0] = n_dt * (lo_advection_matrix_num[0][1] * dFtaudtau(v[1], phi[1], T[1], P[1]))/mass_num[0]
+    Tf_banded[6, 0] = n_dt * (lo_advection_matrix_num[0][1] * dFtaudZ(v[1], phi[1], T[1], P[1]))/mass_num[0]
     
-    Tf_banded[0,1] = 0
-    Tf_banded[1,1] = 0
-    Tf_banded[2,1] = dt * (gradient_num_plus[0] * derivative_plus_num[0] * (dpdtau(v[0], phi[0], T[0], P[0])) + gradient_num_minus[0] * derivative_minus_num[1] * (- dpdtau(v[0], phi[0], T[0], P[0])) + sources_num[0][0] * dGZdtau(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
-    Tf_banded[3,1] = 1 + dt * (lo_advection_matrix[0][0] * 1  + gradient_num_plus[0] * derivative_plus_num[0] * (dpdZ(v[0], phi[0], T[0], P[0])) + gradient_num_minus[0] * derivative_minus_num[1] * (- dpdZ(v[0], phi[0], T[0], P[0])) + sources_num[0][0] * dGZdZ(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
-    Tf_banded[4, 1] = dt * ((gradient_num_minus[0] * derivative_minus_num[1] * (dpdtau(v[1], phi[1], T[1], P[1])))/mass_num[0])
-    Tf_banded[5, 1] = dt * (lo_advection_matrix[0][1] * 1 +
+    Tf_banded[0,1] = 0.
+    Tf_banded[1,1] = 0.
+    Tf_banded[2,1] = n_dt * (gradient_num_plus[0] * derivative_plus_num[0] * (dpdtau(v[0], phi[0], T[0], P[0])) + gradient_num_minus[0] * derivative_minus_num[1] * (- dpdtau(v[0], phi[0], T[0], P[0])) + sources_num[0][0] * dGZdtau(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
+    Tf_banded[3,1] = 1 + n_dt * (lo_advection_matrix_num[0][0] + gradient_num_plus[0] * derivative_plus_num[0] * (dpdZ(v[0], phi[0], T[0], P[0])) + gradient_num_minus[0] * derivative_minus_num[1] * (- dpdZ(v[0], phi[0], T[0], P[0])) + sources_num[0][0] * dGZdZ(v[0], phi[0], T[0], P[0], phidot[0], psi[0]))/mass_num[0]
+    Tf_banded[4, 1] = n_dt * ((gradient_num_minus[0] * derivative_minus_num[1] * (dpdtau(v[1], phi[1], T[1], P[1])))/mass_num[0])
+    Tf_banded[5, 1] = n_dt * (lo_advection_matrix_num[0][1] +
                             (gradient_num_minus[0] * derivative_minus_num[1] * (dpdZ(v[1], phi[1], T[1], P[1]))) / mass_num[0])                 
     Tf_banded[6, 1] = 0
     
     for j in range(1, n_N-1):
-        Tf_banded[0,2*j] = 0
-        Tf_banded[1,2*j] = dt * (lo_advection_matrix[j][-1] * dFtaudtau(v[j-1], phi[j-1], T[j-1], P[j-1]))/mass_num[j]
-        Tf_banded[2,2*j] = dt * (lo_advection_matrix[j][-1] * dFtaudZ(v[j-1], phi[j-1], T[j-1], P[j-1]))/mass_num[j]
-        Tf_banded[3,2*j] = 1 + dt * (lo_advection_matrix[j][0] * dFtaudtau(v[j], phi[j], T[j], P[j]) +
+        Tf_banded[0,2*j] = 0.
+        Tf_banded[1,2*j] = n_dt * (lo_advection_matrix_num[j][-1] * dFtaudtau(v[j-1], phi[j-1], T[j-1], P[j-1]))/mass_num[j]
+        Tf_banded[2,2*j] = n_dt * (lo_advection_matrix_num[j][-1] * dFtaudZ(v[j-1], phi[j-1], T[j-1], P[j-1]))/mass_num[j]
+        Tf_banded[3,2*j] = 1. + n_dt * (lo_advection_matrix_num[j][0] * dFtaudtau(v[j], phi[j], T[j], P[j]) +
                   sources_num[j][0] * dGtaudtau(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
-        Tf_banded[4,2*j] = dt * (lo_advection_matrix[j][0] * dFtaudZ(v[j], phi[j], T[j], P[j]) +
+        Tf_banded[4,2*j] = n_dt * (lo_advection_matrix_num[j][0] * dFtaudZ(v[j], phi[j], T[j], P[j]) +
                   sources_num[j][0] * dGtaudZ(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
-        Tf_banded[5,2*j] = dt * (lo_advection_matrix[j][1] * dFtaudtau(v[j+1], phi[j+1], T[j+1], P[j+1]))/mass_num[j]
-        Tf_banded[6,2*j] = dt * (lo_advection_matrix[j][1] * dFtaudZ(v[j+1], phi[j+1], T[j+1], P[j+1]))/mass_num[j]
+        Tf_banded[5,2*j] = n_dt * (lo_advection_matrix_num[j][1] * dFtaudtau(v[j+1], phi[j+1], T[j+1], P[j+1]))/mass_num[j]
+        Tf_banded[6,2*j] = n_dt * (lo_advection_matrix_num[j][1] * dFtaudZ(v[j+1], phi[j+1], T[j+1], P[j+1]))/mass_num[j]
         
-        Tf_banded[0,2*j+1] = dt * (gradient_num_plus[j] * derivative_plus_num[j] * (-dpdtau(v[j-1], phi[j-1], T[j-1], P[j-1])))/mass_num[j]
-        Tf_banded[1, 2*j+1] =  dt * (lo_advection_matrix[j][-1] * 1 +
+        Tf_banded[0,2*j+1] = n_dt * (gradient_num_plus[j] * derivative_plus_num[j] * (-dpdtau(v[j-1], phi[j-1], T[j-1], P[j-1])))/mass_num[j]
+        Tf_banded[1, 2*j+1] =  n_dt * (lo_advection_matrix_num[j][-1] +
                             gradient_num_plus[j] * derivative_plus_num[j] * (- dpdZ(v[j-1], phi[j-1], T[j-1], P[j-1]))) / mass_num[j]
-        Tf_banded[2, 2*j+1] = dt * (gradient_num_plus[j] * derivative_plus_num[j] * (dpdtau(v[j], phi[j], T[j], P[j])) + gradient_num_minus[j] * derivative_minus_num[j+1] * (- dpdtau(v[j], phi[j], T[j], P[j])) + sources_num[j][0] * dGZdtau(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
-        Tf_banded[3, 2*j+1] = 1 + dt * (lo_advection_matrix[j][0] * 1  + gradient_num_plus[j] * derivative_plus_num[j] * (dpdZ(v[j], phi[j], T[j], P[j])) + gradient_num_minus[j] * derivative_minus_num[j+1] * (- dpdZ(v[j], phi[j], T[j], P[j])) + sources_num[j][0] * dGZdZ(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
-        Tf_banded[4, 2*j+1] = dt * ((gradient_num_minus[j] * derivative_minus_num[j+1] * (dpdtau(v[j+1], phi[j+1], T[j+1], P[j+1])))/mass_num[j])
-        Tf_banded[5, 2*j+1] = dt * (lo_advection_matrix[j][1] * 1 +
+        Tf_banded[2, 2*j+1] = n_dt * (gradient_num_plus[j] * derivative_plus_num[j] * (dpdtau(v[j], phi[j], T[j], P[j])) + gradient_num_minus[j] * derivative_minus_num[j+1] * (- dpdtau(v[j], phi[j], T[j], P[j])) + sources_num[j][0] * dGZdtau(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
+        Tf_banded[3, 2*j+1] = 1 + n_dt * (lo_advection_matrix_num[j][0] + gradient_num_plus[j] * derivative_plus_num[j] * (dpdZ(v[j], phi[j], T[j], P[j])) + gradient_num_minus[j] * derivative_minus_num[j+1] * (- dpdZ(v[j], phi[j], T[j], P[j])) + sources_num[j][0] * dGZdZ(v[j], phi[j], T[j], P[j], phidot[j], psi[j]))/mass_num[j]
+        Tf_banded[4, 2*j+1] = n_dt * ((gradient_num_minus[j] * derivative_minus_num[j+1] * (dpdtau(v[j+1], phi[j+1], T[j+1], P[j+1])))/mass_num[j])
+        Tf_banded[5, 2*j+1] = n_dt * (lo_advection_matrix_num[j][1] +
                             (gradient_num_minus[j] * derivative_minus_num[j+1] * (dpdZ(v[j+1], phi[j+1], T[j+1], P[j+1]))) / mass_num[j])
-        Tf_banded[6, 2*j+1] = 0
+        Tf_banded[6, 2*j+1] = 0.
         
-    Tf_banded[0, 2*(n_N-1)] = 0
-    Tf_banded[1, 2*(n_N-1)] = dt*(lo_advection_matrix[n_N-1][-1] * dFtaudtau(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))/mass_num[n_N-1] 
-    Tf_banded[2, 2*(n_N-1)] = dt*(lo_advection_matrix[n_N-1][-1] * dFtaudZ(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))/mass_num[n_N-1]
-    Tf_banded[3, 2*(n_N-1)] = 1 + dt * (lo_advection_matrix[n_N-1][0] * dFtaudtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]) +
+    Tf_banded[0, 2*(n_N-1)] = 0.
+    Tf_banded[1, 2*(n_N-1)] = n_dt*(lo_advection_matrix_num[n_N-1][-1] * dFtaudtau(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))/mass_num[n_N-1] 
+    Tf_banded[2, 2*(n_N-1)] = n_dt*(lo_advection_matrix_num[n_N-1][-1] * dFtaudZ(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))/mass_num[n_N-1]
+    Tf_banded[3, 2*(n_N-1)] = 1. + n_dt * (lo_advection_matrix_num[n_N-1][0] * dFtaudtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]) +
                    sources_num[n_N-1][0] * dGtaudtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
-    Tf_banded[4, 2*(n_N-1)] = dt * (lo_advection_matrix[n_N-1][0] * dFtaudZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]) +
+    Tf_banded[4, 2*(n_N-1)] = n_dt * (lo_advection_matrix_num[n_N-1][0] * dFtaudZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]) +
                    sources_num[n_N-1][0] * dGtaudZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
-    Tf_banded[5, 2*(n_N-1)] = 0
-    Tf_banded[6, 2*(n_N-1)] = 0
-    Tf_banded[0, 2*(n_N-1)+1] = dt * (gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (-dpdtau(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2])))/mass_num[n_N-1]
-    Tf_banded[1, 2*(n_N-1)+1] = dt * (lo_advection_matrix[n_N-1][-1] * 1 +
+    Tf_banded[5, 2*(n_N-1)] = 0.
+    Tf_banded[6, 2*(n_N-1)] = 0.
+    Tf_banded[0, 2*(n_N-1)+1] = n_dt * (gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (-dpdtau(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2])))/mass_num[n_N-1]
+    Tf_banded[1, 2*(n_N-1)+1] = n_dt * (lo_advection_matrix_num[n_N-1][-1] +
                             gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (- dpdZ(v[n_N-2], phi[n_N-2], T[n_N-2], P[n_N-2]))) / mass_num[n_N-1]         
-    Tf_banded[2, 2*(n_N-1)+1] = dt * ((gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (dpdtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]))) + sources_num[n_N-1][0] * dGZdtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
-    Tf_banded[3, 2*(n_N-1)+1] = 1 + dt * (lo_advection_matrix[n_N-1][0] * 1 +
+    Tf_banded[2, 2*(n_N-1)+1] = n_dt * ((gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (dpdtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1]))) + sources_num[n_N-1][0] * dGZdtau(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
+    Tf_banded[3, 2*(n_N-1)+1] = 1 + n_dt * (lo_advection_matrix_num[n_N-1][0] +
                         gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (dpdZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1])) + sources_num[n_N-1][0] * dGZdZ(v[n_N-1], phi[n_N-1], T[n_N-1], P[n_N-1], phidot[n_N-1], psi[n_N-1]))/mass_num[n_N-1]
-    Tf_banded[4, 2*(n_N-1)+1] = 0
-    Tf_banded[5, 2*(n_N-1)+1] = 0
-    Tf_banded[6, 2*(n_N-1)+1] = 0
+    Tf_banded[4, 2*(n_N-1)+1] = 0.
+    Tf_banded[5, 2*(n_N-1)+1] = 0.
+    Tf_banded[6, 2*(n_N-1)+1] = 0.
         
     dU = solve_banded((3, 3), Tf_banded, fU, check_finite=False, overwrite_ab=True, overwrite_b=True)
     for j in range(n_N):

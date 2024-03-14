@@ -41,14 +41,37 @@ def thin_wall(r, v0, L, r0):
 
 fit = curve_fit(thin_wall, profile.R, profile.Phi,
                 bounds=(0, [1.5 * vt, 1, 1]))[0]
-plt.figure()
-plt.plot(r / GeV, thin_wall(r / GeV, fit[0], fit[1], fit[2]),
-         label="thin-wall approximation")
-plt.scatter(profile.R, profile.Phi, c="red", s=1, label="Numerical profile")
-plt.xlim(0, 0.7)
+
+columnwidth = 420
+
+def get_figsize(columnwidth, wf=0.5, hf=(5.**0.5-1.0) / 2.0):
+    r"""Parameters:
+      - wf [float]:  width fraction in columnwidth units
+      - hf [float]:  height fraction in columnwidth units.
+                     Set by default to golden ratio.
+      - columnwidth [float]: width of the column in latex. Get this from LaTeX
+                             using \showthe\columnwidth
+    Returns:  [fig_width,fig_height]: that should be given to matplotlib
+    """
+    fig_width_pt = columnwidth * wf
+    inches_per_pt = 1.0 / 72.27               # Convert pt to inch
+    fig_width = fig_width_pt * inches_per_pt  # width in inches
+    fig_height = fig_width * hf      # height in inches
+    return [fig_width, fig_height]
+    
+plt.style.use('jcap.mplstyle')
+plt.figure(figsize = get_figsize(columnwidth))
+plt.plot(r / GeV, thin_wall(r / GeV, fit[0], fit[1], fit[2])/vt,
+         label="thin-wall approximation", lw = 0.75, c = "deepskyblue")
+plt.scatter(profile.R, profile.Phi/vt, s=1, label="Numerical profile", marker = "." ,zorder=5, facecolors='none', edgecolors='crimson')
+plt.xlim(0, 2)
+plt.xlabel("$r$ [GeV$^{-1}$]")
+plt.ylabel("$\\phi/v$")
 plt.legend()
-plt.savefig('phi0')
+plt.grid(lw = 0.5)
+plt.savefig('phi0.pdf')
 plt.close()
+
 print(vt)
 phi_tw = []
 for i in range(len(r)):

@@ -5,11 +5,8 @@ Created on Tue Apr 26 10:37:54 2022
 """
 
 cdef double V0(double phi)
-cdef double m2(double phi,double T)
-cdef double mAl2(double phi, double T)
-cdef double mAt2(double phi, double T)
+cdef double mf2(double phi, double T)
 cdef double Vtherm(double phi, double T)
-cdef double VCW(double phi, double T)
 # %% Defining thermally corrected potential of the model.
 cdef double VT(double field, double temp)
 # end: Defining thermally corrected potential of the model.

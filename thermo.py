@@ -11,48 +11,90 @@ from numpy import pi
 # end: Importing mathematical constants.
 
 # %% Importing parameters of the model.
-from parameters import Tn, Tc, lam, m0, q
+from parameters import lam, etaV, y, v, Tn, Tc
 # end: Importing parameters of the model.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from thermal_functions import Jf, Jb
+from scipy.integrate import quad
+from thermal_functions import Jf, Jb, J
 
 
 
 ##### Effective potential #####
 
-mu2 = m0**2/2
-v = np.sqrt(mu2/(lam))
-mA = np.sqrt(q**2*v**2)
-def V0(phi):
-	return -0.5*mu2*phi**2 + 0.25*lam*phi**4 
-
-def m2(phi, T):
-	return -mu2 + 3*lam*phi**2 + (lam/3 + 0.25*q**2)*T**2
-
-def mAl2(phi, T):
-	return q**2*phi**2 + 1/3 * q**2 * T**2
+m02 = lam*v**2*etaV
+mv2 = lam*v**2*(1 - etaV)
+def meff2(phi):
+	return lam*(etaV*v**2 - 2*(1+etaV)*v*phi + 3*phi**2)
 	
-def mAt2(phi, T):
-	return q**2*phi**2 
+def m2(phi):
+	#return max(meff2(phi), 0)
+	return meff2(phi)
+	
+def V0(phi):
+	return lam*(0.5*etaV*v**2*phi**2 - (1+etaV)/3*v*phi**3 + 0.25*phi**4)
+
+
+def mf2(phi):
+	return y**2*phi**2
+
 		
 def Vtherm(phi, T):
-	return T**4/(2*np.pi**2) * Jb(m2(phi,T)/T**2) +  T**4/(2*np.pi**2) * Jb(mAl2(phi,T)/T**2) + 2*T**4/(2*np.pi**2) * Jb(mAt2(phi,T)/T**2)
+	#return  T**4/(2*np.pi**2) * Jf((mf2(phi))/T**2) 
+	return  T**4/(2*np.pi**2) * J((mf2(phi))/T**2) 
 
-def VCW(phi, T):
-	return 1/(64*pi**2) * (m2(phi,T)**2*(np.log(abs(m2(phi,T)/m0**2) + 1e-100 ) - 1.5) + 2*m2(phi,T)*m0**2) + 1/(64*pi**2) * (mAl2(phi,T)**2*(np.log(mAl2(phi,T)/(mA**2) + 1e-100) - 1.5) + 2*mAl2(phi,T)*(mA**2)) +  2/(64*pi**2) * (mAt2(phi,T)**2*(np.log(mAt2(phi,T)/(mA**2) + 1e-100) - 1.5) + 2*mAt2(phi,T)*(mA**2))
+#phi_test = np.linspace(0,120,100)
 
-def V(phi, T):
-	return V0(phi) + Vtherm(phi, T)# + VCW(phi, T)
-def Vfull(phi, T):
-	return V0(phi) + Vtherm(phi, T) + VCW(phi, T)
 
 	
 # %% Defining thermally corrected potential of the model.
 def VT(field, temp):
-    return V0(field) + Vtherm(field, temp) + VCW(field, temp)
+    return V0(field) + Vtherm(field, temp)
 #end: Defining thermally corrected potential of the model.
+
+
+#def I(k, m):
+#    return k**2*np.exp(-(m + k**2)**0.5)
+    
+#def J(x2):
+#    integral_result, _ = quad(I, 0, np.inf, args=(x2,))
+#    return -integral_result
+
+
+#print(J(10))
+#J_vec = np.vectorize(J)
+	
+#def Vtherm_Boltzmann(phi, T):
+#	return T**4/(2*np.pi**2) * J_vec((mf2(phi))/T**2)
+
+
+# %% Defining thermally corrected potential of the model.
+#def VT_B(field, temp):
+#    return V0(field) + Vtherm_Boltzmann(field, temp)
+#end: Defining thermally corrected potential of the model.
+
+
+
+#x2 = np.logspace(2.9, 3.1, 600)
+#fx2 = []
+#for x in x2:
+#	fx2.append(J(x))
+#fx2 = J_vec(x2)
+#print(x2)
+#np.savetxt('finiteT.txt', np.column_stack((x2, fx2)), fmt='%.18e', delimiter=' ')
+
+#VT_test = VT(phi_test, 50)
+#VT_test_Boltzmann = VT_B(phi_test, 50)
+
+#plt.figure()
+#plt.scatter(x2, fx2,s=1)
+#plt.xscale("log")
+#plt.plot(phi_test, VT_test_Boltzmann, lw = 0.5)
+#plt.savefig("test_J.pdf")
+
+	
+
 
 
 # %% Defining derivative with respect to the field of

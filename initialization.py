@@ -8,7 +8,6 @@ Created on Tue Apr 26 12:23:02 2022
 
 # %% Import package for numerical computations.
 import numpy as np
-import matplotlib.pyplot as plt
 # end: Import package for numerical computations.
 
 # %% Importing parameters of the model.
@@ -17,11 +16,8 @@ from parameters import Tn
 
 
 # %% Import matrices of the integration scheme.
-from lattice import r
-from lattice import GeV
+from lattice import r, GeV
 # end: Import matrices of the integration scheme.
-
-
 
 try:
 	# %% Import critical bubble calculated by CosmoTransitions.
@@ -57,16 +53,4 @@ P_off = 0 * np.ones(r.size)
 print(T)
 print(Z)
 print(P)
-Jf_dat_path = "thermal_functions/finiteT_f.txt"
-dataf = np.loadtxt(Jf_dat_path)
-xf0  = dataf[:, 0]
-yf0  = dataf[:, 1]
-Jb_dat_path = "thermal_functions/finiteT_b.txt"
-datab = np.loadtxt(Jb_dat_path)
-xb0  = datab[:, 0]
-yb0  = datab[:, 1]
-J_dat_path = "thermal_functions/finiteT.txt"
-datab = np.loadtxt(J_dat_path)
-x0  = datab[:, 0]
-y0  = datab[:, 1]
 

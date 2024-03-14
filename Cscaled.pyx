@@ -8,7 +8,7 @@ cimport cython
 # end: Importing Cython for decorators.
 
 # %% Import termodynamically corrected quantities.
-from Cthermo cimport VT, dVTdphi
+from Cpotential cimport VT, dVTdphi, dVTdT, d2VTdphidT, d2VTdT2, d3VTdT3
 # end: Import termodynamically corrected quantities.
 
 # %% Importing procedure for solving algebraic relation
@@ -25,24 +25,53 @@ cdef double GeV = 1.  # Value of GeV in terms of simulation units.
 # %% Defining the rescaled potential.
 @cython.cdivision(True)
 cdef double VT_mod(double field, double temp):
-    return VT(field / GeV, temp / GeV) * GeV**4
+    return VT(field / GeV, temp / GeV) * GeV * GeV * GeV * GeV
 # end: Defining the rescaled potential.
 
 
 # %% Defining rescaled derivative of the potential.
 @cython.cdivision(True)
 cdef double dVTdphi_mod(double field, double temp):
-    return dVTdphi(field / GeV, temp / GeV) * GeV**3
+    return dVTdphi(field / GeV, temp / GeV) * GeV * GeV * GeV
+# end: Defining rescaled derivative of the potential.
+
+
+# %% Defining rescaled derivative of the potential.
+@cython.cdivision(True)
+cdef double dVTdT_mod(double field, double temp):
+    return dVTdT(field / GeV, temp / GeV) * GeV * GeV * GeV
+# end: Defining rescaled derivative of the potential.
+
+
+# %% Defining rescaled second derivative of the potential.
+@cython.cdivision(True)
+cdef double d2VTdphidT_mod(double field, double temp):
+    return d2VTdphidT(field / GeV, temp / GeV) * GeV * GeV
+# end: Defining rescaled second derivative of the potential.
+
+
+# %% Defining rescaled second derivative of the potential.
+@cython.cdivision(True)
+cdef double d2VTdT2_mod(double field, double temp):
+    return d2VTdT2(field / GeV, temp / GeV) * GeV * GeV
+# end: Defining rescaled second derivative of the potential.
+
+
+# %% Defining rescaled derivative of the potential.
+@cython.cdivision(True)
+cdef double d3VTdT3_mod(double field, double temp):
+    return d3VTdT3(field / GeV, temp / GeV) * GeV
 # end: Defining rescaled derivative of the potential.
 
 
 @cython.cdivision(True)
 cdef void tauZphi2Tpv_mod(double tau, double Z, double phi,
                           double* T, double* P, double* v):
+    cdef double GeV4 = GeV * GeV * GeV * GeV
     cdef double newT = T[0] / GeV
-    cdef double newP = P[0] / GeV**4
+    cdef double newP = P[0] / GeV4
     cdef double newv = v[0]
-    tauZphi2Tpv_new(tau / GeV**4, Z / GeV**4, phi / GeV, &newT, &newP, &newv)
+    tauZphi2Tpv_new(tau / GeV4, Z / GeV4, phi / GeV, &newT, &newP, &newv)
     T[0] = newT * GeV
-    P[0] = newP * GeV**4
+    P[0] = newP * GeV4
     v[0] = newv

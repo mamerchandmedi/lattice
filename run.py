@@ -58,7 +58,10 @@ from Cflux_corrected_transport import limit_fluxes
 from Cflux_corrected_transport import prelimiting
 # end: Importing FCT variable.
 
-from thermo import dVTdT, d2VTdT
+# %% Import potential derivatives.
+from potential import dVTdT, d2VTdT2
+# end: Import potential derivatives.
+
 # %% Importing characteristic variables.
 #from characteristic_variables import T_matrices2
 # end: Importing characteristic variables.
@@ -345,7 +348,7 @@ for k in tqdm(range(nsteps)):
     #print(k+1, "H: ", phi_H[0:20], v_H[0:20], T_H[0:20], P_H[0:20], Z_H[0:20], tau_H[0:20])
     #print(k+1, "L: ", phi_L[0], v_L[0], T_L[0], P_L[0])
     if((k+1) % psteps == 0):
-        cs2 = dVTdT(phi_H, T_H)/(T_H*d2VTdT(phi_H,T_H))
+        cs2 = dVTdT(phi_H, T_H)/(T_H*d2VTdT2(phi_H,T_H))
         xi = r/t
         axs[0, 0].plot(xi / GeV**(-1), phi_H / GeV, c=colors)
         axs[1, 0].plot(xi / GeV**(-1), v_H / (GeV**4), c=colors)

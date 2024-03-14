@@ -15,95 +15,18 @@ from libc.math cimport fabs
 # end: Importing mathematical constants.
 
 # %% Importing parameters of the model.
-from parameters import lam as pylam
-from parameters import etaV as pyetaV
-from parameters import y as pyy
-from parameters import v as pyv
-from parameters import Tc as pyTc
 from parameters import eta as pyeta
 # end: Importing parameters of the model.
 
-# %% Import package for dynamical compilation of Cython code.
-#import pyximport
-#pyximport.install(inplace=True, language_level='3')
-# end: Import package for dynamical compilation of Cython code.
+# %% Importing used function.
+from libc.math cimport sqrt
+# end: Importing used functions.
 
-import numpy as np
-from Cthermal_functions cimport Jf, oldJf, J
+# %% Import thermally corrected potential and its derivatives.
+from Cpotential cimport V0, VT, dVTdphi, dVTdT, d2VTdphidT, d2VTdT2, d3VTdT3
+# end: Import thermally corrected potential and its derivatives.
 
-cdef double lam = pylam
-cdef double etaV = pyetaV
-cdef double y = pyy
 cdef double eta = pyeta
-cdef double v = pyv
-cdef double Tc = pyTc
-cdef double epsilon
-
-
-cdef inline double V0(double phi):
-    return lam*(0.5*etaV*v**2*phi**2 - (1+etaV)/3*v*phi**3 + 0.25*phi**4)
-	
-cdef inline double mf2(double phi, double T):
-    return y**2*phi**2
-	
-
-cdef inline double Vtherm(double phi, double T): 
-    #return T**4/(2*pi**2) * Jf(mf2(phi,T)/T**2)
-    return T**4/(2*pi**2) * J(mf2(phi,T)/T**2)
-
-
-	
-# %% Defining thermally corrected potential of the model.
-cdef inline double VT(double field, double temp):
-    return V0(field) + Vtherm(field, temp)
-# end: Defining thermally corrected potential of the model.
-
-
-# %% Defining derivative with respect to the field of
-#    thermally corrected potential of the model.
-cdef inline double dVTdphi(double field, double temp):
-    epsilon = 0.001*v
-    #return (-VT(field+2*epsilon, temp) + 8*VT(field+epsilon, temp) - 8*VT(field-epsilon, temp) + VT(field-2*epsilon, temp))/(12*epsilon)
-    return (-VT(field-epsilon, temp) + VT(field+epsilon, temp)) / (2*epsilon) 
-# end: Defining derivative with respect to the field of
-#      thermally corrected potential of the model.
-
-
-# %% Defining first derivative with respect to the temperature of
-#    thermally corrected potential of the model.
-cdef inline double dVTdT(double field, double temp):
-    epsilon = 0.001*Tc
-    #return (-VT(field, temp+2*epsilon) + 8*VT(field, temp+epsilon) - 8*VT(field, temp-epsilon) + VT(field, temp-2*epsilon))/(12*epsilon)
-    return (-VT(field, temp-epsilon) + VT(field, temp+epsilon)) / (2*epsilon)
-# end: Defining first derivative with respect to the temperature of
-#      thermally corrected potential of the model.
-
-# %% Defining second mixed derivative of thermally corrected potential of the model.
-cdef inline double d2VTdphidT(double field, double temp):
-    epsilon = 0.001*Tc
-    #return (-dVTdphi(field, temp+2*epsilon) + 8*dVTdphi(field, temp+epsilon) - 8*dVTdphi(field, temp-epsilon) + dVTdphi(field, temp-2*epsilon))/(12*epsilon)
-    return (-dVTdphi(field, temp-epsilon) + dVTdphi(field, temp+epsilon)) / (2*epsilon)
-# end: Defining second mixed derivative of thermally corrected potential of the model.
-
-
-# %% Defining second derivative with respect to the temperature of
-#    thermally corrected potential of the model.
-cdef inline double d2VTdT(double field, double temp):
-    epsilon = 0.001*Tc
-    #return (-dVTdT(field, temp+2*epsilon) + 8*dVTdT(field, temp+epsilon) - 8*dVTdT(field, temp-epsilon) + dVTdT(field, temp-2*epsilon))/(12*epsilon)
-    return (-dVTdT(field, temp-epsilon)  + dVTdT(field, temp+epsilon)) / (2*epsilon)
-# end: Defining second derivative with respect to the temperature of
-#      thermally corrected potential of the model.
-
-
-# %% Defining third derivative with respect to the temperature of
-#    thermally corrected potential of the model.
-cdef inline double d3VTdT(double field, double temp):
-    epsilon = 0.001*Tc
-    #return (-d2VTdT(field, temp+2*epsilon) + 8*d2VTdT(field, temp+epsilon) - 8*d2VTdT(field, temp-epsilon) + d2VTdT(field, temp-2*epsilon))/(12*epsilon)
-    return (-d2VTdT(field, temp-epsilon) + d2VTdT(field, temp+epsilon)) / (2*epsilon)
-# end: Defining third derivative with respect to the temperature of
-#      thermally corrected potential of the model.
 
 
 # %% Defining energy density of the system.
@@ -132,19 +55,19 @@ cdef inline double dpdT(double field, double temp):
 
 # %% Defining seond derivative of the pressure with respect to temperature.
 cdef inline double d2pdT(double field, double temp):
-    return - d2VTdT(field, temp)
+    return - d2VTdT2(field, temp)
 # end: Defining second derivative of the pressure with respect to temperature.
 
 
 # %% Defining derivative of the energy density with respect to temperature.
 cdef inline double depsdT(double field, double temp):
-    return - temp * d2VTdT(field, temp)
+    return - temp * d2VTdT2(field, temp)
 # end: Defining derivative of the energy density with respect to temperature.
 
 
 # %% Defining second derivative of the energy density with respect to temperature.
 cdef inline double d2epsdT(double field, double temp):
-    return - d2VTdT(field, temp) - temp * d3VTdT(field, temp)
+    return - d2VTdT2(field, temp) - temp * d3VTdT3(field, temp)
 # end: Defining second derivative of the energy density with respect to temperature.
 
 
@@ -167,12 +90,12 @@ cdef inline double d2wdT(double field, double temp):
 # %% Defining relativistic gamma factor.
 @cython.cdivision(True)
 cdef inline double gam(double vel):
-    return 1 / (1 - vel**2)**0.5
+    return 1 / sqrt(1 - vel**2)
 # end: Defining relativistic gamma factor.
 
 # %% Defining first derivative of the gamma factor.
 cdef inline double dgamdv(double v):
-    return v*gam(v)**3
+    return v * gam(v) * gam(v) * gam(v)
 # end: Defining first derivative of the gamma factor.
 
 # %% Defining friction source for tau.
@@ -191,6 +114,7 @@ cdef inline double Gf_Z(double phi, double dphidt, double dphidr,
 # end: Defining friction source for Z.
 
 # %% Defining tau derivative with respect to p.
+@cython.cdivision(True)
 cdef inline double dtaudp(double v, double field, double temp):
     return gam(v)**2 * dwdT(field, temp) / dpdT(field, temp) - 1
 # end: Defining tau derivative with respect to p.
@@ -202,54 +126,62 @@ cdef inline double dZdp(double v, double field, double temp):
 
 # %% Defining tau derivative with respect to T.
 cdef inline double dtaudT(double v, double field, double temp):
-    return dwdT(field, temp) * gam(v)**2 - dpdT(field, temp)
+    return dwdT(field, temp) * gam(v) * gam(v)  - dpdT(field, temp)
 # end: Defining tau derivative with respect to T.
 
 # %% Defining tau derivative with respect to v.
 cdef inline double dtaudv(double v, double field, double temp, double P):
-    return (eps(field, temp) + P) * 2 * v * gam(v)**4
+    return (eps(field, temp) + P) * 2 * v * gam(v) * gam(v) * gam(v) * gam(v)
 # end: Defining tau derivative with respect to v.
 
 # %% Defining v derivative with respect to tau along Z = const.
+@cython.cdivision(True)
 cdef inline double dvdtau(double v, double field, double temp, double P):
     return 1/(dtaudv(v, field, temp, P) - dtaudT(v, field, temp)*dZdT(v, field, temp)**(-1)*dZdv(v, field, temp))
 # end: Defining v derivative with respect to tau along Z = const.
 
 # %% Defining v derivative with respect to Z along tau = const.
+@cython.cdivision(True)
 cdef inline double dvdZ(double v, double field, double temp, double P):
     return 1/(dZdv(v, field, temp) - dZdT(v, field, temp)*dtaudT(v, field, temp)**(-1)*dtaudv(v, field, temp, P))
 # end: Defining v derivative with respect to Z along tau = const.
 
 # %% Defining T derivative with respect to tau along Z = const.
+@cython.cdivision(True)
 cdef inline double dTdtau(double v, double field, double temp, double P):
     return 1/(dtaudT(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdT(v, field, temp))
 # end: Defining T derivative with respect to tau along Z = const.
 
 # %% Defining T derivative with respect to Z along tau = const.
+@cython.cdivision(True)
 cdef inline double dTdZ(double v, double field, double temp, double P):
     return 1/(dZdT(v, field, temp) - dZdv(v, field, temp)*dtaudv(v, field, temp, P)**(-1)*dtaudT(v, field, temp))
 # end: Defining T derivative with respect to Z along tau = const.
 
 # %% Defining p derivative with respect to tau along Z = const.
+@cython.cdivision(True)
 cdef inline double dpdtau(double v, double field, double temp, double P):
     return 1/(dtaudp(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdp(v, field, temp))
     #return dpdT(field, temp) * dTdtau(v, field, temp, P)
 # end: Defining p derivative with respect to tau along Z = const.
 
 # %% Defining p derivative with respect to Z along tau = const.
+@cython.cdivision(True)
 cdef inline double dpdZ(double v, double field, double temp, double P):
-    return 1/(dZdp(v, field, temp) - dZdv(v, field, temp)*dtaudv(v, field, temp, P)**(-1)*dtaudp(v, field, temp))
+    return 1 / (dZdp(v, field, temp) - dZdv(v, field, temp) * dtaudp(v, field, temp) / dtaudv(v, field, temp, P))
     #return dpdT(field, temp) * dTdZ(v, field, temp, P)
 # end: Defining p derivative with respect to Z along tau = const.
 
 # %% Defining Z derivative with respect to v.
+@cython.cdivision(True)
 cdef inline double dZdv(double v, double field, double temp):
-    return 2 * (eps(field, temp) + p(field,temp))*gam(v)*dgamdv(v) + (eps(field, temp) + p(field,temp))*gam(v)**2
+    return 2 * (eps(field, temp) + p(field,temp)) * gam(v) * dgamdv(v) +\
+        (eps(field, temp) + p(field,temp)) * gam(v) * gam(v)
 # end: Defining Z derivative with respect to v.
 
 # %% Defining Z derivative with respect to T.
 cdef inline double dZdT(double v, double field, double temp):
-    return dwdT(field, temp) * gam(v)**2 * v
+    return dwdT(field, temp) * gam(v) * gam(v) * v
 # end: Defining Z derivative with respect to T.
 
 # %% Defining Ftau derivative with respect to tau.
@@ -264,20 +196,28 @@ cdef inline double dFtaudZ(double v, double field, double temp, double P):
 
 # %% Defining Gtau derivative with respect to tau.
 cdef inline double dGtaudtau(double v, double phi, double T, double P, double dphidt, double dphidr):
-    return d2VTdphidT(phi, T)*dTdtau(v, phi, T, P)*dphidt + eta*dgamdv(v)*dvdtau(v, phi, T, P)*(dphidt + v*dphidr)*dphidt + eta*gam(v)*dvdtau(v, phi, T, P)*dphidr*dphidt
+    return d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt +\
+        eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\
+        eta * gam(v) * dvdtau(v, phi, T, P) * dphidr * dphidt
 # end: Defining Gtau derivative with respect to tau.
 
 # %% Defining Gtau derivative with respect to Z.
 cdef inline double dGtaudZ(double v, double phi, double T, double P, double dphidt, double dphidr):
-    return d2VTdphidT(phi, T)*dTdZ(v, phi, T, P)*dphidt + eta*dgamdv(v)*dvdZ(v, phi, T, P)*(dphidt + v*dphidr)*dphidt + eta*gam(v)*dvdZ(v, phi, T, P)*dphidr*dphidt
+    return d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt +\
+        eta * dgamdv(v) * dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\
+        eta * gam(v) * dvdZ(v, phi, T, P) * dphidr * dphidt
 # end: Defining Gtau derivative with respect to Z.
 
 # %% Defining GZ derivative with respect to tau.
 cdef inline double dGZdtau(double v, double phi, double T, double P, double dphidt, double dphidr):
-    return -d2VTdphidT(phi, T)*dTdtau(v, phi, T, P)*dphidt - eta*dgamdv(v)*dvdtau(v, phi, T, P)*(dphidt + v*dphidr)*dphidr - eta*gam(v)*dvdtau(v, phi, T, P)*dphidr**2
+    return -d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt -\
+        eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\
+        eta * gam(v) * dvdtau(v, phi, T, P) * dphidr * dphidr
 # end: Defining Gtau derivative with respect to tau.
 
 # %% Defining GZ derivative with respect to Z.
 cdef inline double dGZdZ(double v, double phi, double T, double P, double dphidt, double dphidr):
-    return -d2VTdphidT(phi, T)*dTdZ(v, phi, T, P)*dphidt - eta*dgamdv(v)*dvdZ(v, phi, T, P)*(dphidt + v*dphidr)*dphidr - eta*gam(v)*dvdZ(v, phi, T, P)*dphidr**2
+    return -d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt -\
+        eta * dgamdv(v)*dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\
+        eta * gam(v) * dvdZ(v, phi, T, P) * dphidr * dphidr
 # end: Defining GZ derivative with respect to Z.

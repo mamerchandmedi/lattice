@@ -21,17 +21,23 @@ from libc.math cimport floor
 from libc.math cimport fabs
 from libc.math cimport asinh
 
-# %% Import package for dynamical compilation of Cython code.
-#import pyximport
-#pyximport.install(inplace=True, language_level='3')
-# end: Import package for dynamical compilation of Cython code.
-
-from initialization import xf0, yf0, xb0, yb0, x0, y0
-
 # %% Fixing a datatype for numpy arrays.
 DTYPE = np.double
 ctypedef np.double_t DTYPE_t
 # end: Fixing a datatype for numpy arrays.
+
+Jf_dat_path = "thermal_functions/finiteT_f.txt"
+dataf = np.loadtxt(Jf_dat_path, dtype = DTYPE)
+xf0  = dataf[:, 0]
+yf0  = dataf[:, 1]
+Jb_dat_path = "thermal_functions/finiteT_b.txt"
+datab = np.loadtxt(Jb_dat_path, dtype = DTYPE)
+xb0  = datab[:, 0]
+yb0  = datab[:, 1]
+J_dat_path = "thermal_functions/finiteT.txt"
+x0, y0 = np.loadtxt(J_dat_path, dtype = DTYPE, unpack=True)
+#x0  = datab[:, 0]
+#y0  = datab[:, 1]
 
 # Define the low and high functions
 cdef double Jf_low(double x):
@@ -99,7 +105,7 @@ cdef inline double oldJf(double x):
 
 
 @cython.boundscheck(False)  # Disable bounds-checking for faster array access
-cdef inline double Jf(double x):
+cpdef inline double Jf(double x):
     cdef Py_ssize_t i = 300
     cdef Py_ssize_t j = 999
     cdef Py_ssize_t mid
@@ -138,7 +144,7 @@ cdef double[::1] yb = yb0_np
 
 
 @cython.boundscheck(False)  # Disable bounds-checking for faster array access
-cdef inline double Jb(double x):
+cpdef inline double Jb(double x):
     cdef int i = 0
     cdef int j = len(xb) - 1
     cdef int mid
@@ -176,7 +182,7 @@ y0_np = np.array(y0, dtype = DTYPE)
 cdef double[::1] yi = y0_np
 
 @cython.boundscheck(False)  # Disable bounds-checking for faster array access
-cdef inline double J(double x):
+cpdef inline double J(double x):
     cdef int i = 0
     cdef int j = len(xi) - 1
     cdef int mid

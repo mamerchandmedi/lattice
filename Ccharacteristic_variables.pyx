@@ -18,13 +18,12 @@ from libc.math cimport fabs, sqrt
 # end: Importing used functions.
 
 # %% Import termodynamically corrected quantities.
-from Cthermo cimport a, dVTdT, d2VTdT, w, gam, dpdT
+from Cthermo cimport w, gam, dpdT, dwdT
 # end: Import termodynamically corrected quantities.
 
 
 cdef inline double dtaudT(double v, double field, double T):
-    return gam(v)**2 * (16 * a * T**3 - dVTdT(field, T) -
-                        T * d2VTdT(field, T)) - dpdT(field, T)
+    return gam(v)**2 * dwdT(field, T) - dpdT(field, T)
 
 
 cdef inline double dtaudv(double v, double field, double T):
@@ -32,8 +31,7 @@ cdef inline double dtaudv(double v, double field, double T):
 
 
 cdef inline double dZdT(double v, double field, double T):
-    return v * gam(v)**2 * (16 * a * T**3 - dVTdT(field, T) -
-                            T * d2VTdT(field, T))
+    return v * gam(v)**2 * dwdT(field, T)
 
 
 cdef inline double dZdv(double v, double field, double T):

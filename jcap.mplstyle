@@ -1,0 +1,20 @@
+font.family:   serif
+font.variant:  normal
+font.weight:  normal
+font.size:     10.95
+font.serif: Computer Modern Roman
+text.usetex: True
+text.latex.preamble: \usepackage{amsmath} \usepackage{amssymb}
+mathtext.fontset: cm
+axes.linewidth:      0.5
+axes.labelsize:      medium
+axes.formatter.use_mathtext: True
+xtick.labelsize:      small
+ytick.labelsize:      small
+legend.fontsize:       medium
+figure.dpi:          300
+figure.frameon:      True
+savefig.dpi:        300
+savefig.format:     eps
+savefig.bbox:       standard
+savefig.orientation:  landscape

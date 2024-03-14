@@ -7,11 +7,11 @@ from lattice import N, r
 # end: Import rescaled quantities.
 
 # %% Import rescaled quantities.
-from scaled import tauZphi2Tpv_mod
+#from scaled import tauZphi2Tpv_mod
 # end: Import rescaled quantities.
 
 # %% Importing characteristic variables.
-from characteristic_variables import T_matrices2
+#from characteristic_variables import T_matrices2
 # end: Importing characteristic variables.
 
 
@@ -21,7 +21,7 @@ for j in range(0, N):
     maxima_matrix[j] = x**2 * (r[j + 1] - x) / (r[j + 1] - r[j])
 maxima_matrix[N] = r[N]**2
 
-
+"""
 def antidiffusive_matrix(KH, KL, FH, FL, dt):
     A = np.ndarray((N + 1, 3))
     A[0][-1] = 0
@@ -135,3 +135,4 @@ def Ubar(U):
     U_matrix[N][-1] = 0.5 * (U[N] + U[N-1])
     U_matrix[N][0] = U[N]
     return U_matrix
+"""

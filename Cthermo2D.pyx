@@ -1,0 +1,256 @@
+"""
+Created on Tue Apr 26 10:37:54 2022
+
+@author: Tomasz Krajewski
+"""
+
+# %% Importing Cython for decorators.
+cimport cython
+# end: Importing Cython for decorators.
+
+# %% Importing mathematical constants.
+from libc.math cimport pi
+from libc.math cimport log
+from libc.math cimport fabs
+# end: Importing mathematical constants.
+
+# %% Importing parameters of the model.
+from parameters import eta as pyeta
+# end: Importing parameters of the model.
+
+# %% Importing used function.
+from libc.math cimport sqrt
+# end: Importing used functions.
+
+# %% Import thermally corrected potential and its derivatives.
+from Cpotential cimport V0, VT, dVTdphi, dVTdT, d2VTdphidT, d2VTdT2, d3VTdT3, \
+    dVTdmu, d2VTdtdmu
+# end: Import thermally corrected potential and its derivatives.
+
+cdef double eta = pyeta
+
+
+# %% Defining energy density of the system.
+cdef inline double eps(double field, double temp, double mu):
+    return VT(field, temp, mu) - temp * dVTdT(field, temp, mu)
+# end: Defining energy density of the system.
+
+
+# %% Defining pressure of the system.
+cdef inline double p(double field, double temp, double mu):
+    return -VT(field, temp, mu)
+# end: Defining pressure of the system.
+
+
+# %% Defining barotropic parameter of the system.
+cdef inline double w(double field, double temp, double mu):
+    return eps(field, temp) + p(field, temp, mu)
+# end: Defining barotropic parameter of the system.
+
+
+# %% Defining derivative of the pressure with respect to temperature.
+cdef inline double dpdT(double field, double temp, double mu):
+    return -dVTdT(field, temp, mu)
+# end: Defining derivative of the pressure with respect to temperature.
+
+
+# %% Defining derivative of the pressure with respect to chemical potential.
+cdef inline double dpdmu(double field, double temp, double mu):
+    return -dVTdmu(field, temp, mu)
+# end: Defining derivative of the pressure with respect to chemical potential.
+
+
+# %% Defining seond derivative of the pressure with respect to temperature.
+cdef inline double d2pdT2(double field, double temp, double mu):
+    return -d2VTdT2(field, temp, mu)
+# end: Defining second derivative of the pressure with respect to temperature.
+
+
+# %% Defining seond derivative of the pressure with respect to chemical potential.
+cdef inline double d2pdmu2(double field, double temp, double mu):
+    return -d2VTdmu2(field, temp, mu)
+# end: Defining second derivative of the pressure with respect to chemical potential.
+
+
+# %% Defining seond mixed derivative of the pressure.
+cdef inline double d2pdTdmu(double field, double temp, double mu):
+    return -d2VTdTdmu(field, temp, mu)
+# end: Defining second mixed derivative of the pressure.
+
+
+# %% Defining derivative of the energy density with respect to temperature.
+cdef inline double depsdT(double field, double temp, double mu):
+    return -temp * d2VTdT2(field, temp, mu)
+# end: Defining derivative of the energy density with respect to temperature.
+
+
+# %% Defining derivative of the energy density with respect to temperature.
+cdef inline double depsdmu(double field, double temp, double mu):
+    return dVTdmu(field, temp, mu) - temp * d2VTdTdmu(field, temp, mu)
+# end: Defining derivative of the energy density with respect to temperature.
+
+
+# %% Defining second derivative of the energy density with respect to temperature.
+cdef inline double d2epsdT(double field, double temp, double mu):
+    return -d2VTdT2(field, temp, mu) - temp * d3VTdT3(field, temp, mu)
+# end: Defining second derivative of the energy density with respect to temperature.
+
+
+# %% Defining derivative of the barotropic parameter
+#    with respect to temperature.
+cdef inline double dwdT(double field, double temp, double mu):
+    return depsdT(field, temp, mu) + dpdT(field, temp, mu)
+# end: Defining derivative of the barotropic parameter
+#      with respect to temperature.
+
+
+# %% Defining derivative of the barotropic parameter
+#    with respect to temperature.
+cdef inline double dwdmu(double field, double temp, double mu):
+    return depsdmu(field, temp, mu) + dpdmu(field, temp, mu)
+# end: Defining derivative of the barotropic parameter
+#      with respect to temperature.
+
+
+# %% Defining second derivative of the barotropic parameter
+#    with respect to temperature.
+cdef inline double d2wdT(double field, double temp, double mu):
+    return d2epsdT(field, temp, mu) + d2pdT(field, temp, mu)
+# end: Defining second derivative of the barotropic parameter
+#      with respect to temperature.
+
+
+# %% Defining relativistic gamma factor.
+@cython.cdivision(True)
+cdef inline double gam(double vel):
+    return 1 / sqrt(1 - vel**2)
+# end: Defining relativistic gamma factor.
+
+# %% Defining first derivative of the gamma factor.
+cdef inline double dgamdv(double v):
+    return v * gam(v) * gam(v) * gam(v)
+# end: Defining first derivative of the gamma factor.
+
+# %% Defining friction source for tau.
+cdef inline double Gf_tau(double phi, double dphidt, double dphidr,
+                          double T, double v, double mu):
+    return dVTdphi(phi, T, mu) * dphidt + \
+        eta * gam(v) * (dphidt + v * dphidr) * dphidt
+# end: Defining friction source for tau.
+
+
+# %% Defining friction source for Z.
+cdef inline double Gf_Z(double phi, double dphidt, double dphidr,
+                        double T, double v, double mu):
+    return -dVTdphi(phi, T, mu) * dphidr - \
+        eta * gam(v) * (dphidt + v * dphidr) * dphidr
+# end: Defining friction source for Z.
+
+# %% Defining tau derivative with respect to p.
+@cython.cdivision(True)
+cdef inline double dtaudp(double v, double field, double temp, double mu):
+    return gam(v)**2 * dwdT(field, temp, mu) / dpdT(field, temp, mu) - 1
+# end: Defining tau derivative with respect to p.
+
+# %% Defining Z derivative with respect to p.
+cdef inline double dZdp(double v, double field, double temp, double mu):
+    return gam(v)**2 * v * dwdT(field, temp, mu) / dpdT(field, temp, mu)
+# end: Defining Z derivative with respect to p.
+
+# %% Defining tau derivative with respect to T.
+cdef inline double dtaudT(double v, double field, double temp, double mu):
+    return dwdT(field, temp, mu) * gam(v) * gam(v)  - dpdT(field, temp, mu)
+# end: Defining tau derivative with respect to T.
+
+# %% Defining tau derivative with respect to v.
+cdef inline double dtaudv(double v, double field, double temp, double P, double mu):
+    return (eps(field, temp, mu) + P) * 2 * v * gam(v) * gam(v) * gam(v) * gam(v)
+# end: Defining tau derivative with respect to v.
+
+# %% Defining v derivative with respect to tau along Z = const.
+@cython.cdivision(True)
+cdef inline double dvdtau(double v, double field, double temp, double P, double mu):
+    return 1/(dtaudv(v, field, temp, P, mu) - dtaudT(v, field, temp, mu)*dZdT(v, field, temp, mu)**(-1)*dZdv(v, field, temp, mu))
+# end: Defining v derivative with respect to tau along Z = const.
+
+# %% Defining v derivative with respect to Z along tau = const.
+@cython.cdivision(True)
+cdef inline double dvdZ(double v, double field, double temp, double P, double mu):
+    return 1/(dZdv(v, field, temp, mu) - dZdT(v, field, temp, mu)*dtaudT(v, field, temp, mu)**(-1)*dtaudv(v, field, temp, P, mu))
+# end: Defining v derivative with respect to Z along tau = const.
+
+# %% Defining T derivative with respect to tau along Z = const.
+@cython.cdivision(True)
+cdef inline double dTdtau(double v, double field, double temp, double P, double mu):
+    return 1/(dtaudT(v, field, temp, mu) - dtaudv(v, field, temp, P, mu)*dZdv(v, field, temp, mu)**(-1)*dZdT(v, field, temp, mu))
+# end: Defining T derivative with respect to tau along Z = const.
+
+# %% Defining T derivative with respect to Z along tau = const.
+@cython.cdivision(True)
+cdef inline double dTdZ(double v, double field, double temp, double P, double mu):
+    return 1/(dZdT(v, field, temp, mu) - dZdv(v, field, temp, mu)*dtaudv(v, field, temp, P, mu)**(-1)*dtaudT(v, field, temp, mu))
+# end: Defining T derivative with respect to Z along tau = const.
+
+# %% Defining p derivative with respect to tau along Z = const.
+@cython.cdivision(True)
+cdef inline double dpdtau(double v, double field, double temp, double P, double mu):
+    return 1/(dtaudp(v, field, temp, mu) - dtaudv(v, field, temp, P, mu)*dZdv(v, field, temp, mu)**(-1)*dZdp(v, field, temp, mu))
+    #return dpdT(field, temp) * dTdtau(v, field, temp, P)
+# end: Defining p derivative with respect to tau along Z = const.
+
+# %% Defining p derivative with respect to Z along tau = const.
+@cython.cdivision(True)
+cdef inline double dpdZ(double v, double field, double temp, double P, double mu):
+    return 1 / (dZdp(v, field, temp, mu) - dZdv(v, field, temp, mu) * dtaudp(v, field, temp, mu) / dtaudv(v, field, temp, P, mu))
+    #return dpdT(field, temp) * dTdZ(v, field, temp, P)
+# end: Defining p derivative with respect to Z along tau = const.
+
+# %% Defining Z derivative with respect to v.
+@cython.cdivision(True)
+cdef inline double dZdv(double v, double field, double temp, double mu):
+    return 2 * (eps(field, temp, mu) + p(field,temp, mu)) * gam(v) * dgamdv(v) +\
+        (eps(field, temp, mu) + p(field,temp, mu)) * gam(v) * gam(v)
+# end: Defining Z derivative with respect to v.
+
+# %% Defining Z derivative with respect to T.
+cdef inline double dZdT(double v, double field, double temp, double mu):
+    return dwdT(field, temp, mu) * gam(v) * gam(v) * v
+# end: Defining Z derivative with respect to T.
+
+# %% Defining Ftau derivative with respect to tau.
+cdef inline double dFtaudtau(double v, double field, double temp, double P, double mu):
+    return 1 + dpdtau(v, field, temp, P, mu)
+# end: Defining Ftau derivative with respect to tau.
+
+# %% Defining Ftau derivative with respect to Z.
+cdef inline double dFtaudZ(double v, double field, double temp, double P, double mu):
+    return dpdZ(v, field, temp, P, mu)
+# end: Defining Ftau derivative with respect to Z.
+
+# %% Defining Gtau derivative with respect to tau.
+cdef inline double dGtaudtau(double v, double phi, double T, double P, double dphidt, double dphidr, double mu):
+    return d2VTdphidT(phi, T, mu) * dTdtau(v, phi, T, P, mu) * dphidt +\
+        eta * dgamdv(v) * dvdtau(v, phi, T, P, mu) * (dphidt + v * dphidr) * dphidt +\
+        eta * gam(v) * dvdtau(v, phi, T, P, mu) * dphidr * dphidt
+# end: Defining Gtau derivative with respect to tau.
+
+# %% Defining Gtau derivative with respect to Z.
+cdef inline double dGtaudZ(double v, double phi, double T, double P, double dphidt, double dphidr, double mu):
+    return d2VTdphidT(phi, T, mu) * dTdZ(v, phi, T, P, mu) * dphidt +\
+        eta * dgamdv(v) * dvdZ(v, phi, T, P, mu) * (dphidt + v * dphidr) * dphidt +\
+        eta * gam(v) * dvdZ(v, phi, T, P, mu) * dphidr * dphidt
+# end: Defining Gtau derivative with respect to Z.
+
+# %% Defining GZ derivative with respect to tau.
+cdef inline double dGZdtau(double v, double phi, double T, double P, double dphidt, double dphidr, double mu):
+    return -d2VTdphidT(phi, T, mu) * dTdtau(v, phi, T, P, mu) * dphidt -\
+        eta * dgamdv(v) * dvdtau(v, phi, T, P, mu) * (dphidt + v * dphidr) * dphidr -\
+        eta * gam(v) * dvdtau(v, phi, T, P, mu) * dphidr * dphidr
+# end: Defining Gtau derivative with respect to tau.
+
+# %% Defining GZ derivative with respect to Z.
+cdef inline double dGZdZ(double v, double phi, double T, double P, double dphidt, double dphidr, double mu):
+    return -d2VTdphidT(phi, T, mu) * dTdZ(v, phi, T, P, mu) * dphidt -\
+        eta * dgamdv(v)*dvdZ(v, phi, T, P, mu) * (dphidt + v * dphidr) * dphidr -\
+        eta * gam(v) * dvdZ(v, phi, T, P, mu) * dphidr * dphidr
+# end: Defining GZ derivative with respect to Z.

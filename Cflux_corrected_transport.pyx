@@ -66,7 +66,7 @@ cdef double[::1] maxima_num = maxima_num_np
 def antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] KL,
                          np.ndarray[DTYPE_t, ndim=1] FH,
                          np.ndarray[DTYPE_t, ndim=1] FL,
-                         double dt,
+                         const double dt,
                          np.ndarray[DTYPE_t, ndim=2] A):
     A[0][2] = 0.  # index -1 = 2
     A[0][0] = 0.
@@ -93,7 +93,8 @@ def antidiffusive_matrix(np.ndarray[DTYPE_t, ndim=2] KL,
     A[n_N-1][1] = 0.
 
 @cython.boundscheck(False)  # Deactivate bounds checking
-def prelimiting(np.ndarray[DTYPE_t, ndim=2] A, np.ndarray[DTYPE_t, ndim=1] u):
+def prelimiting(np.ndarray[DTYPE_t, ndim=2] A,
+                np.ndarray[DTYPE_t, ndim=1] u):
     if A[0][1] * (u[0] - u[1]) < 0.:
         A[0][1] = 0.
     cdef int j
@@ -299,7 +300,8 @@ cdef inline void P_vectors(np.ndarray[DTYPE_t, ndim=2] A,
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 #@cython.wraparound(False)   # Deactivate negative indexing.
-cdef inline double Q_values_plus(double[:] U, double[:] U_d, int i, double v):
+cdef inline double Q_values_plus(const double[:] U, const double[:] U_d,
+                                 const int i, const double v):
 
     if i == 0:
         return fmax(U_d[0], U[0]) - U_d[0]
@@ -336,7 +338,8 @@ cdef inline double Q_values_plus(double[:] U, double[:] U_d, int i, double v):
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 #@cython.wraparound(False)   # Deactivate negative indexing.
-cdef inline double Q_values_minus(double[:] U, double[:] U_d, int i, v):
+cdef inline double Q_values_minus(const double[:] U, const double[:] U_d,
+                                  const int i, const double v):
         
     if i == 0:
         return fmin(U_d[0], U[0]) - U_d[0]
@@ -372,7 +375,7 @@ cdef inline double Q_values_minus(double[:] U, double[:] U_d, int i, v):
 
 
 @cython.cdivision(True)
-cdef inline double R_values(double Q, double P):
+cdef inline double R_values(const double Q, const double P):
     cdef double R
     if P != 0.:
         R = fmin(1, Q / P)

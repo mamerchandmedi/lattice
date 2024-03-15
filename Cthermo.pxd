@@ -4,64 +4,66 @@ Created on Tue Apr 26 10:37:54 2022
 @author: Tomasz Krajewski
 """
 
-cdef double eps(double field, double temp)
+cdef double eps(const double field, const double temp)
 
-cdef double p(double field, double temp)
+cdef double p(const double field, const double temp)
 
-cdef double w(double field, double temp)
+cdef double w(const double field, const double temp)
 
-cdef double dpdT(double field, double temp)
+cdef double dpdT(const double field, const double temp)
 
-cdef double d2pdT(double field, double temp)
+cdef double d2pdT(const double field, const double temp)
 
-cdef double depsdT(double field, double temp)
+cdef double depsdT(const double field, const double temp)
 
-cdef double d2epsdT(double field, double temp)
+cdef double d2epsdT(const double field, const double temp)
 
-cdef double dwdT(double field, double temp)
+cdef double dwdT(const double field, const double temp)
 
-cdef double d2wdT(double field, double temp)
+cdef double d2wdT(const double field, const double temp)
 
-cdef double gam(double vel)
+cdef double gam(const double vel)
 
-cdef double dgamdv(double v)
+cdef double dgamdv(const double v)
 
-cdef double Gf_tau(double phi, double dphidt, double dphidr, double T, double v)
+cdef double Gf_tau(const double phi, const double dphidt,
+                   const double dphidr, const double T, const double v)
 
-cdef double Gf_Z(double phi, double dphidt, double dphidr, double T, double v)
+cdef double Gf_Z(const double phi, const double dphidt, 
+                 const double dphidr, const double T, const double v)
 
-cdef double dtaudp(double v, double field, double temp)
+cdef double dtaudp(const double v, const double field, const double temp)
 
-cdef double dZdp(double v, double field, double temp)
+cdef double dZdp(const double v, const double field, const double temp)
 
-cdef double dtaudT(double v, double field, double temp)
+cdef double dtaudT(const double v, const double field, const double temp)
 
-cdef double dtaudv(double v, double field, double temp, double p)
+cdef double dtaudv(const double v, const double field, const double temp, const double P)
 
-cdef double dvdtau(double v, double field, double temp, double p)    
+cdef double dvdtau(const double v, const double field, const double temp, const double P)    
 
-cdef double dvdZ(double v, double field, double temp, double P)
+cdef double dvdZ(const double v, const double field, const double temp, const double P)
 
-cdef double dTdtau(double v, double field, double temp, double p)
+cdef double dTdtau(const double v, const double field, const double temp, const double P)
 
-cdef double dTdZ(double v, double field, double temp, double P)
+cdef double dTdZ(const double v, const double field, const double temp, const double P)
 
-cdef double dpdtau(double v, double field, double temp, double P)
+cdef double dpdtau(const double v, const double field, const double temp, const double P)
 
-cdef double dpdZ(double v, double field, double temp, double P)
+cdef double dpdZ(const double v, const double field, const double temp, const double P)
 
-cdef double dZdv(double v, double field, double temp)
+cdef double dZdv(const double v, const double field, const double temp)
 
-cdef double dZdT(double v, double field, double temp)
+cdef double dZdT(const double v, const double field, const double temp)
 
-cdef double dFtaudtau(double v, double field, double temp, double P)
+cdef double dFtaudtau(const double v, const double field, const double temp, const double P)
 
-cdef double dFtaudZ(double v, double field, double temp, double P)
+cdef double dFtaudZ(const double v, const double field, const double temp, const double P)
 
-cdef double dGtaudtau(double v, double phi, double T, double P, double dphidt, double dphidr)
+cdef double dGtaudtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr)
 
-cdef double dGtaudZ(double v, double phi, double T, double P, double dphidt, double dphidr)
+cdef double dGtaudZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr)
 
-cdef double dGZdtau(double v, double phi, double T, double P, double dphidt, double dphidr)
+cdef double dGZdtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr)
 
-cdef double dGZdZ(double v, double phi, double T, double P, double dphidt, double dphidr)
+cdef double dGZdZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr)

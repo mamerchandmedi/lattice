@@ -1053,37 +1053,37 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'libc.math' */
 
 /* Module declarations from 'Cpotential' */
-static double (*__pyx_f_10Cpotential_V0)(double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_VT)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_dVTdphi)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_dVTdT)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_d2VTdphidT)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_d2VTdT2)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_d3VTdT3)(double, double, int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_V0)(double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_VT)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_dVTdphi)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_dVTdT)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_d2VTdphidT)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_d2VTdT2)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_d3VTdT3)(double const , double const , int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'Cthermo' */
 static double __pyx_v_7Cthermo_eta;
-static CYTHON_INLINE double __pyx_f_7Cthermo_eps(double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_p(double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dpdT(double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_d2pdT(double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_depsdT(double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_d2epsdT(double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dwdT(double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_gam(double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dgamdv(double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudp(double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dZdp(double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudT(double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudv(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dvdtau(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dvdZ(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dTdtau(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dTdZ(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dpdtau(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dpdZ(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dZdv(double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Cthermo_dZdT(double, double, double); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_eps(double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_p(double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dpdT(double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_d2pdT(double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_depsdT(double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_d2epsdT(double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dwdT(double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_gam(double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dgamdv(double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudp(double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dZdp(double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudT(double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudv(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dvdtau(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dvdZ(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dTdtau(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dTdZ(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dpdtau(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dpdZ(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dZdv(double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Cthermo_dZdT(double const , double const , double const ); /*proto*/
 #define __Pyx_MODULE_NAME "Cthermo"
 extern int __pyx_module_is_main_Cthermo;
 int __pyx_module_is_main_Cthermo = 0;
@@ -1111,19 +1111,19 @@ static PyObject *__pyx_n_s_test;
 /* "Cthermo.pyx":33
  * 
  * # %% Defining energy density of the system.
- * cdef inline double eps(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double eps(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return VT(field, temp) - temp * dVTdT(field, temp)
  * # end: Defining energy density of the system.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_eps(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_eps(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("eps", 0);
 
   /* "Cthermo.pyx":34
  * # %% Defining energy density of the system.
- * cdef inline double eps(double field, double temp):
+ * cdef inline double eps(const double field, const double temp):
  *     return VT(field, temp) - temp * dVTdT(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining energy density of the system.
  * 
@@ -1134,7 +1134,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_eps(double __pyx_v_field, double __
   /* "Cthermo.pyx":33
  * 
  * # %% Defining energy density of the system.
- * cdef inline double eps(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double eps(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return VT(field, temp) - temp * dVTdT(field, temp)
  * # end: Defining energy density of the system.
  */
@@ -1148,19 +1148,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_eps(double __pyx_v_field, double __
 /* "Cthermo.pyx":39
  * 
  * # %% Defining pressure of the system.
- * cdef inline double p(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double p(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - VT(field, temp)
  * # end: Defining pressure of the system.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_p(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_p(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("p", 0);
 
   /* "Cthermo.pyx":40
  * # %% Defining pressure of the system.
- * cdef inline double p(double field, double temp):
+ * cdef inline double p(const double field, const double temp):
  *     return - VT(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining pressure of the system.
  * 
@@ -1171,7 +1171,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_p(double __pyx_v_field, double __py
   /* "Cthermo.pyx":39
  * 
  * # %% Defining pressure of the system.
- * cdef inline double p(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double p(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - VT(field, temp)
  * # end: Defining pressure of the system.
  */
@@ -1185,19 +1185,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_p(double __pyx_v_field, double __py
 /* "Cthermo.pyx":45
  * 
  * # %% Defining barotropic parameter of the system.
- * cdef inline double w(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double w(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return eps(field, temp) + p(field, temp)
  * # end: Defining barotropic parameter of the system.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_w(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_w(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("w", 0);
 
   /* "Cthermo.pyx":46
  * # %% Defining barotropic parameter of the system.
- * cdef inline double w(double field, double temp):
+ * cdef inline double w(const double field, const double temp):
  *     return eps(field, temp) + p(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining barotropic parameter of the system.
  * 
@@ -1208,7 +1208,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_w(double __pyx_v_field, double __py
   /* "Cthermo.pyx":45
  * 
  * # %% Defining barotropic parameter of the system.
- * cdef inline double w(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double w(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return eps(field, temp) + p(field, temp)
  * # end: Defining barotropic parameter of the system.
  */
@@ -1222,19 +1222,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_w(double __pyx_v_field, double __py
 /* "Cthermo.pyx":51
  * 
  * # %% Defining derivative of the pressure with respect to temperature.
- * cdef inline double dpdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dpdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - dVTdT(field, temp)
  * # end: Defining derivative of the pressure with respect to temperature.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dpdT(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dpdT(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dpdT", 0);
 
   /* "Cthermo.pyx":52
  * # %% Defining derivative of the pressure with respect to temperature.
- * cdef inline double dpdT(double field, double temp):
+ * cdef inline double dpdT(const double field, const double temp):
  *     return - dVTdT(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining derivative of the pressure with respect to temperature.
  * 
@@ -1245,7 +1245,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dpdT(double __pyx_v_field, double _
   /* "Cthermo.pyx":51
  * 
  * # %% Defining derivative of the pressure with respect to temperature.
- * cdef inline double dpdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dpdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - dVTdT(field, temp)
  * # end: Defining derivative of the pressure with respect to temperature.
  */
@@ -1259,19 +1259,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dpdT(double __pyx_v_field, double _
 /* "Cthermo.pyx":57
  * 
  * # %% Defining seond derivative of the pressure with respect to temperature.
- * cdef inline double d2pdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double d2pdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - d2VTdT2(field, temp)
  * # end: Defining second derivative of the pressure with respect to temperature.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_d2pdT(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_d2pdT(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("d2pdT", 0);
 
   /* "Cthermo.pyx":58
  * # %% Defining seond derivative of the pressure with respect to temperature.
- * cdef inline double d2pdT(double field, double temp):
+ * cdef inline double d2pdT(const double field, const double temp):
  *     return - d2VTdT2(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining second derivative of the pressure with respect to temperature.
  * 
@@ -1282,7 +1282,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_d2pdT(double __pyx_v_field, double 
   /* "Cthermo.pyx":57
  * 
  * # %% Defining seond derivative of the pressure with respect to temperature.
- * cdef inline double d2pdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double d2pdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - d2VTdT2(field, temp)
  * # end: Defining second derivative of the pressure with respect to temperature.
  */
@@ -1296,19 +1296,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_d2pdT(double __pyx_v_field, double 
 /* "Cthermo.pyx":63
  * 
  * # %% Defining derivative of the energy density with respect to temperature.
- * cdef inline double depsdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double depsdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - temp * d2VTdT2(field, temp)
  * # end: Defining derivative of the energy density with respect to temperature.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_depsdT(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_depsdT(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("depsdT", 0);
 
   /* "Cthermo.pyx":64
  * # %% Defining derivative of the energy density with respect to temperature.
- * cdef inline double depsdT(double field, double temp):
+ * cdef inline double depsdT(const double field, const double temp):
  *     return - temp * d2VTdT2(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining derivative of the energy density with respect to temperature.
  * 
@@ -1319,7 +1319,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_depsdT(double __pyx_v_field, double
   /* "Cthermo.pyx":63
  * 
  * # %% Defining derivative of the energy density with respect to temperature.
- * cdef inline double depsdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double depsdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - temp * d2VTdT2(field, temp)
  * # end: Defining derivative of the energy density with respect to temperature.
  */
@@ -1333,19 +1333,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_depsdT(double __pyx_v_field, double
 /* "Cthermo.pyx":69
  * 
  * # %% Defining second derivative of the energy density with respect to temperature.
- * cdef inline double d2epsdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double d2epsdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - d2VTdT2(field, temp) - temp * d3VTdT3(field, temp)
  * # end: Defining second derivative of the energy density with respect to temperature.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_d2epsdT(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_d2epsdT(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("d2epsdT", 0);
 
   /* "Cthermo.pyx":70
  * # %% Defining second derivative of the energy density with respect to temperature.
- * cdef inline double d2epsdT(double field, double temp):
+ * cdef inline double d2epsdT(const double field, const double temp):
  *     return - d2VTdT2(field, temp) - temp * d3VTdT3(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining second derivative of the energy density with respect to temperature.
  * 
@@ -1356,7 +1356,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_d2epsdT(double __pyx_v_field, doubl
   /* "Cthermo.pyx":69
  * 
  * # %% Defining second derivative of the energy density with respect to temperature.
- * cdef inline double d2epsdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double d2epsdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return - d2VTdT2(field, temp) - temp * d3VTdT3(field, temp)
  * # end: Defining second derivative of the energy density with respect to temperature.
  */
@@ -1370,19 +1370,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_d2epsdT(double __pyx_v_field, doubl
 /* "Cthermo.pyx":76
  * # %% Defining derivative of the barotropic parameter
  * #    with respect to temperature.
- * cdef inline double dwdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dwdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return depsdT(field, temp) + dpdT(field, temp)
  * # end: Defining derivative of the barotropic parameter
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dwdT(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dwdT(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dwdT", 0);
 
   /* "Cthermo.pyx":77
  * #    with respect to temperature.
- * cdef inline double dwdT(double field, double temp):
+ * cdef inline double dwdT(const double field, const double temp):
  *     return depsdT(field, temp) + dpdT(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining derivative of the barotropic parameter
  * #      with respect to temperature.
@@ -1393,7 +1393,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dwdT(double __pyx_v_field, double _
   /* "Cthermo.pyx":76
  * # %% Defining derivative of the barotropic parameter
  * #    with respect to temperature.
- * cdef inline double dwdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dwdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return depsdT(field, temp) + dpdT(field, temp)
  * # end: Defining derivative of the barotropic parameter
  */
@@ -1407,19 +1407,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dwdT(double __pyx_v_field, double _
 /* "Cthermo.pyx":84
  * # %% Defining second derivative of the barotropic parameter
  * #    with respect to temperature.
- * cdef inline double d2wdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double d2wdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d2epsdT(field, temp) + d2pdT(field, temp)
  * # end: Defining second derivative of the barotropic parameter
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_d2wdT(double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_d2wdT(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("d2wdT", 0);
 
   /* "Cthermo.pyx":85
  * #    with respect to temperature.
- * cdef inline double d2wdT(double field, double temp):
+ * cdef inline double d2wdT(const double field, const double temp):
  *     return d2epsdT(field, temp) + d2pdT(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining second derivative of the barotropic parameter
  * #      with respect to temperature.
@@ -1430,7 +1430,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_d2wdT(double __pyx_v_field, double 
   /* "Cthermo.pyx":84
  * # %% Defining second derivative of the barotropic parameter
  * #    with respect to temperature.
- * cdef inline double d2wdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double d2wdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d2epsdT(field, temp) + d2pdT(field, temp)
  * # end: Defining second derivative of the barotropic parameter
  */
@@ -1444,30 +1444,30 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_d2wdT(double __pyx_v_field, double 
 /* "Cthermo.pyx":92
  * # %% Defining relativistic gamma factor.
  * @cython.cdivision(True)
- * cdef inline double gam(double vel):             # <<<<<<<<<<<<<<
+ * cdef inline double gam(const double vel):             # <<<<<<<<<<<<<<
  *     return 1 / sqrt(1 - vel**2)
  * # end: Defining relativistic gamma factor.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_gam(double __pyx_v_vel) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_gam(double const __pyx_v_vel) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("gam", 0);
 
   /* "Cthermo.pyx":93
  * @cython.cdivision(True)
- * cdef inline double gam(double vel):
+ * cdef inline double gam(const double vel):
  *     return 1 / sqrt(1 - vel**2)             # <<<<<<<<<<<<<<
  * # end: Defining relativistic gamma factor.
  * 
  */
-  __pyx_r = (1.0 / sqrt((1.0 - pow(__pyx_v_vel, 2.0))));
+  __pyx_r = (1.0 / sqrt((1.0 - pow(((double)__pyx_v_vel), 2.0))));
   goto __pyx_L0;
 
   /* "Cthermo.pyx":92
  * # %% Defining relativistic gamma factor.
  * @cython.cdivision(True)
- * cdef inline double gam(double vel):             # <<<<<<<<<<<<<<
+ * cdef inline double gam(const double vel):             # <<<<<<<<<<<<<<
  *     return 1 / sqrt(1 - vel**2)
  * # end: Defining relativistic gamma factor.
  */
@@ -1481,19 +1481,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_gam(double __pyx_v_vel) {
 /* "Cthermo.pyx":97
  * 
  * # %% Defining first derivative of the gamma factor.
- * cdef inline double dgamdv(double v):             # <<<<<<<<<<<<<<
+ * cdef inline double dgamdv(const double v):             # <<<<<<<<<<<<<<
  *     return v * gam(v) * gam(v) * gam(v)
  * # end: Defining first derivative of the gamma factor.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dgamdv(double __pyx_v_v) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dgamdv(double const __pyx_v_v) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dgamdv", 0);
 
   /* "Cthermo.pyx":98
  * # %% Defining first derivative of the gamma factor.
- * cdef inline double dgamdv(double v):
+ * cdef inline double dgamdv(const double v):
  *     return v * gam(v) * gam(v) * gam(v)             # <<<<<<<<<<<<<<
  * # end: Defining first derivative of the gamma factor.
  * 
@@ -1504,7 +1504,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dgamdv(double __pyx_v_v) {
   /* "Cthermo.pyx":97
  * 
  * # %% Defining first derivative of the gamma factor.
- * cdef inline double dgamdv(double v):             # <<<<<<<<<<<<<<
+ * cdef inline double dgamdv(const double v):             # <<<<<<<<<<<<<<
  *     return v * gam(v) * gam(v) * gam(v)
  * # end: Defining first derivative of the gamma factor.
  */
@@ -1518,19 +1518,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dgamdv(double __pyx_v_v) {
 /* "Cthermo.pyx":102
  * 
  * # %% Defining friction source for tau.
- * cdef inline double Gf_tau(double phi, double dphidt, double dphidr,             # <<<<<<<<<<<<<<
- *                           double T, double v):
+ * cdef inline double Gf_tau(const double phi, const double dphidt,             # <<<<<<<<<<<<<<
+ *                           const double dphidr, const double T, const double v):
  *     return dVTdphi(phi, T) * dphidt + \
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_tau(double __pyx_v_phi, double __pyx_v_dphidt, double __pyx_v_dphidr, double __pyx_v_T, double __pyx_v_v) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_tau(double const __pyx_v_phi, double const __pyx_v_dphidt, double const __pyx_v_dphidr, double const __pyx_v_T, double const __pyx_v_v) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("Gf_tau", 0);
 
   /* "Cthermo.pyx":104
- * cdef inline double Gf_tau(double phi, double dphidt, double dphidr,
- *                           double T, double v):
+ * cdef inline double Gf_tau(const double phi, const double dphidt,
+ *                           const double dphidr, const double T, const double v):
  *     return dVTdphi(phi, T) * dphidt + \             # <<<<<<<<<<<<<<
  *         eta * gam(v) * (dphidt + v * dphidr) * dphidt
  * # end: Defining friction source for tau.
@@ -1541,8 +1541,8 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_tau(double __pyx_v_phi, double _
   /* "Cthermo.pyx":102
  * 
  * # %% Defining friction source for tau.
- * cdef inline double Gf_tau(double phi, double dphidt, double dphidr,             # <<<<<<<<<<<<<<
- *                           double T, double v):
+ * cdef inline double Gf_tau(const double phi, const double dphidt,             # <<<<<<<<<<<<<<
+ *                           const double dphidr, const double T, const double v):
  *     return dVTdphi(phi, T) * dphidt + \
  */
 
@@ -1555,19 +1555,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_tau(double __pyx_v_phi, double _
 /* "Cthermo.pyx":110
  * 
  * # %% Defining friction source for Z.
- * cdef inline double Gf_Z(double phi, double dphidt, double dphidr,             # <<<<<<<<<<<<<<
- *                         double T, double v):
+ * cdef inline double Gf_Z(const double phi, const double dphidt,             # <<<<<<<<<<<<<<
+ *                         const double dphidr, const double T, const double v):
  *     return -dVTdphi(phi, T) * dphidr - \
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_Z(double __pyx_v_phi, double __pyx_v_dphidt, double __pyx_v_dphidr, double __pyx_v_T, double __pyx_v_v) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_Z(double const __pyx_v_phi, double const __pyx_v_dphidt, double const __pyx_v_dphidr, double const __pyx_v_T, double const __pyx_v_v) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("Gf_Z", 0);
 
   /* "Cthermo.pyx":112
- * cdef inline double Gf_Z(double phi, double dphidt, double dphidr,
- *                         double T, double v):
+ * cdef inline double Gf_Z(const double phi, const double dphidt,
+ *                         const double dphidr, const double T, const double v):
  *     return -dVTdphi(phi, T) * dphidr - \             # <<<<<<<<<<<<<<
  *         eta * gam(v) * (dphidt + v * dphidr) * dphidr
  * # end: Defining friction source for Z.
@@ -1578,8 +1578,8 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_Z(double __pyx_v_phi, double __p
   /* "Cthermo.pyx":110
  * 
  * # %% Defining friction source for Z.
- * cdef inline double Gf_Z(double phi, double dphidt, double dphidr,             # <<<<<<<<<<<<<<
- *                         double T, double v):
+ * cdef inline double Gf_Z(const double phi, const double dphidt,             # <<<<<<<<<<<<<<
+ *                         const double dphidr, const double T, const double v):
  *     return -dVTdphi(phi, T) * dphidr - \
  */
 
@@ -1592,19 +1592,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_Gf_Z(double __pyx_v_phi, double __p
 /* "Cthermo.pyx":118
  * # %% Defining tau derivative with respect to p.
  * @cython.cdivision(True)
- * cdef inline double dtaudp(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dtaudp(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return gam(v)**2 * dwdT(field, temp) / dpdT(field, temp) - 1
  * # end: Defining tau derivative with respect to p.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudp(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudp(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dtaudp", 0);
 
   /* "Cthermo.pyx":119
  * @cython.cdivision(True)
- * cdef inline double dtaudp(double v, double field, double temp):
+ * cdef inline double dtaudp(const double v, const double field, const double temp):
  *     return gam(v)**2 * dwdT(field, temp) / dpdT(field, temp) - 1             # <<<<<<<<<<<<<<
  * # end: Defining tau derivative with respect to p.
  * 
@@ -1615,7 +1615,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudp(double __pyx_v_v, double __p
   /* "Cthermo.pyx":118
  * # %% Defining tau derivative with respect to p.
  * @cython.cdivision(True)
- * cdef inline double dtaudp(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dtaudp(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return gam(v)**2 * dwdT(field, temp) / dpdT(field, temp) - 1
  * # end: Defining tau derivative with respect to p.
  */
@@ -1629,12 +1629,12 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudp(double __pyx_v_v, double __p
 /* "Cthermo.pyx":123
  * 
  * # %% Defining Z derivative with respect to p.
- * cdef inline double dZdp(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dZdp(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return gam(v)**2 * v * dwdT(field, temp) / dpdT(field, temp)
  * # end: Defining Z derivative with respect to p.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dZdp(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dZdp(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -1646,7 +1646,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dZdp(double __pyx_v_v, double __pyx
 
   /* "Cthermo.pyx":124
  * # %% Defining Z derivative with respect to p.
- * cdef inline double dZdp(double v, double field, double temp):
+ * cdef inline double dZdp(const double v, const double field, const double temp):
  *     return gam(v)**2 * v * dwdT(field, temp) / dpdT(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining Z derivative with respect to p.
  * 
@@ -1663,7 +1663,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dZdp(double __pyx_v_v, double __pyx
   /* "Cthermo.pyx":123
  * 
  * # %% Defining Z derivative with respect to p.
- * cdef inline double dZdp(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dZdp(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return gam(v)**2 * v * dwdT(field, temp) / dpdT(field, temp)
  * # end: Defining Z derivative with respect to p.
  */
@@ -1680,19 +1680,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dZdp(double __pyx_v_v, double __pyx
 /* "Cthermo.pyx":128
  * 
  * # %% Defining tau derivative with respect to T.
- * cdef inline double dtaudT(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dtaudT(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dwdT(field, temp) * gam(v) * gam(v)  - dpdT(field, temp)
  * # end: Defining tau derivative with respect to T.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudT(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudT(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dtaudT", 0);
 
   /* "Cthermo.pyx":129
  * # %% Defining tau derivative with respect to T.
- * cdef inline double dtaudT(double v, double field, double temp):
+ * cdef inline double dtaudT(const double v, const double field, const double temp):
  *     return dwdT(field, temp) * gam(v) * gam(v)  - dpdT(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining tau derivative with respect to T.
  * 
@@ -1703,7 +1703,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudT(double __pyx_v_v, double __p
   /* "Cthermo.pyx":128
  * 
  * # %% Defining tau derivative with respect to T.
- * cdef inline double dtaudT(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dtaudT(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dwdT(field, temp) * gam(v) * gam(v)  - dpdT(field, temp)
  * # end: Defining tau derivative with respect to T.
  */
@@ -1717,19 +1717,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudT(double __pyx_v_v, double __p
 /* "Cthermo.pyx":133
  * 
  * # %% Defining tau derivative with respect to v.
- * cdef inline double dtaudv(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dtaudv(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return (eps(field, temp) + P) * 2 * v * gam(v) * gam(v) * gam(v) * gam(v)
  * # end: Defining tau derivative with respect to v.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudv(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudv(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dtaudv", 0);
 
   /* "Cthermo.pyx":134
  * # %% Defining tau derivative with respect to v.
- * cdef inline double dtaudv(double v, double field, double temp, double P):
+ * cdef inline double dtaudv(const double v, const double field, const double temp, const double P):
  *     return (eps(field, temp) + P) * 2 * v * gam(v) * gam(v) * gam(v) * gam(v)             # <<<<<<<<<<<<<<
  * # end: Defining tau derivative with respect to v.
  * 
@@ -1740,7 +1740,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudv(double __pyx_v_v, double __p
   /* "Cthermo.pyx":133
  * 
  * # %% Defining tau derivative with respect to v.
- * cdef inline double dtaudv(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dtaudv(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return (eps(field, temp) + P) * 2 * v * gam(v) * gam(v) * gam(v) * gam(v)
  * # end: Defining tau derivative with respect to v.
  */
@@ -1754,19 +1754,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dtaudv(double __pyx_v_v, double __p
 /* "Cthermo.pyx":139
  * # %% Defining v derivative with respect to tau along Z = const.
  * @cython.cdivision(True)
- * cdef inline double dvdtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dvdtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dtaudv(v, field, temp, P) - dtaudT(v, field, temp)*dZdT(v, field, temp)**(-1)*dZdv(v, field, temp))
  * # end: Defining v derivative with respect to tau along Z = const.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dvdtau(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dvdtau(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dvdtau", 0);
 
   /* "Cthermo.pyx":140
  * @cython.cdivision(True)
- * cdef inline double dvdtau(double v, double field, double temp, double P):
+ * cdef inline double dvdtau(const double v, const double field, const double temp, const double P):
  *     return 1/(dtaudv(v, field, temp, P) - dtaudT(v, field, temp)*dZdT(v, field, temp)**(-1)*dZdv(v, field, temp))             # <<<<<<<<<<<<<<
  * # end: Defining v derivative with respect to tau along Z = const.
  * 
@@ -1777,7 +1777,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dvdtau(double __pyx_v_v, double __p
   /* "Cthermo.pyx":139
  * # %% Defining v derivative with respect to tau along Z = const.
  * @cython.cdivision(True)
- * cdef inline double dvdtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dvdtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dtaudv(v, field, temp, P) - dtaudT(v, field, temp)*dZdT(v, field, temp)**(-1)*dZdv(v, field, temp))
  * # end: Defining v derivative with respect to tau along Z = const.
  */
@@ -1791,19 +1791,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dvdtau(double __pyx_v_v, double __p
 /* "Cthermo.pyx":145
  * # %% Defining v derivative with respect to Z along tau = const.
  * @cython.cdivision(True)
- * cdef inline double dvdZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dvdZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dZdv(v, field, temp) - dZdT(v, field, temp)*dtaudT(v, field, temp)**(-1)*dtaudv(v, field, temp, P))
  * # end: Defining v derivative with respect to Z along tau = const.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dvdZ(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dvdZ(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dvdZ", 0);
 
   /* "Cthermo.pyx":146
  * @cython.cdivision(True)
- * cdef inline double dvdZ(double v, double field, double temp, double P):
+ * cdef inline double dvdZ(const double v, const double field, const double temp, const double P):
  *     return 1/(dZdv(v, field, temp) - dZdT(v, field, temp)*dtaudT(v, field, temp)**(-1)*dtaudv(v, field, temp, P))             # <<<<<<<<<<<<<<
  * # end: Defining v derivative with respect to Z along tau = const.
  * 
@@ -1814,7 +1814,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dvdZ(double __pyx_v_v, double __pyx
   /* "Cthermo.pyx":145
  * # %% Defining v derivative with respect to Z along tau = const.
  * @cython.cdivision(True)
- * cdef inline double dvdZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dvdZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dZdv(v, field, temp) - dZdT(v, field, temp)*dtaudT(v, field, temp)**(-1)*dtaudv(v, field, temp, P))
  * # end: Defining v derivative with respect to Z along tau = const.
  */
@@ -1828,19 +1828,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dvdZ(double __pyx_v_v, double __pyx
 /* "Cthermo.pyx":151
  * # %% Defining T derivative with respect to tau along Z = const.
  * @cython.cdivision(True)
- * cdef inline double dTdtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dTdtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dtaudT(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdT(v, field, temp))
  * # end: Defining T derivative with respect to tau along Z = const.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dTdtau(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dTdtau(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dTdtau", 0);
 
   /* "Cthermo.pyx":152
  * @cython.cdivision(True)
- * cdef inline double dTdtau(double v, double field, double temp, double P):
+ * cdef inline double dTdtau(const double v, const double field, const double temp, const double P):
  *     return 1/(dtaudT(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdT(v, field, temp))             # <<<<<<<<<<<<<<
  * # end: Defining T derivative with respect to tau along Z = const.
  * 
@@ -1851,7 +1851,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dTdtau(double __pyx_v_v, double __p
   /* "Cthermo.pyx":151
  * # %% Defining T derivative with respect to tau along Z = const.
  * @cython.cdivision(True)
- * cdef inline double dTdtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dTdtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dtaudT(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdT(v, field, temp))
  * # end: Defining T derivative with respect to tau along Z = const.
  */
@@ -1865,19 +1865,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dTdtau(double __pyx_v_v, double __p
 /* "Cthermo.pyx":157
  * # %% Defining T derivative with respect to Z along tau = const.
  * @cython.cdivision(True)
- * cdef inline double dTdZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dTdZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dZdT(v, field, temp) - dZdv(v, field, temp)*dtaudv(v, field, temp, P)**(-1)*dtaudT(v, field, temp))
  * # end: Defining T derivative with respect to Z along tau = const.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dTdZ(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dTdZ(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dTdZ", 0);
 
   /* "Cthermo.pyx":158
  * @cython.cdivision(True)
- * cdef inline double dTdZ(double v, double field, double temp, double P):
+ * cdef inline double dTdZ(const double v, const double field, const double temp, const double P):
  *     return 1/(dZdT(v, field, temp) - dZdv(v, field, temp)*dtaudv(v, field, temp, P)**(-1)*dtaudT(v, field, temp))             # <<<<<<<<<<<<<<
  * # end: Defining T derivative with respect to Z along tau = const.
  * 
@@ -1888,7 +1888,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dTdZ(double __pyx_v_v, double __pyx
   /* "Cthermo.pyx":157
  * # %% Defining T derivative with respect to Z along tau = const.
  * @cython.cdivision(True)
- * cdef inline double dTdZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dTdZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dZdT(v, field, temp) - dZdv(v, field, temp)*dtaudv(v, field, temp, P)**(-1)*dtaudT(v, field, temp))
  * # end: Defining T derivative with respect to Z along tau = const.
  */
@@ -1902,19 +1902,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dTdZ(double __pyx_v_v, double __pyx
 /* "Cthermo.pyx":163
  * # %% Defining p derivative with respect to tau along Z = const.
  * @cython.cdivision(True)
- * cdef inline double dpdtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dpdtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dtaudp(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdp(v, field, temp))
  *     #return dpdT(field, temp) * dTdtau(v, field, temp, P)
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dpdtau(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dpdtau(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dpdtau", 0);
 
   /* "Cthermo.pyx":164
  * @cython.cdivision(True)
- * cdef inline double dpdtau(double v, double field, double temp, double P):
+ * cdef inline double dpdtau(const double v, const double field, const double temp, const double P):
  *     return 1/(dtaudp(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdp(v, field, temp))             # <<<<<<<<<<<<<<
  *     #return dpdT(field, temp) * dTdtau(v, field, temp, P)
  * # end: Defining p derivative with respect to tau along Z = const.
@@ -1925,7 +1925,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dpdtau(double __pyx_v_v, double __p
   /* "Cthermo.pyx":163
  * # %% Defining p derivative with respect to tau along Z = const.
  * @cython.cdivision(True)
- * cdef inline double dpdtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dpdtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1/(dtaudp(v, field, temp) - dtaudv(v, field, temp, P)*dZdv(v, field, temp)**(-1)*dZdp(v, field, temp))
  *     #return dpdT(field, temp) * dTdtau(v, field, temp, P)
  */
@@ -1939,19 +1939,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dpdtau(double __pyx_v_v, double __p
 /* "Cthermo.pyx":170
  * # %% Defining p derivative with respect to Z along tau = const.
  * @cython.cdivision(True)
- * cdef inline double dpdZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dpdZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1 / (dZdp(v, field, temp) - dZdv(v, field, temp) * dtaudp(v, field, temp) / dtaudv(v, field, temp, P))
  *     #return dpdT(field, temp) * dTdZ(v, field, temp, P)
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dpdZ(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dpdZ(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dpdZ", 0);
 
   /* "Cthermo.pyx":171
  * @cython.cdivision(True)
- * cdef inline double dpdZ(double v, double field, double temp, double P):
+ * cdef inline double dpdZ(const double v, const double field, const double temp, const double P):
  *     return 1 / (dZdp(v, field, temp) - dZdv(v, field, temp) * dtaudp(v, field, temp) / dtaudv(v, field, temp, P))             # <<<<<<<<<<<<<<
  *     #return dpdT(field, temp) * dTdZ(v, field, temp, P)
  * # end: Defining p derivative with respect to Z along tau = const.
@@ -1962,7 +1962,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dpdZ(double __pyx_v_v, double __pyx
   /* "Cthermo.pyx":170
  * # %% Defining p derivative with respect to Z along tau = const.
  * @cython.cdivision(True)
- * cdef inline double dpdZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dpdZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1 / (dZdp(v, field, temp) - dZdv(v, field, temp) * dtaudp(v, field, temp) / dtaudv(v, field, temp, P))
  *     #return dpdT(field, temp) * dTdZ(v, field, temp, P)
  */
@@ -1976,19 +1976,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dpdZ(double __pyx_v_v, double __pyx
 /* "Cthermo.pyx":177
  * # %% Defining Z derivative with respect to v.
  * @cython.cdivision(True)
- * cdef inline double dZdv(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dZdv(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return 2 * (eps(field, temp) + p(field,temp)) * gam(v) * dgamdv(v) +\
  *         (eps(field, temp) + p(field,temp)) * gam(v) * gam(v)
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dZdv(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dZdv(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dZdv", 0);
 
   /* "Cthermo.pyx":178
  * @cython.cdivision(True)
- * cdef inline double dZdv(double v, double field, double temp):
+ * cdef inline double dZdv(const double v, const double field, const double temp):
  *     return 2 * (eps(field, temp) + p(field,temp)) * gam(v) * dgamdv(v) +\             # <<<<<<<<<<<<<<
  *         (eps(field, temp) + p(field,temp)) * gam(v) * gam(v)
  * # end: Defining Z derivative with respect to v.
@@ -1999,7 +1999,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dZdv(double __pyx_v_v, double __pyx
   /* "Cthermo.pyx":177
  * # %% Defining Z derivative with respect to v.
  * @cython.cdivision(True)
- * cdef inline double dZdv(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dZdv(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return 2 * (eps(field, temp) + p(field,temp)) * gam(v) * dgamdv(v) +\
  *         (eps(field, temp) + p(field,temp)) * gam(v) * gam(v)
  */
@@ -2013,19 +2013,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dZdv(double __pyx_v_v, double __pyx
 /* "Cthermo.pyx":183
  * 
  * # %% Defining Z derivative with respect to T.
- * cdef inline double dZdT(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dZdT(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dwdT(field, temp) * gam(v) * gam(v) * v
  * # end: Defining Z derivative with respect to T.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dZdT(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dZdT(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dZdT", 0);
 
   /* "Cthermo.pyx":184
  * # %% Defining Z derivative with respect to T.
- * cdef inline double dZdT(double v, double field, double temp):
+ * cdef inline double dZdT(const double v, const double field, const double temp):
  *     return dwdT(field, temp) * gam(v) * gam(v) * v             # <<<<<<<<<<<<<<
  * # end: Defining Z derivative with respect to T.
  * 
@@ -2036,7 +2036,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dZdT(double __pyx_v_v, double __pyx
   /* "Cthermo.pyx":183
  * 
  * # %% Defining Z derivative with respect to T.
- * cdef inline double dZdT(double v, double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef inline double dZdT(const double v, const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dwdT(field, temp) * gam(v) * gam(v) * v
  * # end: Defining Z derivative with respect to T.
  */
@@ -2050,19 +2050,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dZdT(double __pyx_v_v, double __pyx
 /* "Cthermo.pyx":188
  * 
  * # %% Defining Ftau derivative with respect to tau.
- * cdef inline double dFtaudtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dFtaudtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1 + dpdtau(v, field, temp, P)
  * # end: Defining Ftau derivative with respect to tau.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudtau(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudtau(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dFtaudtau", 0);
 
   /* "Cthermo.pyx":189
  * # %% Defining Ftau derivative with respect to tau.
- * cdef inline double dFtaudtau(double v, double field, double temp, double P):
+ * cdef inline double dFtaudtau(const double v, const double field, const double temp, const double P):
  *     return 1 + dpdtau(v, field, temp, P)             # <<<<<<<<<<<<<<
  * # end: Defining Ftau derivative with respect to tau.
  * 
@@ -2073,7 +2073,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudtau(double __pyx_v_v, double 
   /* "Cthermo.pyx":188
  * 
  * # %% Defining Ftau derivative with respect to tau.
- * cdef inline double dFtaudtau(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dFtaudtau(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return 1 + dpdtau(v, field, temp, P)
  * # end: Defining Ftau derivative with respect to tau.
  */
@@ -2087,19 +2087,19 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudtau(double __pyx_v_v, double 
 /* "Cthermo.pyx":193
  * 
  * # %% Defining Ftau derivative with respect to Z.
- * cdef inline double dFtaudZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dFtaudZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return dpdZ(v, field, temp, P)
  * # end: Defining Ftau derivative with respect to Z.
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudZ(double __pyx_v_v, double __pyx_v_field, double __pyx_v_temp, double __pyx_v_P) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudZ(double const __pyx_v_v, double const __pyx_v_field, double const __pyx_v_temp, double const __pyx_v_P) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dFtaudZ", 0);
 
   /* "Cthermo.pyx":194
  * # %% Defining Ftau derivative with respect to Z.
- * cdef inline double dFtaudZ(double v, double field, double temp, double P):
+ * cdef inline double dFtaudZ(const double v, const double field, const double temp, const double P):
  *     return dpdZ(v, field, temp, P)             # <<<<<<<<<<<<<<
  * # end: Defining Ftau derivative with respect to Z.
  * 
@@ -2110,7 +2110,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudZ(double __pyx_v_v, double __
   /* "Cthermo.pyx":193
  * 
  * # %% Defining Ftau derivative with respect to Z.
- * cdef inline double dFtaudZ(double v, double field, double temp, double P):             # <<<<<<<<<<<<<<
+ * cdef inline double dFtaudZ(const double v, const double field, const double temp, const double P):             # <<<<<<<<<<<<<<
  *     return dpdZ(v, field, temp, P)
  * # end: Defining Ftau derivative with respect to Z.
  */
@@ -2124,18 +2124,18 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dFtaudZ(double __pyx_v_v, double __
 /* "Cthermo.pyx":198
  * 
  * # %% Defining Gtau derivative with respect to tau.
- * cdef inline double dGtaudtau(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGtaudtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt +\
  *         eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudtau(double __pyx_v_v, double __pyx_v_phi, double __pyx_v_T, double __pyx_v_P, double __pyx_v_dphidt, double __pyx_v_dphidr) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudtau(double const __pyx_v_v, double const __pyx_v_phi, double const __pyx_v_T, double const __pyx_v_P, double const __pyx_v_dphidt, double const __pyx_v_dphidr) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dGtaudtau", 0);
 
   /* "Cthermo.pyx":200
- * cdef inline double dGtaudtau(double v, double phi, double T, double P, double dphidt, double dphidr):
+ * cdef inline double dGtaudtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):
  *     return d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt +\
  *         eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\             # <<<<<<<<<<<<<<
  *         eta * gam(v) * dvdtau(v, phi, T, P) * dphidr * dphidt
@@ -2147,7 +2147,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudtau(double __pyx_v_v, double 
   /* "Cthermo.pyx":198
  * 
  * # %% Defining Gtau derivative with respect to tau.
- * cdef inline double dGtaudtau(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGtaudtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt +\
  *         eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\
  */
@@ -2161,18 +2161,18 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudtau(double __pyx_v_v, double 
 /* "Cthermo.pyx":205
  * 
  * # %% Defining Gtau derivative with respect to Z.
- * cdef inline double dGtaudZ(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGtaudZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt +\
  *         eta * dgamdv(v) * dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudZ(double __pyx_v_v, double __pyx_v_phi, double __pyx_v_T, double __pyx_v_P, double __pyx_v_dphidt, double __pyx_v_dphidr) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudZ(double const __pyx_v_v, double const __pyx_v_phi, double const __pyx_v_T, double const __pyx_v_P, double const __pyx_v_dphidt, double const __pyx_v_dphidr) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dGtaudZ", 0);
 
   /* "Cthermo.pyx":207
- * cdef inline double dGtaudZ(double v, double phi, double T, double P, double dphidt, double dphidr):
+ * cdef inline double dGtaudZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):
  *     return d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt +\
  *         eta * dgamdv(v) * dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\             # <<<<<<<<<<<<<<
  *         eta * gam(v) * dvdZ(v, phi, T, P) * dphidr * dphidt
@@ -2184,7 +2184,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudZ(double __pyx_v_v, double __
   /* "Cthermo.pyx":205
  * 
  * # %% Defining Gtau derivative with respect to Z.
- * cdef inline double dGtaudZ(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGtaudZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt +\
  *         eta * dgamdv(v) * dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidt +\
  */
@@ -2198,18 +2198,18 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dGtaudZ(double __pyx_v_v, double __
 /* "Cthermo.pyx":212
  * 
  * # %% Defining GZ derivative with respect to tau.
- * cdef inline double dGZdtau(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGZdtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return -d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt -\
  *         eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dGZdtau(double __pyx_v_v, double __pyx_v_phi, double __pyx_v_T, double __pyx_v_P, double __pyx_v_dphidt, double __pyx_v_dphidr) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dGZdtau(double const __pyx_v_v, double const __pyx_v_phi, double const __pyx_v_T, double const __pyx_v_P, double const __pyx_v_dphidt, double const __pyx_v_dphidr) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dGZdtau", 0);
 
   /* "Cthermo.pyx":214
- * cdef inline double dGZdtau(double v, double phi, double T, double P, double dphidt, double dphidr):
+ * cdef inline double dGZdtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):
  *     return -d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt -\
  *         eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\             # <<<<<<<<<<<<<<
  *         eta * gam(v) * dvdtau(v, phi, T, P) * dphidr * dphidr
@@ -2221,7 +2221,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dGZdtau(double __pyx_v_v, double __
   /* "Cthermo.pyx":212
  * 
  * # %% Defining GZ derivative with respect to tau.
- * cdef inline double dGZdtau(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGZdtau(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return -d2VTdphidT(phi, T) * dTdtau(v, phi, T, P) * dphidt -\
  *         eta * dgamdv(v) * dvdtau(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\
  */
@@ -2235,18 +2235,18 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dGZdtau(double __pyx_v_v, double __
 /* "Cthermo.pyx":219
  * 
  * # %% Defining GZ derivative with respect to Z.
- * cdef inline double dGZdZ(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGZdZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return -d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt -\
  *         eta * dgamdv(v)*dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\
  */
 
-static CYTHON_INLINE double __pyx_f_7Cthermo_dGZdZ(double __pyx_v_v, double __pyx_v_phi, double __pyx_v_T, double __pyx_v_P, double __pyx_v_dphidt, double __pyx_v_dphidr) {
+static CYTHON_INLINE double __pyx_f_7Cthermo_dGZdZ(double const __pyx_v_v, double const __pyx_v_phi, double const __pyx_v_T, double const __pyx_v_P, double const __pyx_v_dphidt, double const __pyx_v_dphidr) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dGZdZ", 0);
 
   /* "Cthermo.pyx":221
- * cdef inline double dGZdZ(double v, double phi, double T, double P, double dphidt, double dphidr):
+ * cdef inline double dGZdZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):
  *     return -d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt -\
  *         eta * dgamdv(v)*dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\             # <<<<<<<<<<<<<<
  *         eta * gam(v) * dvdZ(v, phi, T, P) * dphidr * dphidr
@@ -2258,7 +2258,7 @@ static CYTHON_INLINE double __pyx_f_7Cthermo_dGZdZ(double __pyx_v_v, double __py
   /* "Cthermo.pyx":219
  * 
  * # %% Defining GZ derivative with respect to Z.
- * cdef inline double dGZdZ(double v, double phi, double T, double P, double dphidt, double dphidr):             # <<<<<<<<<<<<<<
+ * cdef inline double dGZdZ(const double v, const double phi, const double T, const double P, const double dphidt, const double dphidr):             # <<<<<<<<<<<<<<
  *     return -d2VTdphidT(phi, T) * dTdZ(v, phi, T, P) * dphidt -\
  *         eta * dgamdv(v)*dvdZ(v, phi, T, P) * (dphidt + v * dphidr) * dphidr -\
  */
@@ -2374,37 +2374,37 @@ static int __Pyx_modinit_function_export_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("eps", (void (*)(void))__pyx_f_7Cthermo_eps, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("p", (void (*)(void))__pyx_f_7Cthermo_p, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("w", (void (*)(void))__pyx_f_7Cthermo_w, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dpdT", (void (*)(void))__pyx_f_7Cthermo_dpdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d2pdT", (void (*)(void))__pyx_f_7Cthermo_d2pdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("depsdT", (void (*)(void))__pyx_f_7Cthermo_depsdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d2epsdT", (void (*)(void))__pyx_f_7Cthermo_d2epsdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dwdT", (void (*)(void))__pyx_f_7Cthermo_dwdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d2wdT", (void (*)(void))__pyx_f_7Cthermo_d2wdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("gam", (void (*)(void))__pyx_f_7Cthermo_gam, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dgamdv", (void (*)(void))__pyx_f_7Cthermo_dgamdv, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Gf_tau", (void (*)(void))__pyx_f_7Cthermo_Gf_tau, "double (double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Gf_Z", (void (*)(void))__pyx_f_7Cthermo_Gf_Z, "double (double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dtaudp", (void (*)(void))__pyx_f_7Cthermo_dtaudp, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dZdp", (void (*)(void))__pyx_f_7Cthermo_dZdp, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dtaudT", (void (*)(void))__pyx_f_7Cthermo_dtaudT, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dtaudv", (void (*)(void))__pyx_f_7Cthermo_dtaudv, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dvdtau", (void (*)(void))__pyx_f_7Cthermo_dvdtau, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dvdZ", (void (*)(void))__pyx_f_7Cthermo_dvdZ, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dTdtau", (void (*)(void))__pyx_f_7Cthermo_dTdtau, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dTdZ", (void (*)(void))__pyx_f_7Cthermo_dTdZ, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dpdtau", (void (*)(void))__pyx_f_7Cthermo_dpdtau, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dpdZ", (void (*)(void))__pyx_f_7Cthermo_dpdZ, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dZdv", (void (*)(void))__pyx_f_7Cthermo_dZdv, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dZdT", (void (*)(void))__pyx_f_7Cthermo_dZdT, "double (double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dFtaudtau", (void (*)(void))__pyx_f_7Cthermo_dFtaudtau, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dFtaudZ", (void (*)(void))__pyx_f_7Cthermo_dFtaudZ, "double (double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dGtaudtau", (void (*)(void))__pyx_f_7Cthermo_dGtaudtau, "double (double, double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dGtaudZ", (void (*)(void))__pyx_f_7Cthermo_dGtaudZ, "double (double, double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dGZdtau", (void (*)(void))__pyx_f_7Cthermo_dGZdtau, "double (double, double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dGZdZ", (void (*)(void))__pyx_f_7Cthermo_dGZdZ, "double (double, double, double, double, double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("eps", (void (*)(void))__pyx_f_7Cthermo_eps, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("p", (void (*)(void))__pyx_f_7Cthermo_p, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("w", (void (*)(void))__pyx_f_7Cthermo_w, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dpdT", (void (*)(void))__pyx_f_7Cthermo_dpdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d2pdT", (void (*)(void))__pyx_f_7Cthermo_d2pdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("depsdT", (void (*)(void))__pyx_f_7Cthermo_depsdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d2epsdT", (void (*)(void))__pyx_f_7Cthermo_d2epsdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dwdT", (void (*)(void))__pyx_f_7Cthermo_dwdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d2wdT", (void (*)(void))__pyx_f_7Cthermo_d2wdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("gam", (void (*)(void))__pyx_f_7Cthermo_gam, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dgamdv", (void (*)(void))__pyx_f_7Cthermo_dgamdv, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Gf_tau", (void (*)(void))__pyx_f_7Cthermo_Gf_tau, "double (double const , double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Gf_Z", (void (*)(void))__pyx_f_7Cthermo_Gf_Z, "double (double const , double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dtaudp", (void (*)(void))__pyx_f_7Cthermo_dtaudp, "double (double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dZdp", (void (*)(void))__pyx_f_7Cthermo_dZdp, "double (double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dtaudT", (void (*)(void))__pyx_f_7Cthermo_dtaudT, "double (double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dtaudv", (void (*)(void))__pyx_f_7Cthermo_dtaudv, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dvdtau", (void (*)(void))__pyx_f_7Cthermo_dvdtau, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dvdZ", (void (*)(void))__pyx_f_7Cthermo_dvdZ, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dTdtau", (void (*)(void))__pyx_f_7Cthermo_dTdtau, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dTdZ", (void (*)(void))__pyx_f_7Cthermo_dTdZ, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dpdtau", (void (*)(void))__pyx_f_7Cthermo_dpdtau, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dpdZ", (void (*)(void))__pyx_f_7Cthermo_dpdZ, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dZdv", (void (*)(void))__pyx_f_7Cthermo_dZdv, "double (double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dZdT", (void (*)(void))__pyx_f_7Cthermo_dZdT, "double (double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dFtaudtau", (void (*)(void))__pyx_f_7Cthermo_dFtaudtau, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dFtaudZ", (void (*)(void))__pyx_f_7Cthermo_dFtaudZ, "double (double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dGtaudtau", (void (*)(void))__pyx_f_7Cthermo_dGtaudtau, "double (double const , double const , double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dGtaudZ", (void (*)(void))__pyx_f_7Cthermo_dGtaudZ, "double (double const , double const , double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dGZdtau", (void (*)(void))__pyx_f_7Cthermo_dGZdtau, "double (double const , double const , double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dGZdZ", (void (*)(void))__pyx_f_7Cthermo_dGZdZ, "double (double const , double const , double const , double const , double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2446,13 +2446,13 @@ static int __Pyx_modinit_function_import_code(void) {
   /*--- Function import code ---*/
   __pyx_t_1 = PyImport_ImportModule("Cpotential"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_ImportFunction(__pyx_t_1, "V0", (void (**)(void))&__pyx_f_10Cpotential_V0, "double (double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "VT", (void (**)(void))&__pyx_f_10Cpotential_VT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdphi", (void (**)(void))&__pyx_f_10Cpotential_dVTdphi, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdT", (void (**)(void))&__pyx_f_10Cpotential_dVTdT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdphidT", (void (**)(void))&__pyx_f_10Cpotential_d2VTdphidT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdT2", (void (**)(void))&__pyx_f_10Cpotential_d2VTdT2, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d3VTdT3", (void (**)(void))&__pyx_f_10Cpotential_d3VTdT3, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "V0", (void (**)(void))&__pyx_f_10Cpotential_V0, "double (double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "VT", (void (**)(void))&__pyx_f_10Cpotential_VT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdphi", (void (**)(void))&__pyx_f_10Cpotential_dVTdphi, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdT", (void (**)(void))&__pyx_f_10Cpotential_dVTdT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdphidT", (void (**)(void))&__pyx_f_10Cpotential_d2VTdphidT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdT2", (void (**)(void))&__pyx_f_10Cpotential_d2VTdT2, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d3VTdT3", (void (**)(void))&__pyx_f_10Cpotential_d3VTdT3, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

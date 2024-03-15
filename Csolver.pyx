@@ -16,18 +16,18 @@ from Cthermo cimport w, p, dpdT, dwdT, d2pdT, d2wdT
 # end: Import termodynamically corrected quantities.
 
 
-cdef inline double solve_func(double x, double t, double f, double z):
+cdef inline double solve_func(const double x, const double t, const double f, const double z):
     return t + p(f, x) - 0.5 * (w(f, x) + sqrt(w(f, x) * w(f, x) + 4 * z * z))
 
 
 @cython.cdivision(True)
-cdef inline double solve_func_prime(double x, double t, double f, double z):
+cdef inline double solve_func_prime(const double x, const double t, const double f, const double z):
     return dpdT(f, x) - 0.5 * (dwdT(f, x) + (w(f, x) * dwdT(f, x)) /
                                sqrt(w(f, x) * w(f, x) + 4 * z * z))
 
 
 @cython.cdivision(True)
-cdef inline double solve_func_prime2(double x, double t, double f, double z):
+cdef inline double solve_func_prime2(const double x, const double t, const double f, const double z):
     return d2pdT(f, x) - 0.5 * (d2wdT(f, x) +
                                 ((w(f, x) * d2wdT(f, x) + dwdT(f, x)**2) *
                                  sqrt(w(f, x) * w(f, x) + 4 * z * z) -
@@ -38,7 +38,7 @@ cdef inline double solve_func_prime2(double x, double t, double f, double z):
 
 
 @cython.cdivision(True)
-cdef void tauZphi2Tpv_new(double tau, double Z, double phi,
+cdef void tauZphi2Tpv_new(const double tau, const double Z, const double phi,
                           double* T, double* P, double* v):
     cdef int maxiter = 100
     cdef double tol=1.11e-16

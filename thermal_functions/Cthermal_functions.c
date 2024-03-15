@@ -2363,15 +2363,15 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_low(double); /*proto*/
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_low(double); /*proto*/
-static double __pyx_f_17thermal_functions_18Cthermal_functions_J_low(double); /*proto*/
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_high(double); /*proto*/
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_high(double); /*proto*/
-static double __pyx_f_17thermal_functions_18Cthermal_functions_J_high(double); /*proto*/
-static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jf(double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jb(double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_J(double, int __pyx_skip_dispatch); /*proto*/
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_low(double const ); /*proto*/
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_low(double const ); /*proto*/
+static double __pyx_f_17thermal_functions_18Cthermal_functions_J_low(double const ); /*proto*/
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_high(double const ); /*proto*/
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_high(double const ); /*proto*/
+static double __pyx_f_17thermal_functions_18Cthermal_functions_J_high(double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jf(double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jb(double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_J(double const , int __pyx_skip_dispatch); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -2739,30 +2739,30 @@ static PyObject *__pyx_codeobj__29;
 /* "thermal_functions/Cthermal_functions.pyx":43
  * 
  * # Define the low and high functions
- * cdef double Jf_low(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jf_low(const double x):             # <<<<<<<<<<<<<<
  *     return -7.0 / 8.0 * pi ** 4 / 45.0 - pi ** 2 * x ** 2 / 24.0
  * 
  */
 
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_low(double __pyx_v_x) {
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_low(double const __pyx_v_x) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("Jf_low", 0);
 
   /* "thermal_functions/Cthermal_functions.pyx":44
  * # Define the low and high functions
- * cdef double Jf_low(double x):
+ * cdef double Jf_low(const double x):
  *     return -7.0 / 8.0 * pi ** 4 / 45.0 - pi ** 2 * x ** 2 / 24.0             # <<<<<<<<<<<<<<
  * 
- * cdef double Jb_low(double x):
+ * cdef double Jb_low(const double x):
  */
-  __pyx_r = ((((-7.0 / 8.0) * pow(((double)M_PI), 4.0)) / 45.0) - ((pow(((double)M_PI), 2.0) * pow(__pyx_v_x, 2.0)) / 24.0));
+  __pyx_r = ((((-7.0 / 8.0) * pow(((double)M_PI), 4.0)) / 45.0) - ((pow(((double)M_PI), 2.0) * pow(((double)__pyx_v_x), 2.0)) / 24.0));
   goto __pyx_L0;
 
   /* "thermal_functions/Cthermal_functions.pyx":43
  * 
  * # Define the low and high functions
- * cdef double Jf_low(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jf_low(const double x):             # <<<<<<<<<<<<<<
  *     return -7.0 / 8.0 * pi ** 4 / 45.0 - pi ** 2 * x ** 2 / 24.0
  * 
  */
@@ -2776,30 +2776,30 @@ static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_low(double __p
 /* "thermal_functions/Cthermal_functions.pyx":46
  *     return -7.0 / 8.0 * pi ** 4 / 45.0 - pi ** 2 * x ** 2 / 24.0
  * 
- * cdef double Jb_low(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jb_low(const double x):             # <<<<<<<<<<<<<<
  *     return -pi ** 4 / 45.0 + pi ** 2 * x ** 2 / 12.0
  * 
  */
 
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_low(double __pyx_v_x) {
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_low(double const __pyx_v_x) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("Jb_low", 0);
 
   /* "thermal_functions/Cthermal_functions.pyx":47
  * 
- * cdef double Jb_low(double x):
+ * cdef double Jb_low(const double x):
  *     return -pi ** 4 / 45.0 + pi ** 2 * x ** 2 / 12.0             # <<<<<<<<<<<<<<
  * 
- * cdef double Jf_high(double x):
+ * cdef double Jf_high(const double x):
  */
-  __pyx_r = (((-pow(((double)M_PI), 4.0)) / 45.0) + ((pow(((double)M_PI), 2.0) * pow(__pyx_v_x, 2.0)) / 12.0));
+  __pyx_r = (((-pow(((double)M_PI), 4.0)) / 45.0) + ((pow(((double)M_PI), 2.0) * pow(((double)__pyx_v_x), 2.0)) / 12.0));
   goto __pyx_L0;
 
   /* "thermal_functions/Cthermal_functions.pyx":46
  *     return -7.0 / 8.0 * pi ** 4 / 45.0 - pi ** 2 * x ** 2 / 24.0
  * 
- * cdef double Jb_low(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jb_low(const double x):             # <<<<<<<<<<<<<<
  *     return -pi ** 4 / 45.0 + pi ** 2 * x ** 2 / 12.0
  * 
  */
@@ -2813,30 +2813,30 @@ static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_low(double __p
 /* "thermal_functions/Cthermal_functions.pyx":49
  *     return -pi ** 4 / 45.0 + pi ** 2 * x ** 2 / 12.0
  * 
- * cdef double Jf_high(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jf_high(const double x):             # <<<<<<<<<<<<<<
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
  */
 
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_high(double __pyx_v_x) {
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_high(double const __pyx_v_x) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("Jf_high", 0);
 
   /* "thermal_functions/Cthermal_functions.pyx":50
  * 
- * cdef double Jf_high(double x):
+ * cdef double Jf_high(const double x):
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)             # <<<<<<<<<<<<<<
  * 
- * cdef double Jb_high(double x):
+ * cdef double Jb_high(const double x):
  */
-  __pyx_r = ((sqrt((((double)M_PI) / 2.0)) * pow(__pyx_v_x, (3.0 / 2.0))) * exp(__pyx_v_x));
+  __pyx_r = ((sqrt((((double)M_PI) / 2.0)) * pow(((double)__pyx_v_x), (3.0 / 2.0))) * exp(__pyx_v_x));
   goto __pyx_L0;
 
   /* "thermal_functions/Cthermal_functions.pyx":49
  *     return -pi ** 4 / 45.0 + pi ** 2 * x ** 2 / 12.0
  * 
- * cdef double Jf_high(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jf_high(const double x):             # <<<<<<<<<<<<<<
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
  */
@@ -2850,30 +2850,30 @@ static double __pyx_f_17thermal_functions_18Cthermal_functions_Jf_high(double __
 /* "thermal_functions/Cthermal_functions.pyx":52
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
- * cdef double Jb_high(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jb_high(const double x):             # <<<<<<<<<<<<<<
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
  */
 
-static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_high(double __pyx_v_x) {
+static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_high(double const __pyx_v_x) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("Jb_high", 0);
 
   /* "thermal_functions/Cthermal_functions.pyx":53
  * 
- * cdef double Jb_high(double x):
+ * cdef double Jb_high(const double x):
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)             # <<<<<<<<<<<<<<
  * 
- * cdef double J_low(double x):
+ * cdef double J_low(const double x):
  */
-  __pyx_r = ((sqrt((((double)M_PI) / 2.0)) * pow(__pyx_v_x, (3.0 / 2.0))) * exp(__pyx_v_x));
+  __pyx_r = ((sqrt((((double)M_PI) / 2.0)) * pow(((double)__pyx_v_x), (3.0 / 2.0))) * exp(__pyx_v_x));
   goto __pyx_L0;
 
   /* "thermal_functions/Cthermal_functions.pyx":52
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
- * cdef double Jb_high(double x):             # <<<<<<<<<<<<<<
+ * cdef double Jb_high(const double x):             # <<<<<<<<<<<<<<
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
  */
@@ -2887,30 +2887,30 @@ static double __pyx_f_17thermal_functions_18Cthermal_functions_Jb_high(double __
 /* "thermal_functions/Cthermal_functions.pyx":55
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
- * cdef double J_low(double x):             # <<<<<<<<<<<<<<
+ * cdef double J_low(const double x):             # <<<<<<<<<<<<<<
  *     return -2 + x/2
  * 
  */
 
-static double __pyx_f_17thermal_functions_18Cthermal_functions_J_low(double __pyx_v_x) {
+static double __pyx_f_17thermal_functions_18Cthermal_functions_J_low(double const __pyx_v_x) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("J_low", 0);
 
   /* "thermal_functions/Cthermal_functions.pyx":56
  * 
- * cdef double J_low(double x):
+ * cdef double J_low(const double x):
  *     return -2 + x/2             # <<<<<<<<<<<<<<
  * 
- * cdef double J_high(double x):
+ * cdef double J_high(const double x):
  */
-  __pyx_r = (-2.0 + (__pyx_v_x / 2.0));
+  __pyx_r = (-2.0 + (((double)__pyx_v_x) / 2.0));
   goto __pyx_L0;
 
   /* "thermal_functions/Cthermal_functions.pyx":55
  *     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
  * 
- * cdef double J_low(double x):             # <<<<<<<<<<<<<<
+ * cdef double J_low(const double x):             # <<<<<<<<<<<<<<
  *     return -2 + x/2
  * 
  */
@@ -2924,30 +2924,30 @@ static double __pyx_f_17thermal_functions_18Cthermal_functions_J_low(double __py
 /* "thermal_functions/Cthermal_functions.pyx":58
  *     return -2 + x/2
  * 
- * cdef double J_high(double x):             # <<<<<<<<<<<<<<
+ * cdef double J_high(const double x):             # <<<<<<<<<<<<<<
  *     return  -sqrt(pi/2) * x**(3.0/4.0)*exp(-sqrt(x))
  * 
  */
 
-static double __pyx_f_17thermal_functions_18Cthermal_functions_J_high(double __pyx_v_x) {
+static double __pyx_f_17thermal_functions_18Cthermal_functions_J_high(double const __pyx_v_x) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("J_high", 0);
 
   /* "thermal_functions/Cthermal_functions.pyx":59
  * 
- * cdef double J_high(double x):
+ * cdef double J_high(const double x):
  *     return  -sqrt(pi/2) * x**(3.0/4.0)*exp(-sqrt(x))             # <<<<<<<<<<<<<<
  * 
  * # Spline fitting, Jf
  */
-  __pyx_r = (((-sqrt((((double)M_PI) / 2.0))) * pow(__pyx_v_x, (3.0 / 4.0))) * exp((-sqrt(__pyx_v_x))));
+  __pyx_r = (((-sqrt((((double)M_PI) / 2.0))) * pow(((double)__pyx_v_x), (3.0 / 4.0))) * exp((-sqrt(__pyx_v_x))));
   goto __pyx_L0;
 
   /* "thermal_functions/Cthermal_functions.pyx":58
  *     return -2 + x/2
  * 
- * cdef double J_high(double x):             # <<<<<<<<<<<<<<
+ * cdef double J_high(const double x):             # <<<<<<<<<<<<<<
  *     return  -sqrt(pi/2) * x**(3.0/4.0)*exp(-sqrt(x))
  * 
  */
@@ -2961,12 +2961,12 @@ static double __pyx_f_17thermal_functions_18Cthermal_functions_J_high(double __p
 /* "thermal_functions/Cthermal_functions.pyx":87
  * @cython.nonecheck(False)
  * @cython.wraparound(False)
- * cdef inline double oldJf(double x):             # <<<<<<<<<<<<<<
+ * cdef inline double oldJf(const double x):             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t i
  *     cdef Py_ssize_t j
  */
 
-static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_oldJf(double __pyx_v_x) {
+static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_oldJf(double const __pyx_v_x) {
   Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_j;
   double __pyx_v_dx;
@@ -3118,7 +3118,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_old
   /* "thermal_functions/Cthermal_functions.pyx":87
  * @cython.nonecheck(False)
  * @cython.wraparound(False)
- * cdef inline double oldJf(double x):             # <<<<<<<<<<<<<<
+ * cdef inline double oldJf(const double x):             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t i
  *     cdef Py_ssize_t j
  */
@@ -3132,13 +3132,13 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_old
 /* "thermal_functions/Cthermal_functions.pyx":108
  * 
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double Jf(double x):             # <<<<<<<<<<<<<<
+ * cpdef inline double Jf(const double x):             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t i = 300
  *     cdef Py_ssize_t j = 999
  */
 
 static PyObject *__pyx_pw_17thermal_functions_18Cthermal_functions_1Jf(PyObject *__pyx_self, PyObject *__pyx_arg_x); /*proto*/
-static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jf(double __pyx_v_x, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jf(double const __pyx_v_x, CYTHON_UNUSED int __pyx_skip_dispatch) {
   Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_j;
   Py_ssize_t __pyx_v_mid;
@@ -3161,7 +3161,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jf(
 
   /* "thermal_functions/Cthermal_functions.pyx":109
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double Jf(double x):
+ * cpdef inline double Jf(const double x):
  *     cdef Py_ssize_t i = 300             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t j = 999
  *     cdef Py_ssize_t mid
@@ -3169,7 +3169,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jf(
   __pyx_v_i = 0x12C;
 
   /* "thermal_functions/Cthermal_functions.pyx":110
- * cpdef inline double Jf(double x):
+ * cpdef inline double Jf(const double x):
  *     cdef Py_ssize_t i = 300
  *     cdef Py_ssize_t j = 999             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t mid
@@ -3393,7 +3393,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jf(
   /* "thermal_functions/Cthermal_functions.pyx":108
  * 
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double Jf(double x):             # <<<<<<<<<<<<<<
+ * cpdef inline double Jf(const double x):             # <<<<<<<<<<<<<<
  *     cdef Py_ssize_t i = 300
  *     cdef Py_ssize_t j = 999
  */
@@ -3462,13 +3462,13 @@ static PyObject *__pyx_pf_17thermal_functions_18Cthermal_functions_Jf(CYTHON_UNU
 /* "thermal_functions/Cthermal_functions.pyx":147
  * 
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double Jb(double x):             # <<<<<<<<<<<<<<
+ * cpdef inline double Jb(const double x):             # <<<<<<<<<<<<<<
  *     cdef int i = 0
  *     cdef int j = len(xb) - 1
  */
 
 static PyObject *__pyx_pw_17thermal_functions_18Cthermal_functions_3Jb(PyObject *__pyx_self, PyObject *__pyx_arg_x); /*proto*/
-static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jb(double __pyx_v_x, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jb(double const __pyx_v_x, CYTHON_UNUSED int __pyx_skip_dispatch) {
   int __pyx_v_i;
   int __pyx_v_j;
   int __pyx_v_mid;
@@ -3497,7 +3497,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jb(
 
   /* "thermal_functions/Cthermal_functions.pyx":148
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double Jb(double x):
+ * cpdef inline double Jb(const double x):
  *     cdef int i = 0             # <<<<<<<<<<<<<<
  *     cdef int j = len(xb) - 1
  *     cdef int mid
@@ -3505,7 +3505,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jb(
   __pyx_v_i = 0;
 
   /* "thermal_functions/Cthermal_functions.pyx":149
- * cpdef inline double Jb(double x):
+ * cpdef inline double Jb(const double x):
  *     cdef int i = 0
  *     cdef int j = len(xb) - 1             # <<<<<<<<<<<<<<
  *     cdef int mid
@@ -3758,7 +3758,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_Jb(
   /* "thermal_functions/Cthermal_functions.pyx":147
  * 
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double Jb(double x):             # <<<<<<<<<<<<<<
+ * cpdef inline double Jb(const double x):             # <<<<<<<<<<<<<<
  *     cdef int i = 0
  *     cdef int j = len(xb) - 1
  */
@@ -3834,13 +3834,13 @@ static PyObject *__pyx_pf_17thermal_functions_18Cthermal_functions_2Jb(CYTHON_UN
 /* "thermal_functions/Cthermal_functions.pyx":185
  * 
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double J(double x):             # <<<<<<<<<<<<<<
+ * cpdef inline double J(const double x):             # <<<<<<<<<<<<<<
  *     cdef int i = 0
  *     cdef int j = len(xi) - 1
  */
 
 static PyObject *__pyx_pw_17thermal_functions_18Cthermal_functions_5J(PyObject *__pyx_self, PyObject *__pyx_arg_x); /*proto*/
-static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_J(double __pyx_v_x, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_J(double const __pyx_v_x, CYTHON_UNUSED int __pyx_skip_dispatch) {
   int __pyx_v_i;
   int __pyx_v_j;
   int __pyx_v_mid;
@@ -3869,7 +3869,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_J(d
 
   /* "thermal_functions/Cthermal_functions.pyx":186
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double J(double x):
+ * cpdef inline double J(const double x):
  *     cdef int i = 0             # <<<<<<<<<<<<<<
  *     cdef int j = len(xi) - 1
  *     cdef int mid
@@ -3877,7 +3877,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_J(d
   __pyx_v_i = 0;
 
   /* "thermal_functions/Cthermal_functions.pyx":187
- * cpdef inline double J(double x):
+ * cpdef inline double J(const double x):
  *     cdef int i = 0
  *     cdef int j = len(xi) - 1             # <<<<<<<<<<<<<<
  *     cdef int mid
@@ -4130,7 +4130,7 @@ static CYTHON_INLINE double __pyx_f_17thermal_functions_18Cthermal_functions_J(d
   /* "thermal_functions/Cthermal_functions.pyx":185
  * 
  * @cython.boundscheck(False)  # Disable bounds-checking for faster array access
- * cpdef inline double J(double x):             # <<<<<<<<<<<<<<
+ * cpdef inline double J(const double x):             # <<<<<<<<<<<<<<
  *     cdef int i = 0
  *     cdef int j = len(xi) - 1
  */
@@ -20145,16 +20145,16 @@ static int __Pyx_modinit_function_export_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("Jf_low", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jf_low, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Jb_low", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jb_low, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("J_low", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_J_low, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Jf_high", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jf_high, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Jb_high", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jb_high, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("J_high", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_J_high, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Jf", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jf, "double (double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("oldJf", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_oldJf, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Jb", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jb, "double (double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("J", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_J, "double (double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Jf_low", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jf_low, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Jb_low", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jb_low, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("J_low", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_J_low, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Jf_high", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jf_high, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Jb_high", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jb_high, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("J_high", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_J_high, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Jf", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jf, "double (double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("oldJf", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_oldJf, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Jb", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_Jb, "double (double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("J", (void (*)(void))__pyx_f_17thermal_functions_18Cthermal_functions_J, "double (double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;

@@ -1015,15 +1015,15 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'cython' */
 
 /* Module declarations from 'Cpotential' */
-static double (*__pyx_f_10Cpotential_VT)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_dVTdphi)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_dVTdT)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_d2VTdphidT)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_d2VTdT2)(double, double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_10Cpotential_d3VTdT3)(double, double, int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_VT)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_dVTdphi)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_dVTdT)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_d2VTdphidT)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_d2VTdT2)(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_10Cpotential_d3VTdT3)(double const , double const , int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'Csolver' */
-static void (*__pyx_f_7Csolver_tauZphi2Tpv_new)(double, double, double, double *, double *, double *); /*proto*/
+static void (*__pyx_f_7Csolver_tauZphi2Tpv_new)(double const , double const , double const , double *, double *, double *); /*proto*/
 
 /* Module declarations from 'Cscaled' */
 static double __pyx_v_7Cscaled_GeV;
@@ -1046,30 +1046,30 @@ static PyObject *__pyx_n_s_test;
 /* "Cscaled.pyx":27
  * # %% Defining the rescaled potential.
  * @cython.cdivision(True)
- * cdef double VT_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double VT_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return VT(field / GeV, temp / GeV) * GeV * GeV * GeV * GeV
  * # end: Defining the rescaled potential.
  */
 
-static double __pyx_f_7Cscaled_VT_mod(double __pyx_v_field, double __pyx_v_temp) {
+static double __pyx_f_7Cscaled_VT_mod(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("VT_mod", 0);
 
   /* "Cscaled.pyx":28
  * @cython.cdivision(True)
- * cdef double VT_mod(double field, double temp):
+ * cdef double VT_mod(const double field, const double temp):
  *     return VT(field / GeV, temp / GeV) * GeV * GeV * GeV * GeV             # <<<<<<<<<<<<<<
  * # end: Defining the rescaled potential.
  * 
  */
-  __pyx_r = ((((__pyx_f_10Cpotential_VT((__pyx_v_field / __pyx_v_7Cscaled_GeV), (__pyx_v_temp / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
+  __pyx_r = ((((__pyx_f_10Cpotential_VT((((double)__pyx_v_field) / __pyx_v_7Cscaled_GeV), (((double)__pyx_v_temp) / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
   goto __pyx_L0;
 
   /* "Cscaled.pyx":27
  * # %% Defining the rescaled potential.
  * @cython.cdivision(True)
- * cdef double VT_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double VT_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return VT(field / GeV, temp / GeV) * GeV * GeV * GeV * GeV
  * # end: Defining the rescaled potential.
  */
@@ -1083,30 +1083,30 @@ static double __pyx_f_7Cscaled_VT_mod(double __pyx_v_field, double __pyx_v_temp)
 /* "Cscaled.pyx":34
  * # %% Defining rescaled derivative of the potential.
  * @cython.cdivision(True)
- * cdef double dVTdphi_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double dVTdphi_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dVTdphi(field / GeV, temp / GeV) * GeV * GeV * GeV
  * # end: Defining rescaled derivative of the potential.
  */
 
-static double __pyx_f_7Cscaled_dVTdphi_mod(double __pyx_v_field, double __pyx_v_temp) {
+static double __pyx_f_7Cscaled_dVTdphi_mod(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dVTdphi_mod", 0);
 
   /* "Cscaled.pyx":35
  * @cython.cdivision(True)
- * cdef double dVTdphi_mod(double field, double temp):
+ * cdef double dVTdphi_mod(const double field, const double temp):
  *     return dVTdphi(field / GeV, temp / GeV) * GeV * GeV * GeV             # <<<<<<<<<<<<<<
  * # end: Defining rescaled derivative of the potential.
  * 
  */
-  __pyx_r = (((__pyx_f_10Cpotential_dVTdphi((__pyx_v_field / __pyx_v_7Cscaled_GeV), (__pyx_v_temp / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
+  __pyx_r = (((__pyx_f_10Cpotential_dVTdphi((((double)__pyx_v_field) / __pyx_v_7Cscaled_GeV), (((double)__pyx_v_temp) / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
   goto __pyx_L0;
 
   /* "Cscaled.pyx":34
  * # %% Defining rescaled derivative of the potential.
  * @cython.cdivision(True)
- * cdef double dVTdphi_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double dVTdphi_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dVTdphi(field / GeV, temp / GeV) * GeV * GeV * GeV
  * # end: Defining rescaled derivative of the potential.
  */
@@ -1120,30 +1120,30 @@ static double __pyx_f_7Cscaled_dVTdphi_mod(double __pyx_v_field, double __pyx_v_
 /* "Cscaled.pyx":41
  * # %% Defining rescaled derivative of the potential.
  * @cython.cdivision(True)
- * cdef double dVTdT_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double dVTdT_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dVTdT(field / GeV, temp / GeV) * GeV * GeV * GeV
  * # end: Defining rescaled derivative of the potential.
  */
 
-static double __pyx_f_7Cscaled_dVTdT_mod(double __pyx_v_field, double __pyx_v_temp) {
+static double __pyx_f_7Cscaled_dVTdT_mod(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("dVTdT_mod", 0);
 
   /* "Cscaled.pyx":42
  * @cython.cdivision(True)
- * cdef double dVTdT_mod(double field, double temp):
+ * cdef double dVTdT_mod(const double field, const double temp):
  *     return dVTdT(field / GeV, temp / GeV) * GeV * GeV * GeV             # <<<<<<<<<<<<<<
  * # end: Defining rescaled derivative of the potential.
  * 
  */
-  __pyx_r = (((__pyx_f_10Cpotential_dVTdT((__pyx_v_field / __pyx_v_7Cscaled_GeV), (__pyx_v_temp / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
+  __pyx_r = (((__pyx_f_10Cpotential_dVTdT((((double)__pyx_v_field) / __pyx_v_7Cscaled_GeV), (((double)__pyx_v_temp) / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
   goto __pyx_L0;
 
   /* "Cscaled.pyx":41
  * # %% Defining rescaled derivative of the potential.
  * @cython.cdivision(True)
- * cdef double dVTdT_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double dVTdT_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return dVTdT(field / GeV, temp / GeV) * GeV * GeV * GeV
  * # end: Defining rescaled derivative of the potential.
  */
@@ -1157,30 +1157,30 @@ static double __pyx_f_7Cscaled_dVTdT_mod(double __pyx_v_field, double __pyx_v_te
 /* "Cscaled.pyx":48
  * # %% Defining rescaled second derivative of the potential.
  * @cython.cdivision(True)
- * cdef double d2VTdphidT_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double d2VTdphidT_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d2VTdphidT(field / GeV, temp / GeV) * GeV * GeV
  * # end: Defining rescaled second derivative of the potential.
  */
 
-static double __pyx_f_7Cscaled_d2VTdphidT_mod(double __pyx_v_field, double __pyx_v_temp) {
+static double __pyx_f_7Cscaled_d2VTdphidT_mod(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("d2VTdphidT_mod", 0);
 
   /* "Cscaled.pyx":49
  * @cython.cdivision(True)
- * cdef double d2VTdphidT_mod(double field, double temp):
+ * cdef double d2VTdphidT_mod(const double field, const double temp):
  *     return d2VTdphidT(field / GeV, temp / GeV) * GeV * GeV             # <<<<<<<<<<<<<<
  * # end: Defining rescaled second derivative of the potential.
  * 
  */
-  __pyx_r = ((__pyx_f_10Cpotential_d2VTdphidT((__pyx_v_field / __pyx_v_7Cscaled_GeV), (__pyx_v_temp / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
+  __pyx_r = ((__pyx_f_10Cpotential_d2VTdphidT((((double)__pyx_v_field) / __pyx_v_7Cscaled_GeV), (((double)__pyx_v_temp) / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
   goto __pyx_L0;
 
   /* "Cscaled.pyx":48
  * # %% Defining rescaled second derivative of the potential.
  * @cython.cdivision(True)
- * cdef double d2VTdphidT_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double d2VTdphidT_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d2VTdphidT(field / GeV, temp / GeV) * GeV * GeV
  * # end: Defining rescaled second derivative of the potential.
  */
@@ -1194,30 +1194,30 @@ static double __pyx_f_7Cscaled_d2VTdphidT_mod(double __pyx_v_field, double __pyx
 /* "Cscaled.pyx":55
  * # %% Defining rescaled second derivative of the potential.
  * @cython.cdivision(True)
- * cdef double d2VTdT2_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double d2VTdT2_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d2VTdT2(field / GeV, temp / GeV) * GeV * GeV
  * # end: Defining rescaled second derivative of the potential.
  */
 
-static double __pyx_f_7Cscaled_d2VTdT2_mod(double __pyx_v_field, double __pyx_v_temp) {
+static double __pyx_f_7Cscaled_d2VTdT2_mod(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("d2VTdT2_mod", 0);
 
   /* "Cscaled.pyx":56
  * @cython.cdivision(True)
- * cdef double d2VTdT2_mod(double field, double temp):
+ * cdef double d2VTdT2_mod(const double field, const double temp):
  *     return d2VTdT2(field / GeV, temp / GeV) * GeV * GeV             # <<<<<<<<<<<<<<
  * # end: Defining rescaled second derivative of the potential.
  * 
  */
-  __pyx_r = ((__pyx_f_10Cpotential_d2VTdT2((__pyx_v_field / __pyx_v_7Cscaled_GeV), (__pyx_v_temp / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
+  __pyx_r = ((__pyx_f_10Cpotential_d2VTdT2((((double)__pyx_v_field) / __pyx_v_7Cscaled_GeV), (((double)__pyx_v_temp) / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
   goto __pyx_L0;
 
   /* "Cscaled.pyx":55
  * # %% Defining rescaled second derivative of the potential.
  * @cython.cdivision(True)
- * cdef double d2VTdT2_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double d2VTdT2_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d2VTdT2(field / GeV, temp / GeV) * GeV * GeV
  * # end: Defining rescaled second derivative of the potential.
  */
@@ -1231,30 +1231,30 @@ static double __pyx_f_7Cscaled_d2VTdT2_mod(double __pyx_v_field, double __pyx_v_
 /* "Cscaled.pyx":62
  * # %% Defining rescaled derivative of the potential.
  * @cython.cdivision(True)
- * cdef double d3VTdT3_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double d3VTdT3_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d3VTdT3(field / GeV, temp / GeV) * GeV
  * # end: Defining rescaled derivative of the potential.
  */
 
-static double __pyx_f_7Cscaled_d3VTdT3_mod(double __pyx_v_field, double __pyx_v_temp) {
+static double __pyx_f_7Cscaled_d3VTdT3_mod(double const __pyx_v_field, double const __pyx_v_temp) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("d3VTdT3_mod", 0);
 
   /* "Cscaled.pyx":63
  * @cython.cdivision(True)
- * cdef double d3VTdT3_mod(double field, double temp):
+ * cdef double d3VTdT3_mod(const double field, const double temp):
  *     return d3VTdT3(field / GeV, temp / GeV) * GeV             # <<<<<<<<<<<<<<
  * # end: Defining rescaled derivative of the potential.
  * 
  */
-  __pyx_r = (__pyx_f_10Cpotential_d3VTdT3((__pyx_v_field / __pyx_v_7Cscaled_GeV), (__pyx_v_temp / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV);
+  __pyx_r = (__pyx_f_10Cpotential_d3VTdT3((((double)__pyx_v_field) / __pyx_v_7Cscaled_GeV), (((double)__pyx_v_temp) / __pyx_v_7Cscaled_GeV), 0) * __pyx_v_7Cscaled_GeV);
   goto __pyx_L0;
 
   /* "Cscaled.pyx":62
  * # %% Defining rescaled derivative of the potential.
  * @cython.cdivision(True)
- * cdef double d3VTdT3_mod(double field, double temp):             # <<<<<<<<<<<<<<
+ * cdef double d3VTdT3_mod(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return d3VTdT3(field / GeV, temp / GeV) * GeV
  * # end: Defining rescaled derivative of the potential.
  */
@@ -1268,12 +1268,13 @@ static double __pyx_f_7Cscaled_d3VTdT3_mod(double __pyx_v_field, double __pyx_v_
 /* "Cscaled.pyx":68
  * 
  * @cython.cdivision(True)
- * cdef void tauZphi2Tpv_mod(double tau, double Z, double phi,             # <<<<<<<<<<<<<<
+ * cdef void tauZphi2Tpv_mod(const double tau, const double Z, const double phi,             # <<<<<<<<<<<<<<
  *                           double* T, double* P, double* v):
- *     cdef double newT = T[0] / GeV
+ *     cdef double GeV4 = GeV * GeV * GeV * GeV
  */
 
-static void __pyx_f_7Cscaled_tauZphi2Tpv_mod(double __pyx_v_tau, double __pyx_v_Z, double __pyx_v_phi, double *__pyx_v_T, double *__pyx_v_P, double *__pyx_v_v) {
+static void __pyx_f_7Cscaled_tauZphi2Tpv_mod(double const __pyx_v_tau, double const __pyx_v_Z, double const __pyx_v_phi, double *__pyx_v_T, double *__pyx_v_P, double *__pyx_v_v) {
+  double __pyx_v_GeV4;
   double __pyx_v_newT;
   double __pyx_v_newP;
   double __pyx_v_newv;
@@ -1281,61 +1282,70 @@ static void __pyx_f_7Cscaled_tauZphi2Tpv_mod(double __pyx_v_tau, double __pyx_v_
   __Pyx_RefNannySetupContext("tauZphi2Tpv_mod", 0);
 
   /* "Cscaled.pyx":70
- * cdef void tauZphi2Tpv_mod(double tau, double Z, double phi,
+ * cdef void tauZphi2Tpv_mod(const double tau, const double Z, const double phi,
  *                           double* T, double* P, double* v):
+ *     cdef double GeV4 = GeV * GeV * GeV * GeV             # <<<<<<<<<<<<<<
+ *     cdef double newT = T[0] / GeV
+ *     cdef double newP = P[0] / GeV4
+ */
+  __pyx_v_GeV4 = (((__pyx_v_7Cscaled_GeV * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV) * __pyx_v_7Cscaled_GeV);
+
+  /* "Cscaled.pyx":71
+ *                           double* T, double* P, double* v):
+ *     cdef double GeV4 = GeV * GeV * GeV * GeV
  *     cdef double newT = T[0] / GeV             # <<<<<<<<<<<<<<
- *     cdef double newP = P[0] / GeV**4
+ *     cdef double newP = P[0] / GeV4
  *     cdef double newv = v[0]
  */
   __pyx_v_newT = ((__pyx_v_T[0]) / __pyx_v_7Cscaled_GeV);
 
-  /* "Cscaled.pyx":71
- *                           double* T, double* P, double* v):
- *     cdef double newT = T[0] / GeV
- *     cdef double newP = P[0] / GeV**4             # <<<<<<<<<<<<<<
- *     cdef double newv = v[0]
- *     tauZphi2Tpv_new(tau / GeV**4, Z / GeV**4, phi / GeV, &newT, &newP, &newv)
- */
-  __pyx_v_newP = ((__pyx_v_P[0]) / pow(__pyx_v_7Cscaled_GeV, 4.0));
-
   /* "Cscaled.pyx":72
+ *     cdef double GeV4 = GeV * GeV * GeV * GeV
  *     cdef double newT = T[0] / GeV
- *     cdef double newP = P[0] / GeV**4
+ *     cdef double newP = P[0] / GeV4             # <<<<<<<<<<<<<<
+ *     cdef double newv = v[0]
+ *     tauZphi2Tpv_new(tau / GeV4, Z / GeV4, phi / GeV, &newT, &newP, &newv)
+ */
+  __pyx_v_newP = ((__pyx_v_P[0]) / __pyx_v_GeV4);
+
+  /* "Cscaled.pyx":73
+ *     cdef double newT = T[0] / GeV
+ *     cdef double newP = P[0] / GeV4
  *     cdef double newv = v[0]             # <<<<<<<<<<<<<<
- *     tauZphi2Tpv_new(tau / GeV**4, Z / GeV**4, phi / GeV, &newT, &newP, &newv)
+ *     tauZphi2Tpv_new(tau / GeV4, Z / GeV4, phi / GeV, &newT, &newP, &newv)
  *     T[0] = newT * GeV
  */
   __pyx_v_newv = (__pyx_v_v[0]);
 
-  /* "Cscaled.pyx":73
- *     cdef double newP = P[0] / GeV**4
- *     cdef double newv = v[0]
- *     tauZphi2Tpv_new(tau / GeV**4, Z / GeV**4, phi / GeV, &newT, &newP, &newv)             # <<<<<<<<<<<<<<
- *     T[0] = newT * GeV
- *     P[0] = newP * GeV**4
- */
-  __pyx_f_7Csolver_tauZphi2Tpv_new((__pyx_v_tau / pow(__pyx_v_7Cscaled_GeV, 4.0)), (__pyx_v_Z / pow(__pyx_v_7Cscaled_GeV, 4.0)), (__pyx_v_phi / __pyx_v_7Cscaled_GeV), (&__pyx_v_newT), (&__pyx_v_newP), (&__pyx_v_newv));
-
   /* "Cscaled.pyx":74
+ *     cdef double newP = P[0] / GeV4
  *     cdef double newv = v[0]
- *     tauZphi2Tpv_new(tau / GeV**4, Z / GeV**4, phi / GeV, &newT, &newP, &newv)
+ *     tauZphi2Tpv_new(tau / GeV4, Z / GeV4, phi / GeV, &newT, &newP, &newv)             # <<<<<<<<<<<<<<
+ *     T[0] = newT * GeV
+ *     P[0] = newP * GeV4
+ */
+  __pyx_f_7Csolver_tauZphi2Tpv_new((((double)__pyx_v_tau) / __pyx_v_GeV4), (((double)__pyx_v_Z) / __pyx_v_GeV4), (((double)__pyx_v_phi) / __pyx_v_7Cscaled_GeV), (&__pyx_v_newT), (&__pyx_v_newP), (&__pyx_v_newv));
+
+  /* "Cscaled.pyx":75
+ *     cdef double newv = v[0]
+ *     tauZphi2Tpv_new(tau / GeV4, Z / GeV4, phi / GeV, &newT, &newP, &newv)
  *     T[0] = newT * GeV             # <<<<<<<<<<<<<<
- *     P[0] = newP * GeV**4
+ *     P[0] = newP * GeV4
  *     v[0] = newv
  */
   (__pyx_v_T[0]) = (__pyx_v_newT * __pyx_v_7Cscaled_GeV);
 
-  /* "Cscaled.pyx":75
- *     tauZphi2Tpv_new(tau / GeV**4, Z / GeV**4, phi / GeV, &newT, &newP, &newv)
+  /* "Cscaled.pyx":76
+ *     tauZphi2Tpv_new(tau / GeV4, Z / GeV4, phi / GeV, &newT, &newP, &newv)
  *     T[0] = newT * GeV
- *     P[0] = newP * GeV**4             # <<<<<<<<<<<<<<
+ *     P[0] = newP * GeV4             # <<<<<<<<<<<<<<
  *     v[0] = newv
  */
-  (__pyx_v_P[0]) = (__pyx_v_newP * pow(__pyx_v_7Cscaled_GeV, 4.0));
+  (__pyx_v_P[0]) = (__pyx_v_newP * __pyx_v_GeV4);
 
-  /* "Cscaled.pyx":76
+  /* "Cscaled.pyx":77
  *     T[0] = newT * GeV
- *     P[0] = newP * GeV**4
+ *     P[0] = newP * GeV4
  *     v[0] = newv             # <<<<<<<<<<<<<<
  */
   (__pyx_v_v[0]) = __pyx_v_newv;
@@ -1343,9 +1353,9 @@ static void __pyx_f_7Cscaled_tauZphi2Tpv_mod(double __pyx_v_tau, double __pyx_v_
   /* "Cscaled.pyx":68
  * 
  * @cython.cdivision(True)
- * cdef void tauZphi2Tpv_mod(double tau, double Z, double phi,             # <<<<<<<<<<<<<<
+ * cdef void tauZphi2Tpv_mod(const double tau, const double Z, const double phi,             # <<<<<<<<<<<<<<
  *                           double* T, double* P, double* v):
- *     cdef double newT = T[0] / GeV
+ *     cdef double GeV4 = GeV * GeV * GeV * GeV
  */
 
   /* function exit code */
@@ -1453,13 +1463,13 @@ static int __Pyx_modinit_function_export_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("VT_mod", (void (*)(void))__pyx_f_7Cscaled_VT_mod, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dVTdT_mod", (void (*)(void))__pyx_f_7Cscaled_dVTdT_mod, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dVTdphi_mod", (void (*)(void))__pyx_f_7Cscaled_dVTdphi_mod, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d2VTdphidT_mod", (void (*)(void))__pyx_f_7Cscaled_d2VTdphidT_mod, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d2VTdT2_mod", (void (*)(void))__pyx_f_7Cscaled_d2VTdT2_mod, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d3VTdT3_mod", (void (*)(void))__pyx_f_7Cscaled_d3VTdT3_mod, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("tauZphi2Tpv_mod", (void (*)(void))__pyx_f_7Cscaled_tauZphi2Tpv_mod, "void (double, double, double, double *, double *, double *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("VT_mod", (void (*)(void))__pyx_f_7Cscaled_VT_mod, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dVTdT_mod", (void (*)(void))__pyx_f_7Cscaled_dVTdT_mod, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dVTdphi_mod", (void (*)(void))__pyx_f_7Cscaled_dVTdphi_mod, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d2VTdphidT_mod", (void (*)(void))__pyx_f_7Cscaled_d2VTdphidT_mod, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d2VTdT2_mod", (void (*)(void))__pyx_f_7Cscaled_d2VTdT2_mod, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d3VTdT3_mod", (void (*)(void))__pyx_f_7Cscaled_d3VTdT3_mod, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("tauZphi2Tpv_mod", (void (*)(void))__pyx_f_7Cscaled_tauZphi2Tpv_mod, "void (double const , double const , double const , double *, double *, double *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -1501,16 +1511,16 @@ static int __Pyx_modinit_function_import_code(void) {
   /*--- Function import code ---*/
   __pyx_t_1 = PyImport_ImportModule("Cpotential"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_ImportFunction(__pyx_t_1, "VT", (void (**)(void))&__pyx_f_10Cpotential_VT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdphi", (void (**)(void))&__pyx_f_10Cpotential_dVTdphi, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdT", (void (**)(void))&__pyx_f_10Cpotential_dVTdT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdphidT", (void (**)(void))&__pyx_f_10Cpotential_d2VTdphidT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdT2", (void (**)(void))&__pyx_f_10Cpotential_d2VTdT2, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d3VTdT3", (void (**)(void))&__pyx_f_10Cpotential_d3VTdT3, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "VT", (void (**)(void))&__pyx_f_10Cpotential_VT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdphi", (void (**)(void))&__pyx_f_10Cpotential_dVTdphi, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dVTdT", (void (**)(void))&__pyx_f_10Cpotential_dVTdT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdphidT", (void (**)(void))&__pyx_f_10Cpotential_d2VTdphidT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d2VTdT2", (void (**)(void))&__pyx_f_10Cpotential_d2VTdT2, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d3VTdT3", (void (**)(void))&__pyx_f_10Cpotential_d3VTdT3, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyImport_ImportModule("Csolver"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_ImportFunction(__pyx_t_1, "tauZphi2Tpv_new", (void (**)(void))&__pyx_f_7Csolver_tauZphi2Tpv_new, "void (double, double, double, double *, double *, double *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "tauZphi2Tpv_new", (void (**)(void))&__pyx_f_7Csolver_tauZphi2Tpv_new, "void (double const , double const , double const , double *, double *, double *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

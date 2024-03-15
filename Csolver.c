@@ -1077,17 +1077,17 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'libc.math' */
 
 /* Module declarations from 'Cthermo' */
-static double (*__pyx_f_7Cthermo_p)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_w)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_dpdT)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_d2pdT)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_dwdT)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_d2wdT)(double, double); /*proto*/
+static double (*__pyx_f_7Cthermo_p)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_w)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_dpdT)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_d2pdT)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_dwdT)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_d2wdT)(double const , double const ); /*proto*/
 
 /* Module declarations from 'Csolver' */
-static CYTHON_INLINE double __pyx_f_7Csolver_solve_func(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime(double, double, double, double); /*proto*/
-static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime2(double, double, double, double); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Csolver_solve_func(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime(double const , double const , double const , double const ); /*proto*/
+static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime2(double const , double const , double const , double const ); /*proto*/
 #define __Pyx_MODULE_NAME "Csolver"
 extern int __pyx_module_is_main_Csolver;
 int __pyx_module_is_main_Csolver = 0;
@@ -1115,19 +1115,19 @@ static PyObject *__pyx_n_s_test;
 /* "Csolver.pyx":19
  * 
  * 
- * cdef inline double solve_func(double x, double t, double f, double z):             # <<<<<<<<<<<<<<
+ * cdef inline double solve_func(const double x, const double t, const double f, const double z):             # <<<<<<<<<<<<<<
  *     return t + p(f, x) - 0.5 * (w(f, x) + sqrt(w(f, x) * w(f, x) + 4 * z * z))
  * 
  */
 
-static CYTHON_INLINE double __pyx_f_7Csolver_solve_func(double __pyx_v_x, double __pyx_v_t, double __pyx_v_f, double __pyx_v_z) {
+static CYTHON_INLINE double __pyx_f_7Csolver_solve_func(double const __pyx_v_x, double const __pyx_v_t, double const __pyx_v_f, double const __pyx_v_z) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("solve_func", 0);
 
   /* "Csolver.pyx":20
  * 
- * cdef inline double solve_func(double x, double t, double f, double z):
+ * cdef inline double solve_func(const double x, const double t, const double f, const double z):
  *     return t + p(f, x) - 0.5 * (w(f, x) + sqrt(w(f, x) * w(f, x) + 4 * z * z))             # <<<<<<<<<<<<<<
  * 
  * 
@@ -1138,7 +1138,7 @@ static CYTHON_INLINE double __pyx_f_7Csolver_solve_func(double __pyx_v_x, double
   /* "Csolver.pyx":19
  * 
  * 
- * cdef inline double solve_func(double x, double t, double f, double z):             # <<<<<<<<<<<<<<
+ * cdef inline double solve_func(const double x, const double t, const double f, const double z):             # <<<<<<<<<<<<<<
  *     return t + p(f, x) - 0.5 * (w(f, x) + sqrt(w(f, x) * w(f, x) + 4 * z * z))
  * 
  */
@@ -1152,19 +1152,19 @@ static CYTHON_INLINE double __pyx_f_7Csolver_solve_func(double __pyx_v_x, double
 /* "Csolver.pyx":24
  * 
  * @cython.cdivision(True)
- * cdef inline double solve_func_prime(double x, double t, double f, double z):             # <<<<<<<<<<<<<<
+ * cdef inline double solve_func_prime(const double x, const double t, const double f, const double z):             # <<<<<<<<<<<<<<
  *     return dpdT(f, x) - 0.5 * (dwdT(f, x) + (w(f, x) * dwdT(f, x)) /
  *                                sqrt(w(f, x) * w(f, x) + 4 * z * z))
  */
 
-static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime(double __pyx_v_x, CYTHON_UNUSED double __pyx_v_t, double __pyx_v_f, double __pyx_v_z) {
+static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime(double const __pyx_v_x, CYTHON_UNUSED double const __pyx_v_t, double const __pyx_v_f, double const __pyx_v_z) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("solve_func_prime", 0);
 
   /* "Csolver.pyx":25
  * @cython.cdivision(True)
- * cdef inline double solve_func_prime(double x, double t, double f, double z):
+ * cdef inline double solve_func_prime(const double x, const double t, const double f, const double z):
  *     return dpdT(f, x) - 0.5 * (dwdT(f, x) + (w(f, x) * dwdT(f, x)) /             # <<<<<<<<<<<<<<
  *                                sqrt(w(f, x) * w(f, x) + 4 * z * z))
  * 
@@ -1175,7 +1175,7 @@ static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime(double __pyx_v_x, 
   /* "Csolver.pyx":24
  * 
  * @cython.cdivision(True)
- * cdef inline double solve_func_prime(double x, double t, double f, double z):             # <<<<<<<<<<<<<<
+ * cdef inline double solve_func_prime(const double x, const double t, const double f, const double z):             # <<<<<<<<<<<<<<
  *     return dpdT(f, x) - 0.5 * (dwdT(f, x) + (w(f, x) * dwdT(f, x)) /
  *                                sqrt(w(f, x) * w(f, x) + 4 * z * z))
  */
@@ -1189,19 +1189,19 @@ static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime(double __pyx_v_x, 
 /* "Csolver.pyx":30
  * 
  * @cython.cdivision(True)
- * cdef inline double solve_func_prime2(double x, double t, double f, double z):             # <<<<<<<<<<<<<<
+ * cdef inline double solve_func_prime2(const double x, const double t, const double f, const double z):             # <<<<<<<<<<<<<<
  *     return d2pdT(f, x) - 0.5 * (d2wdT(f, x) +
  *                                 ((w(f, x) * d2wdT(f, x) + dwdT(f, x)**2) *
  */
 
-static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime2(double __pyx_v_x, CYTHON_UNUSED double __pyx_v_t, double __pyx_v_f, double __pyx_v_z) {
+static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime2(double const __pyx_v_x, CYTHON_UNUSED double const __pyx_v_t, double const __pyx_v_f, double const __pyx_v_z) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("solve_func_prime2", 0);
 
   /* "Csolver.pyx":31
  * @cython.cdivision(True)
- * cdef inline double solve_func_prime2(double x, double t, double f, double z):
+ * cdef inline double solve_func_prime2(const double x, const double t, const double f, const double z):
  *     return d2pdT(f, x) - 0.5 * (d2wdT(f, x) +             # <<<<<<<<<<<<<<
  *                                 ((w(f, x) * d2wdT(f, x) + dwdT(f, x)**2) *
  *                                  sqrt(w(f, x) * w(f, x) + 4 * z * z) -
@@ -1212,7 +1212,7 @@ static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime2(double __pyx_v_x,
   /* "Csolver.pyx":30
  * 
  * @cython.cdivision(True)
- * cdef inline double solve_func_prime2(double x, double t, double f, double z):             # <<<<<<<<<<<<<<
+ * cdef inline double solve_func_prime2(const double x, const double t, const double f, const double z):             # <<<<<<<<<<<<<<
  *     return d2pdT(f, x) - 0.5 * (d2wdT(f, x) +
  *                                 ((w(f, x) * d2wdT(f, x) + dwdT(f, x)**2) *
  */
@@ -1226,12 +1226,12 @@ static CYTHON_INLINE double __pyx_f_7Csolver_solve_func_prime2(double __pyx_v_x,
 /* "Csolver.pyx":41
  * 
  * @cython.cdivision(True)
- * cdef void tauZphi2Tpv_new(double tau, double Z, double phi,             # <<<<<<<<<<<<<<
+ * cdef void tauZphi2Tpv_new(const double tau, const double Z, const double phi,             # <<<<<<<<<<<<<<
  *                           double* T, double* P, double* v):
  *     cdef int maxiter = 100
  */
 
-static void __pyx_f_7Csolver_tauZphi2Tpv_new(double __pyx_v_tau, double __pyx_v_Z, double __pyx_v_phi, double *__pyx_v_T, double *__pyx_v_P, double *__pyx_v_v) {
+static void __pyx_f_7Csolver_tauZphi2Tpv_new(double const __pyx_v_tau, double const __pyx_v_Z, double const __pyx_v_phi, double *__pyx_v_T, double *__pyx_v_P, double *__pyx_v_v) {
   int __pyx_v_maxiter;
   double __pyx_v_tol;
   double __pyx_v_rtol;
@@ -1256,7 +1256,7 @@ static void __pyx_f_7Csolver_tauZphi2Tpv_new(double __pyx_v_tau, double __pyx_v_
   __Pyx_RefNannySetupContext("tauZphi2Tpv_new", 0);
 
   /* "Csolver.pyx":43
- * cdef void tauZphi2Tpv_new(double tau, double Z, double phi,
+ * cdef void tauZphi2Tpv_new(const double tau, const double Z, const double phi,
  *                           double* T, double* P, double* v):
  *     cdef int maxiter = 100             # <<<<<<<<<<<<<<
  *     cdef double tol=1.11e-16
@@ -1525,12 +1525,12 @@ static void __pyx_f_7Csolver_tauZphi2Tpv_new(double __pyx_v_tau, double __pyx_v_
  *     P[0] = p(phi, x)
  *     v[0] = Z / (tau + P[0])             # <<<<<<<<<<<<<<
  */
-  (__pyx_v_v[0]) = (__pyx_v_Z / (__pyx_v_tau + (__pyx_v_P[0])));
+  (__pyx_v_v[0]) = (((double)__pyx_v_Z) / (__pyx_v_tau + (__pyx_v_P[0])));
 
   /* "Csolver.pyx":41
  * 
  * @cython.cdivision(True)
- * cdef void tauZphi2Tpv_new(double tau, double Z, double phi,             # <<<<<<<<<<<<<<
+ * cdef void tauZphi2Tpv_new(const double tau, const double Z, const double phi,             # <<<<<<<<<<<<<<
  *                           double* T, double* P, double* v):
  *     cdef int maxiter = 100
  */
@@ -1653,7 +1653,7 @@ static int __Pyx_modinit_function_export_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("tauZphi2Tpv_new", (void (*)(void))__pyx_f_7Csolver_tauZphi2Tpv_new, "void (double, double, double, double *, double *, double *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("tauZphi2Tpv_new", (void (*)(void))__pyx_f_7Csolver_tauZphi2Tpv_new, "void (double const , double const , double const , double *, double *, double *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -1695,12 +1695,12 @@ static int __Pyx_modinit_function_import_code(void) {
   /*--- Function import code ---*/
   __pyx_t_1 = PyImport_ImportModule("Cthermo"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_ImportFunction(__pyx_t_1, "p", (void (**)(void))&__pyx_f_7Cthermo_p, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "w", (void (**)(void))&__pyx_f_7Cthermo_w, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dpdT", (void (**)(void))&__pyx_f_7Cthermo_dpdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d2pdT", (void (**)(void))&__pyx_f_7Cthermo_d2pdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dwdT", (void (**)(void))&__pyx_f_7Cthermo_dwdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "d2wdT", (void (**)(void))&__pyx_f_7Cthermo_d2wdT, "double (double, double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "p", (void (**)(void))&__pyx_f_7Cthermo_p, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "w", (void (**)(void))&__pyx_f_7Cthermo_w, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dpdT", (void (**)(void))&__pyx_f_7Cthermo_dpdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d2pdT", (void (**)(void))&__pyx_f_7Cthermo_d2pdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dwdT", (void (**)(void))&__pyx_f_7Cthermo_dwdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "d2wdT", (void (**)(void))&__pyx_f_7Cthermo_d2wdT, "double (double const , double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

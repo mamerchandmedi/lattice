@@ -1065,9 +1065,9 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'libc.math' */
 
 /* Module declarations from 'thermal_functions.Cthermal_functions' */
-static double (*__pyx_f_17thermal_functions_18Cthermal_functions_Jf)(double, int __pyx_skip_dispatch); /*proto*/
-static double (*__pyx_f_17thermal_functions_18Cthermal_functions_oldJf)(double); /*proto*/
-static double (*__pyx_f_17thermal_functions_18Cthermal_functions_J)(double, int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_17thermal_functions_18Cthermal_functions_Jf)(double const , int __pyx_skip_dispatch); /*proto*/
+static double (*__pyx_f_17thermal_functions_18Cthermal_functions_oldJf)(double const ); /*proto*/
+static double (*__pyx_f_17thermal_functions_18Cthermal_functions_J)(double const , int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'Cpotential' */
 static double __pyx_v_10Cpotential_lam;
@@ -1076,15 +1076,15 @@ static double __pyx_v_10Cpotential_y;
 static double __pyx_v_10Cpotential_eta;
 static double __pyx_v_10Cpotential_v;
 static double __pyx_v_10Cpotential_Tc;
-static CYTHON_INLINE double __pyx_f_10Cpotential_V0(double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_mf2(double, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_Vtherm(double, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_VT(double, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdphi(double, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdT(double, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdphidT(double, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdT2(double, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_d3VTdT3(double, double, int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_V0(double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_mf2(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_Vtherm(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_VT(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdphi(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdT(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdphidT(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdT2(double const , double const , int __pyx_skip_dispatch); /*proto*/
+static CYTHON_INLINE double __pyx_f_10Cpotential_d3VTdT3(double const , double const , int __pyx_skip_dispatch); /*proto*/
 #define __Pyx_MODULE_NAME "Cpotential"
 extern int __pyx_module_is_main_Cpotential;
 int __pyx_module_is_main_Cpotential = 0;
@@ -1153,31 +1153,31 @@ static PyObject *__pyx_pf_10Cpotential_16d3VTdT3(CYTHON_UNUSED PyObject *__pyx_s
 /* "Cpotential.pyx":38
  * 
  * # %% Defining zero-temperature potential of the model.
- * cpdef inline double V0(double phi):             # <<<<<<<<<<<<<<
+ * cpdef inline double V0(const double phi):             # <<<<<<<<<<<<<<
  *     return lam*(0.5*etaV*v**2*phi**2 - (1+etaV)/3*v*phi**3 + 0.25*phi**4)
  * # end: Defining zero-temperature potential of the model.
  */
 
 static PyObject *__pyx_pw_10Cpotential_1V0(PyObject *__pyx_self, PyObject *__pyx_arg_phi); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_V0(double __pyx_v_phi, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_V0(double const __pyx_v_phi, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("V0", 0);
 
   /* "Cpotential.pyx":39
  * # %% Defining zero-temperature potential of the model.
- * cpdef inline double V0(double phi):
+ * cpdef inline double V0(const double phi):
  *     return lam*(0.5*etaV*v**2*phi**2 - (1+etaV)/3*v*phi**3 + 0.25*phi**4)             # <<<<<<<<<<<<<<
  * # end: Defining zero-temperature potential of the model.
  * 
  */
-  __pyx_r = (__pyx_v_10Cpotential_lam * (((((0.5 * __pyx_v_10Cpotential_etaV) * pow(__pyx_v_10Cpotential_v, 2.0)) * pow(__pyx_v_phi, 2.0)) - ((((1.0 + __pyx_v_10Cpotential_etaV) / 3.0) * __pyx_v_10Cpotential_v) * pow(__pyx_v_phi, 3.0))) + (0.25 * pow(__pyx_v_phi, 4.0))));
+  __pyx_r = (__pyx_v_10Cpotential_lam * (((((0.5 * __pyx_v_10Cpotential_etaV) * pow(__pyx_v_10Cpotential_v, 2.0)) * pow(((double)__pyx_v_phi), 2.0)) - ((((1.0 + __pyx_v_10Cpotential_etaV) / 3.0) * __pyx_v_10Cpotential_v) * pow(((double)__pyx_v_phi), 3.0))) + (0.25 * pow(((double)__pyx_v_phi), 4.0))));
   goto __pyx_L0;
 
   /* "Cpotential.pyx":38
  * 
  * # %% Defining zero-temperature potential of the model.
- * cpdef inline double V0(double phi):             # <<<<<<<<<<<<<<
+ * cpdef inline double V0(const double phi):             # <<<<<<<<<<<<<<
  *     return lam*(0.5*etaV*v**2*phi**2 - (1+etaV)/3*v*phi**3 + 0.25*phi**4)
  * # end: Defining zero-temperature potential of the model.
  */
@@ -1243,31 +1243,31 @@ static PyObject *__pyx_pf_10Cpotential_V0(CYTHON_UNUSED PyObject *__pyx_self, do
 /* "Cpotential.pyx":43
  * 
  * 
- * cpdef inline double mf2(double phi, double T):             # <<<<<<<<<<<<<<
+ * cpdef inline double mf2(const double phi, const double T):             # <<<<<<<<<<<<<<
  *     return y**2*phi**2
  * 
  */
 
 static PyObject *__pyx_pw_10Cpotential_3mf2(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_mf2(double __pyx_v_phi, CYTHON_UNUSED double __pyx_v_T, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_mf2(double const __pyx_v_phi, CYTHON_UNUSED double const __pyx_v_T, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("mf2", 0);
 
   /* "Cpotential.pyx":44
  * 
- * cpdef inline double mf2(double phi, double T):
+ * cpdef inline double mf2(const double phi, const double T):
  *     return y**2*phi**2             # <<<<<<<<<<<<<<
  * 
  * # %% Defining thermal corrections to the potential.
  */
-  __pyx_r = (pow(__pyx_v_10Cpotential_y, 2.0) * pow(__pyx_v_phi, 2.0));
+  __pyx_r = (pow(__pyx_v_10Cpotential_y, 2.0) * pow(((double)__pyx_v_phi), 2.0));
   goto __pyx_L0;
 
   /* "Cpotential.pyx":43
  * 
  * 
- * cpdef inline double mf2(double phi, double T):             # <<<<<<<<<<<<<<
+ * cpdef inline double mf2(const double phi, const double T):             # <<<<<<<<<<<<<<
  *     return y**2*phi**2
  * 
  */
@@ -1371,13 +1371,13 @@ static PyObject *__pyx_pf_10Cpotential_2mf2(CYTHON_UNUSED PyObject *__pyx_self, 
 /* "Cpotential.pyx":47
  * 
  * # %% Defining thermal corrections to the potential.
- * cpdef inline double Vtherm(double phi, double T):             # <<<<<<<<<<<<<<
+ * cpdef inline double Vtherm(const double phi, const double T):             # <<<<<<<<<<<<<<
  *     #return T**4/(2*pi**2) * Jf(mf2(phi,T)/T**2)
  *     return T**4/(2*pi**2) * J(mf2(phi,T)/T**2)
  */
 
 static PyObject *__pyx_pw_10Cpotential_5Vtherm(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_Vtherm(double __pyx_v_phi, double __pyx_v_T, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_Vtherm(double const __pyx_v_phi, double const __pyx_v_T, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   double __pyx_t_1;
@@ -1390,20 +1390,20 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_Vtherm(double __pyx_v_phi, doub
   __Pyx_RefNannySetupContext("Vtherm", 0);
 
   /* "Cpotential.pyx":49
- * cpdef inline double Vtherm(double phi, double T):
+ * cpdef inline double Vtherm(const double phi, const double T):
  *     #return T**4/(2*pi**2) * Jf(mf2(phi,T)/T**2)
  *     return T**4/(2*pi**2) * J(mf2(phi,T)/T**2)             # <<<<<<<<<<<<<<
  * # end: Defining thermal corrections to the potential.
  * 
  */
-  __pyx_t_1 = pow(__pyx_v_T, 4.0);
+  __pyx_t_1 = pow(((double)__pyx_v_T), 4.0);
   __pyx_t_2 = (2.0 * pow(((double)M_PI), 2.0));
   if (unlikely(__pyx_t_2 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
     __PYX_ERR(0, 49, __pyx_L1_error)
   }
   __pyx_t_3 = __pyx_f_10Cpotential_mf2(__pyx_v_phi, __pyx_v_T, 0);
-  __pyx_t_4 = pow(__pyx_v_T, 2.0);
+  __pyx_t_4 = pow(((double)__pyx_v_T), 2.0);
   if (unlikely(__pyx_t_4 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
     __PYX_ERR(0, 49, __pyx_L1_error)
@@ -1414,7 +1414,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_Vtherm(double __pyx_v_phi, doub
   /* "Cpotential.pyx":47
  * 
  * # %% Defining thermal corrections to the potential.
- * cpdef inline double Vtherm(double phi, double T):             # <<<<<<<<<<<<<<
+ * cpdef inline double Vtherm(const double phi, const double T):             # <<<<<<<<<<<<<<
  *     #return T**4/(2*pi**2) * Jf(mf2(phi,T)/T**2)
  *     return T**4/(2*pi**2) * J(mf2(phi,T)/T**2)
  */
@@ -1521,20 +1521,20 @@ static PyObject *__pyx_pf_10Cpotential_4Vtherm(CYTHON_UNUSED PyObject *__pyx_sel
 /* "Cpotential.pyx":54
  * 
  * # %% Defining thermally corrected potential of the model.
- * cpdef inline double VT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double VT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return V0(field) + Vtherm(field, temp)
  * # end: Defining thermally corrected potential of the model.
  */
 
 static PyObject *__pyx_pw_10Cpotential_7VT(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_VT(double __pyx_v_field, double __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_VT(double const __pyx_v_field, double const __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("VT", 0);
 
   /* "Cpotential.pyx":55
  * # %% Defining thermally corrected potential of the model.
- * cpdef inline double VT(double field, double temp):
+ * cpdef inline double VT(const double field, const double temp):
  *     return V0(field) + Vtherm(field, temp)             # <<<<<<<<<<<<<<
  * # end: Defining thermally corrected potential of the model.
  * 
@@ -1545,7 +1545,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_VT(double __pyx_v_field, double
   /* "Cpotential.pyx":54
  * 
  * # %% Defining thermally corrected potential of the model.
- * cpdef inline double VT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double VT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     return V0(field) + Vtherm(field, temp)
  * # end: Defining thermally corrected potential of the model.
  */
@@ -1649,13 +1649,13 @@ static PyObject *__pyx_pf_10Cpotential_6VT(CYTHON_UNUSED PyObject *__pyx_self, d
 /* "Cpotential.pyx":61
  * # %% Defining derivative with respect to the field of
  * #    thermally corrected potential of the model.
- * cpdef inline double dVTdphi(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double dVTdphi(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*v
  *     #return (-VT(field+2*epsilon, temp) + 8*VT(field+epsilon, temp) - 8*VT(field-epsilon, temp) + VT(field-2*epsilon, temp))/(12*epsilon)
  */
 
 static PyObject *__pyx_pw_10Cpotential_9dVTdphi(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdphi(double __pyx_v_field, double __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdphi(double const __pyx_v_field, double const __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_v_epsilon;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -1668,7 +1668,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdphi(double __pyx_v_field, d
 
   /* "Cpotential.pyx":62
  * #    thermally corrected potential of the model.
- * cpdef inline double dVTdphi(double field, double temp):
+ * cpdef inline double dVTdphi(const double field, const double temp):
  *     epsilon = 0.001*v             # <<<<<<<<<<<<<<
  *     #return (-VT(field+2*epsilon, temp) + 8*VT(field+epsilon, temp) - 8*VT(field-epsilon, temp) + VT(field-2*epsilon, temp))/(12*epsilon)
  *     return (-VT(field-epsilon, temp) + VT(field+epsilon, temp)) / (2*epsilon)
@@ -1694,7 +1694,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdphi(double __pyx_v_field, d
   /* "Cpotential.pyx":61
  * # %% Defining derivative with respect to the field of
  * #    thermally corrected potential of the model.
- * cpdef inline double dVTdphi(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double dVTdphi(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*v
  *     #return (-VT(field+2*epsilon, temp) + 8*VT(field+epsilon, temp) - 8*VT(field-epsilon, temp) + VT(field-2*epsilon, temp))/(12*epsilon)
  */
@@ -1801,13 +1801,13 @@ static PyObject *__pyx_pf_10Cpotential_8dVTdphi(CYTHON_UNUSED PyObject *__pyx_se
 /* "Cpotential.pyx":71
  * # %% Defining first derivative with respect to the temperature of
  * #    thermally corrected potential of the model.
- * cpdef inline double dVTdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double dVTdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-VT(field, temp+2*epsilon) + 8*VT(field, temp+epsilon) - 8*VT(field, temp-epsilon) + VT(field, temp-2*epsilon))/(12*epsilon)
  */
 
 static PyObject *__pyx_pw_10Cpotential_11dVTdT(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdT(double __pyx_v_field, double __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdT(double const __pyx_v_field, double const __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_v_epsilon;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -1820,7 +1820,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdT(double __pyx_v_field, dou
 
   /* "Cpotential.pyx":72
  * #    thermally corrected potential of the model.
- * cpdef inline double dVTdT(double field, double temp):
+ * cpdef inline double dVTdT(const double field, const double temp):
  *     epsilon = 0.001*Tc             # <<<<<<<<<<<<<<
  *     #return (-VT(field, temp+2*epsilon) + 8*VT(field, temp+epsilon) - 8*VT(field, temp-epsilon) + VT(field, temp-2*epsilon))/(12*epsilon)
  *     return (-VT(field, temp-epsilon) + VT(field, temp+epsilon)) / (2*epsilon)
@@ -1846,7 +1846,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_dVTdT(double __pyx_v_field, dou
   /* "Cpotential.pyx":71
  * # %% Defining first derivative with respect to the temperature of
  * #    thermally corrected potential of the model.
- * cpdef inline double dVTdT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double dVTdT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-VT(field, temp+2*epsilon) + 8*VT(field, temp+epsilon) - 8*VT(field, temp-epsilon) + VT(field, temp-2*epsilon))/(12*epsilon)
  */
@@ -1953,13 +1953,13 @@ static PyObject *__pyx_pf_10Cpotential_10dVTdT(CYTHON_UNUSED PyObject *__pyx_sel
 /* "Cpotential.pyx":79
  * 
  * # %% Defining second mixed derivative of thermally corrected potential of the model.
- * cpdef inline double d2VTdphidT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double d2VTdphidT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-dVTdphi(field, temp+2*epsilon) + 8*dVTdphi(field, temp+epsilon) - 8*dVTdphi(field, temp-epsilon) + dVTdphi(field, temp-2*epsilon))/(12*epsilon)
  */
 
 static PyObject *__pyx_pw_10Cpotential_13d2VTdphidT(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdphidT(double __pyx_v_field, double __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdphidT(double const __pyx_v_field, double const __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_v_epsilon;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -1972,7 +1972,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdphidT(double __pyx_v_field
 
   /* "Cpotential.pyx":80
  * # %% Defining second mixed derivative of thermally corrected potential of the model.
- * cpdef inline double d2VTdphidT(double field, double temp):
+ * cpdef inline double d2VTdphidT(const double field, const double temp):
  *     epsilon = 0.001*Tc             # <<<<<<<<<<<<<<
  *     #return (-dVTdphi(field, temp+2*epsilon) + 8*dVTdphi(field, temp+epsilon) - 8*dVTdphi(field, temp-epsilon) + dVTdphi(field, temp-2*epsilon))/(12*epsilon)
  *     return (-dVTdphi(field, temp-epsilon) + dVTdphi(field, temp+epsilon)) / (2*epsilon)
@@ -1998,7 +1998,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdphidT(double __pyx_v_field
   /* "Cpotential.pyx":79
  * 
  * # %% Defining second mixed derivative of thermally corrected potential of the model.
- * cpdef inline double d2VTdphidT(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double d2VTdphidT(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-dVTdphi(field, temp+2*epsilon) + 8*dVTdphi(field, temp+epsilon) - 8*dVTdphi(field, temp-epsilon) + dVTdphi(field, temp-2*epsilon))/(12*epsilon)
  */
@@ -2105,13 +2105,13 @@ static PyObject *__pyx_pf_10Cpotential_12d2VTdphidT(CYTHON_UNUSED PyObject *__py
 /* "Cpotential.pyx":88
  * # %% Defining second derivative with respect to the temperature of
  * #    thermally corrected potential of the model.
- * cpdef inline double d2VTdT2(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double d2VTdT2(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-dVTdT(field, temp+2*epsilon) + 8*dVTdT(field, temp+epsilon) - 8*dVTdT(field, temp-epsilon) + dVTdT(field, temp-2*epsilon))/(12*epsilon)
  */
 
 static PyObject *__pyx_pw_10Cpotential_15d2VTdT2(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdT2(double __pyx_v_field, double __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdT2(double const __pyx_v_field, double const __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_v_epsilon;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -2124,7 +2124,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdT2(double __pyx_v_field, d
 
   /* "Cpotential.pyx":89
  * #    thermally corrected potential of the model.
- * cpdef inline double d2VTdT2(double field, double temp):
+ * cpdef inline double d2VTdT2(const double field, const double temp):
  *     epsilon = 0.001*Tc             # <<<<<<<<<<<<<<
  *     #return (-dVTdT(field, temp+2*epsilon) + 8*dVTdT(field, temp+epsilon) - 8*dVTdT(field, temp-epsilon) + dVTdT(field, temp-2*epsilon))/(12*epsilon)
  *     return (-dVTdT(field, temp-epsilon)  + dVTdT(field, temp+epsilon)) / (2*epsilon)
@@ -2150,7 +2150,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_d2VTdT2(double __pyx_v_field, d
   /* "Cpotential.pyx":88
  * # %% Defining second derivative with respect to the temperature of
  * #    thermally corrected potential of the model.
- * cpdef inline double d2VTdT2(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double d2VTdT2(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-dVTdT(field, temp+2*epsilon) + 8*dVTdT(field, temp+epsilon) - 8*dVTdT(field, temp-epsilon) + dVTdT(field, temp-2*epsilon))/(12*epsilon)
  */
@@ -2257,13 +2257,13 @@ static PyObject *__pyx_pf_10Cpotential_14d2VTdT2(CYTHON_UNUSED PyObject *__pyx_s
 /* "Cpotential.pyx":98
  * # %% Defining third derivative with respect to the temperature of
  * #    thermally corrected potential of the model.
- * cpdef inline double d3VTdT3(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double d3VTdT3(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-d2VTdT(field, temp+2*epsilon) + 8*d2VTdT(field, temp+epsilon) - 8*d2VTdT(field, temp-epsilon) + d2VTdT(field, temp-2*epsilon))/(12*epsilon)
  */
 
 static PyObject *__pyx_pw_10Cpotential_17d3VTdT3(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static CYTHON_INLINE double __pyx_f_10Cpotential_d3VTdT3(double __pyx_v_field, double __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static CYTHON_INLINE double __pyx_f_10Cpotential_d3VTdT3(double const __pyx_v_field, double const __pyx_v_temp, CYTHON_UNUSED int __pyx_skip_dispatch) {
   double __pyx_v_epsilon;
   double __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -2276,7 +2276,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_d3VTdT3(double __pyx_v_field, d
 
   /* "Cpotential.pyx":99
  * #    thermally corrected potential of the model.
- * cpdef inline double d3VTdT3(double field, double temp):
+ * cpdef inline double d3VTdT3(const double field, const double temp):
  *     epsilon = 0.001*Tc             # <<<<<<<<<<<<<<
  *     #return (-d2VTdT(field, temp+2*epsilon) + 8*d2VTdT(field, temp+epsilon) - 8*d2VTdT(field, temp-epsilon) + d2VTdT(field, temp-2*epsilon))/(12*epsilon)
  *     return (-d2VTdT2(field, temp-epsilon) + d2VTdT2(field, temp+epsilon)) / (2*epsilon)
@@ -2302,7 +2302,7 @@ static CYTHON_INLINE double __pyx_f_10Cpotential_d3VTdT3(double __pyx_v_field, d
   /* "Cpotential.pyx":98
  * # %% Defining third derivative with respect to the temperature of
  * #    thermally corrected potential of the model.
- * cpdef inline double d3VTdT3(double field, double temp):             # <<<<<<<<<<<<<<
+ * cpdef inline double d3VTdT3(const double field, const double temp):             # <<<<<<<<<<<<<<
  *     epsilon = 0.001*Tc
  *     #return (-d2VTdT(field, temp+2*epsilon) + 8*d2VTdT(field, temp+epsilon) - 8*d2VTdT(field, temp-epsilon) + d2VTdT(field, temp-2*epsilon))/(12*epsilon)
  */
@@ -2536,15 +2536,15 @@ static int __Pyx_modinit_function_export_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("V0", (void (*)(void))__pyx_f_10Cpotential_V0, "double (double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("mf2", (void (*)(void))__pyx_f_10Cpotential_mf2, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("Vtherm", (void (*)(void))__pyx_f_10Cpotential_Vtherm, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("VT", (void (*)(void))__pyx_f_10Cpotential_VT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dVTdphi", (void (*)(void))__pyx_f_10Cpotential_dVTdphi, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("dVTdT", (void (*)(void))__pyx_f_10Cpotential_dVTdT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d2VTdphidT", (void (*)(void))__pyx_f_10Cpotential_d2VTdphidT, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d2VTdT2", (void (*)(void))__pyx_f_10Cpotential_d2VTdT2, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("d3VTdT3", (void (*)(void))__pyx_f_10Cpotential_d3VTdT3, "double (double, double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("V0", (void (*)(void))__pyx_f_10Cpotential_V0, "double (double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("mf2", (void (*)(void))__pyx_f_10Cpotential_mf2, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("Vtherm", (void (*)(void))__pyx_f_10Cpotential_Vtherm, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("VT", (void (*)(void))__pyx_f_10Cpotential_VT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dVTdphi", (void (*)(void))__pyx_f_10Cpotential_dVTdphi, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("dVTdT", (void (*)(void))__pyx_f_10Cpotential_dVTdT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d2VTdphidT", (void (*)(void))__pyx_f_10Cpotential_d2VTdphidT, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d2VTdT2", (void (*)(void))__pyx_f_10Cpotential_d2VTdT2, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("d3VTdT3", (void (*)(void))__pyx_f_10Cpotential_d3VTdT3, "double (double const , double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2586,9 +2586,9 @@ static int __Pyx_modinit_function_import_code(void) {
   /*--- Function import code ---*/
   __pyx_t_1 = PyImport_ImportModule("thermal_functions.Cthermal_functions"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_ImportFunction(__pyx_t_1, "Jf", (void (**)(void))&__pyx_f_17thermal_functions_18Cthermal_functions_Jf, "double (double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "oldJf", (void (**)(void))&__pyx_f_17thermal_functions_18Cthermal_functions_oldJf, "double (double)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "J", (void (**)(void))&__pyx_f_17thermal_functions_18Cthermal_functions_J, "double (double, int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "Jf", (void (**)(void))&__pyx_f_17thermal_functions_18Cthermal_functions_Jf, "double (double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "oldJf", (void (**)(void))&__pyx_f_17thermal_functions_18Cthermal_functions_oldJf, "double (double const )") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "J", (void (**)(void))&__pyx_f_17thermal_functions_18Cthermal_functions_J, "double (double const , int __pyx_skip_dispatch)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

@@ -40,22 +40,22 @@ x0, y0 = np.loadtxt(J_dat_path, dtype = DTYPE, unpack=True)
 #y0  = datab[:, 1]
 
 # Define the low and high functions
-cdef double Jf_low(double x):
+cdef double Jf_low(const double x):
     return -7.0 / 8.0 * pi ** 4 / 45.0 - pi ** 2 * x ** 2 / 24.0
 
-cdef double Jb_low(double x):
+cdef double Jb_low(const double x):
     return -pi ** 4 / 45.0 + pi ** 2 * x ** 2 / 12.0
 
-cdef double Jf_high(double x):
+cdef double Jf_high(const double x):
     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
 
-cdef double Jb_high(double x):
+cdef double Jb_high(const double x):
     return sqrt(pi / 2) * x ** (3.0 / 2.0) * exp(x)
     
-cdef double J_low(double x):
+cdef double J_low(const double x):
     return -2 + x/2
 	
-cdef double J_high(double x):
+cdef double J_high(const double x):
     return  -sqrt(pi/2) * x**(3.0/4.0)*exp(-sqrt(x))
 
 # Spline fitting, Jf
@@ -84,7 +84,7 @@ cdef double x_temp
 @cython.binding(False)
 @cython.nonecheck(False) 
 @cython.wraparound(False)
-cdef inline double oldJf(double x):
+cdef inline double oldJf(const double x):
     cdef Py_ssize_t i
     cdef Py_ssize_t j
     cdef double dx 
@@ -105,7 +105,7 @@ cdef inline double oldJf(double x):
 
 
 @cython.boundscheck(False)  # Disable bounds-checking for faster array access
-cpdef inline double Jf(double x):
+cpdef inline double Jf(const double x):
     cdef Py_ssize_t i = 300
     cdef Py_ssize_t j = 999
     cdef Py_ssize_t mid
@@ -144,7 +144,7 @@ cdef double[::1] yb = yb0_np
 
 
 @cython.boundscheck(False)  # Disable bounds-checking for faster array access
-cpdef inline double Jb(double x):
+cpdef inline double Jb(const double x):
     cdef int i = 0
     cdef int j = len(xb) - 1
     cdef int mid
@@ -182,7 +182,7 @@ y0_np = np.array(y0, dtype = DTYPE)
 cdef double[::1] yi = y0_np
 
 @cython.boundscheck(False)  # Disable bounds-checking for faster array access
-cpdef inline double J(double x):
+cpdef inline double J(const double x):
     cdef int i = 0
     cdef int j = len(xi) - 1
     cdef int mid

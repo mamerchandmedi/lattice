@@ -24,48 +24,48 @@ cdef double GeV = 1.  # Value of GeV in terms of simulation units.
 
 # %% Defining the rescaled potential.
 @cython.cdivision(True)
-cdef double VT_mod(double field, double temp):
+cdef double VT_mod(const double field, const double temp):
     return VT(field / GeV, temp / GeV) * GeV * GeV * GeV * GeV
 # end: Defining the rescaled potential.
 
 
 # %% Defining rescaled derivative of the potential.
 @cython.cdivision(True)
-cdef double dVTdphi_mod(double field, double temp):
+cdef double dVTdphi_mod(const double field, const double temp):
     return dVTdphi(field / GeV, temp / GeV) * GeV * GeV * GeV
 # end: Defining rescaled derivative of the potential.
 
 
 # %% Defining rescaled derivative of the potential.
 @cython.cdivision(True)
-cdef double dVTdT_mod(double field, double temp):
+cdef double dVTdT_mod(const double field, const double temp):
     return dVTdT(field / GeV, temp / GeV) * GeV * GeV * GeV
 # end: Defining rescaled derivative of the potential.
 
 
 # %% Defining rescaled second derivative of the potential.
 @cython.cdivision(True)
-cdef double d2VTdphidT_mod(double field, double temp):
+cdef double d2VTdphidT_mod(const double field, const double temp):
     return d2VTdphidT(field / GeV, temp / GeV) * GeV * GeV
 # end: Defining rescaled second derivative of the potential.
 
 
 # %% Defining rescaled second derivative of the potential.
 @cython.cdivision(True)
-cdef double d2VTdT2_mod(double field, double temp):
+cdef double d2VTdT2_mod(const double field, const double temp):
     return d2VTdT2(field / GeV, temp / GeV) * GeV * GeV
 # end: Defining rescaled second derivative of the potential.
 
 
 # %% Defining rescaled derivative of the potential.
 @cython.cdivision(True)
-cdef double d3VTdT3_mod(double field, double temp):
+cdef double d3VTdT3_mod(const double field, const double temp):
     return d3VTdT3(field / GeV, temp / GeV) * GeV
 # end: Defining rescaled derivative of the potential.
 
 
 @cython.cdivision(True)
-cdef void tauZphi2Tpv_mod(double tau, double Z, double phi,
+cdef void tauZphi2Tpv_mod(const double tau, const double Z, const double phi,
                           double* T, double* P, double* v):
     cdef double GeV4 = GeV * GeV * GeV * GeV
     cdef double newT = T[0] / GeV

@@ -35,30 +35,30 @@ cdef double Tc = pyTc
 cdef double epsilon
 
 # %% Defining zero-temperature potential of the model.
-cpdef inline double V0(double phi):
+cpdef inline double V0(const double phi):
     return lam*(0.5*etaV*v**2*phi**2 - (1+etaV)/3*v*phi**3 + 0.25*phi**4)
 # end: Defining zero-temperature potential of the model.
 	
 
-cpdef inline double mf2(double phi, double T):
+cpdef inline double mf2(const double phi, const double T):
     return y**2*phi**2
 	
 # %% Defining thermal corrections to the potential.
-cpdef inline double Vtherm(double phi, double T): 
+cpdef inline double Vtherm(const double phi, const double T): 
     #return T**4/(2*pi**2) * Jf(mf2(phi,T)/T**2)
     return T**4/(2*pi**2) * J(mf2(phi,T)/T**2)
 # end: Defining thermal corrections to the potential.
 
 	
 # %% Defining thermally corrected potential of the model.
-cpdef inline double VT(double field, double temp):
+cpdef inline double VT(const double field, const double temp):
     return V0(field) + Vtherm(field, temp)
 # end: Defining thermally corrected potential of the model.
 
 
 # %% Defining derivative with respect to the field of
 #    thermally corrected potential of the model.
-cpdef inline double dVTdphi(double field, double temp):
+cpdef inline double dVTdphi(const double field, const double temp):
     epsilon = 0.001*v
     #return (-VT(field+2*epsilon, temp) + 8*VT(field+epsilon, temp) - 8*VT(field-epsilon, temp) + VT(field-2*epsilon, temp))/(12*epsilon)
     return (-VT(field-epsilon, temp) + VT(field+epsilon, temp)) / (2*epsilon) 
@@ -68,7 +68,7 @@ cpdef inline double dVTdphi(double field, double temp):
 
 # %% Defining first derivative with respect to the temperature of
 #    thermally corrected potential of the model.
-cpdef inline double dVTdT(double field, double temp):
+cpdef inline double dVTdT(const double field, const double temp):
     epsilon = 0.001*Tc
     #return (-VT(field, temp+2*epsilon) + 8*VT(field, temp+epsilon) - 8*VT(field, temp-epsilon) + VT(field, temp-2*epsilon))/(12*epsilon)
     return (-VT(field, temp-epsilon) + VT(field, temp+epsilon)) / (2*epsilon)
@@ -76,7 +76,7 @@ cpdef inline double dVTdT(double field, double temp):
 #      thermally corrected potential of the model.
 
 # %% Defining second mixed derivative of thermally corrected potential of the model.
-cpdef inline double d2VTdphidT(double field, double temp):
+cpdef inline double d2VTdphidT(const double field, const double temp):
     epsilon = 0.001*Tc
     #return (-dVTdphi(field, temp+2*epsilon) + 8*dVTdphi(field, temp+epsilon) - 8*dVTdphi(field, temp-epsilon) + dVTdphi(field, temp-2*epsilon))/(12*epsilon)
     return (-dVTdphi(field, temp-epsilon) + dVTdphi(field, temp+epsilon)) / (2*epsilon)
@@ -85,7 +85,7 @@ cpdef inline double d2VTdphidT(double field, double temp):
 
 # %% Defining second derivative with respect to the temperature of
 #    thermally corrected potential of the model.
-cpdef inline double d2VTdT2(double field, double temp):
+cpdef inline double d2VTdT2(const double field, const double temp):
     epsilon = 0.001*Tc
     #return (-dVTdT(field, temp+2*epsilon) + 8*dVTdT(field, temp+epsilon) - 8*dVTdT(field, temp-epsilon) + dVTdT(field, temp-2*epsilon))/(12*epsilon)
     return (-dVTdT(field, temp-epsilon)  + dVTdT(field, temp+epsilon)) / (2*epsilon)
@@ -95,7 +95,7 @@ cpdef inline double d2VTdT2(double field, double temp):
 
 # %% Defining third derivative with respect to the temperature of
 #    thermally corrected potential of the model.
-cpdef inline double d3VTdT3(double field, double temp):
+cpdef inline double d3VTdT3(const double field, const double temp):
     epsilon = 0.001*Tc
     #return (-d2VTdT(field, temp+2*epsilon) + 8*d2VTdT(field, temp+epsilon) - 8*d2VTdT(field, temp-epsilon) + d2VTdT(field, temp-2*epsilon))/(12*epsilon)
     return (-d2VTdT2(field, temp-epsilon) + d2VTdT2(field, temp+epsilon)) / (2*epsilon)

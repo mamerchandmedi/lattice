@@ -2285,10 +2285,10 @@ static CYTHON_INLINE int __pyx_f_7cpython_5array_extend_buffer(arrayobject *, ch
 /* Module declarations from 'libc.math' */
 
 /* Module declarations from 'Cthermo' */
-static double (*__pyx_f_7Cthermo_w)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_dpdT)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_dwdT)(double, double); /*proto*/
-static double (*__pyx_f_7Cthermo_gam)(double); /*proto*/
+static double (*__pyx_f_7Cthermo_w)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_dpdT)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_dwdT)(double const , double const ); /*proto*/
+static double (*__pyx_f_7Cthermo_gam)(double const ); /*proto*/
 
 /* Module declarations from 'Ccharacteristic_variables' */
 static PyTypeObject *__pyx_array_type = 0;
@@ -19114,10 +19114,10 @@ static int __Pyx_modinit_function_import_code(void) {
   /*--- Function import code ---*/
   __pyx_t_1 = PyImport_ImportModule("Cthermo"); if (!__pyx_t_1) __PYX_ERR(3, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_ImportFunction(__pyx_t_1, "w", (void (**)(void))&__pyx_f_7Cthermo_w, "double (double, double)") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dpdT", (void (**)(void))&__pyx_f_7Cthermo_dpdT, "double (double, double)") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "dwdT", (void (**)(void))&__pyx_f_7Cthermo_dwdT, "double (double, double)") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "gam", (void (**)(void))&__pyx_f_7Cthermo_gam, "double (double)") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "w", (void (**)(void))&__pyx_f_7Cthermo_w, "double (double const , double const )") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dpdT", (void (**)(void))&__pyx_f_7Cthermo_dpdT, "double (double const , double const )") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "dwdT", (void (**)(void))&__pyx_f_7Cthermo_dwdT, "double (double const , double const )") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "gam", (void (**)(void))&__pyx_f_7Cthermo_gam, "double (double const )") < 0) __PYX_ERR(3, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

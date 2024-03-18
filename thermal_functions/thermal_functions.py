@@ -78,21 +78,4 @@ Jf = np.vectorize(Jf)
 J = np.vectorize(J)
 #print(Jb(100))
 
-#n=10
-#p=4
-#matrix = np.zeros((len(xi), len(xi)))
-#matrix = np.zeros((5*n, 5*n))
-#for i in range(n-p):
-#	print(i)
-#	for j in range(n):
-#		if(j - i <= p and j - i >= 0):
-#			matrix[i,j] = xi[i]**(j-i)
-#for l in [1,2,3]:
-#	print("pochodne:", n-p+l-1)
-#	for i in range(p-l+1):
-#		matrix[n-p+l-1, i+l] = xi[0]**(i)
-#for l in [1,2,3]:
-#	print("pochodne:", n-p+l+2)
-#	for i in range(p-l+1):
-#		matrix[n-p+l+2, i+l] = xi[n]**(i)
-#print(matrix)
+

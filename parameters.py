@@ -9,7 +9,7 @@ Created on Tue Apr 26 10:24:44 2022
 import os
 import pandas as pd
 
-index = 2
+index = 1
 #data = pd.read_csv('benchmarks.csv')
 #alpha = data['alpha_theta'][index]
 #TDM = data['TDM'][index]

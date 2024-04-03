@@ -29,6 +29,7 @@ from potential import V, dV
 
 xi = np.linspace(0,100,10000)
 Vmin = np.amin(V(xi))
+print(Vmin)
 vt = xi[np.where(V(xi) == Vmin)[0]][0]  # Find location of the global minimum.
 profile = SingleFieldInstanton(vt, 0, V, dV).findProfile(npoints=1000)
 fphi = interpolate.interp1d(profile.R, profile.Phi,

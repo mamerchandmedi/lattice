@@ -6,7 +6,11 @@ Created on Tue Apr 26 10:37:54 2022
 
 cpdef double V0(const double phi)
 
-cpdef double mf2(const double phi, const double T)
+cpdef double dV0dphi(const double phi)
+
+cpdef double mf2(const double phi)
+
+cpdef double dmf2dphi(const double phi)
 
 cpdef double Vtherm(const double phi, const double T)
 

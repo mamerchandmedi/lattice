@@ -6,13 +6,11 @@ Created on Tue Mar 19 21:46:21 2024
 @author: tkrajewski
 """
 
-from sympy import Dummy, diff, lambdify, tanh, series, binomial, \
-    cos, symbols, pi, simplify
+from sympy import Dummy, diff, lambdify, binomial, symbols, simplify, factorint
 from copy import deepcopy
 
 import numpy as np
 from scipy import linalg
-import matplotlib.pyplot as plt
 
 def generate_monomials(order=1):
     x = Dummy('x')
@@ -30,7 +28,6 @@ def lambdify_poly(polys):
     return [[lambdify(polys[1:], poly) for poly in derivatives] for derivatives in polys[0]]
 
 
-
 def bisection(x, intervals):
     i = 0
     j = len(intervals) - 1 
@@ -43,77 +40,200 @@ def bisection(x, intervals):
         mid = (i+j) // 2
     return i, j
 
-def get_base_functions(p, k):
-    monomials = generate_monomials(order=p)
-    derivatives = generate_derivatives(monomials, der=p)
-    lambdas = lambdify_poly(derivatives)
-    return lambdas
 
-def interpolated_function(z, der, intervals, coefficients, lambdas):   
-    p = len(lambdas[der]) - 1
-    i, j = bisection(z, intervals)
-    arg = (z - intervals[i]) / (intervals[j] - intervals[j-1])
-    result = 0
-    for m in range(p+1):
-        result += coefficients[(p+1) * i + m] * lambdas[der][m](arg) / \
-                (intervals[j] - intervals[j-1])**der
+def generate_base_polynomials(base_polynomials, derivatives, polynomial, 
+                              orders=[1], ders=[0]):
+    assert(len(derivatives) == len(orders))
+    if len(orders) == 1:
+        for j in range(orders[0]+1):
+            for m in range(ders[0]+1):
+                new_polynomial = deepcopy(polynomial)
+                new_polynomial[0] *= derivatives[0][0][m][j]
+                new_polynomial[1].append(derivatives[0][1])
+                base_polynomials[m][j] = lambdify(new_polynomial[1],
+                                                  new_polynomial[0])
+    else:
+        for j in range(orders[0]+1):
+            for m in range(ders[0]+1):
+                new_polynomial = deepcopy(polynomial)
+                new_polynomial[0] *= derivatives[0][0][m][j]
+                new_polynomial[1].append(derivatives[0][1])
+                generate_base_polynomials(base_polynomials[j][m],
+                                          derivatives[1:],
+                                          new_polynomial, 
+                                          orders=orders[1:], ders=ders[1:])
+
+
+def get_base_functions(p, k):
+    assert(len(p) == len(k))
+    derivatives = []
+    for dim in range(len(p)):
+        monomials = generate_monomials(order=p[dim])
+        derivatives.append(generate_derivatives(monomials,
+                                              der=p[dim]))
+    lambdas = np.ndarray(tuple(item for order, der in zip(p, k) for item in (der+1, order+1)),
+                       dtype=object)
+    generate_base_polynomials(lambdas, derivatives, [1., []], orders=p, ders=k)
+    return lambdas
+    
+
+def interpolated_function(z, ders, intervals, coefficients, lambdas):  
+    def call_function(args, i, j, index, ders, coefficients, lambdas, intervals):
+        assert(len(ders) == len(lambdas))
+        if len(ders) == 1:
+            p = len(lambdas[ders[0]]) - 1     
+            result = 0
+            for m in range(p+1):
+                result += coefficients[index * (p+1) * \
+                                       len(intervals[0]) + (p+1) * i[0] + m] * \
+                    lambdas[ders[0]][m](*args) / \
+                        (intervals[0][j[0]] - intervals[0][j[0]-1])**ders[0]
+            return result
+        else:
+            p = len(lambdas[ders[0]]) - 1     
+            result = 0
+            for m in range(p+1):
+                new_index = index * (p+1) * len(intervals[0]) + (p+1) * i[0] + m
+                result += call_function(args, i[1:], j[1:], new_index,
+                                       ders[1:], coefficients, lambdas[ders[0]][m],
+                                       intervals[1:])
+            return result / \
+                    (intervals[0][j[0]] - intervals[0][j[0]-1])**ders[0]
+    i = np.ndarray((len(z),))
+    j = np.ndarray((len(z),))
+    args = np.ndarray((len(z),))
+    for dim in range(len(z)):
+        i[dim], j[dim] = bisection(z[dim], intervals[dim])
+        args[dim] = (z[dim] - intervals[dim][i[dim]]) / \
+                   (intervals[dim][j[dim]] - intervals[dim][j[dim]-1])
+    result = (args, i, j, 0, ders, coefficients, lambdas, intervals)
     return result
 
 
 def get_spline_from_parameters(p, k, intervals, external_bounds):
-    n = len(intervals) - 1
-    matrix = np.zeros((n * (p+1), n * (p+1)))
-    vector = np.zeros(n * (p+1))
+    assert(len(k) == len(k) == len(intervals))
+    dims = len(intervals)
+    ns = [len(interval) - 1 for interval in intervals]
+    degrees_of_freedom = np.prod(ns) *  np.prod([order + 1 for order in p])
+    matrix = np.zeros((degrees_of_freedom, degrees_of_freedom))
+    vector = np.zeros(degrees_of_freedom)
     lambdas = get_base_functions(p, k)
     
-    def get_base_function(number, der=0):
-        return lambdas[der][number]
+    def _get_base_function(numbers, ders, lambdas):
+        if len(numbers) == 1:
+            assert(len(numbers) == len(ders))
+            return lambdas[ders[0]][numbers[0]]
+        else:
+            return _get_base_function(numbers[1:], ders[1:], 
+                                      lambdas[ders[0]][numbers[0]])
+    
+    def get_base_function(numbers, ders=0):
+        return _get_base_function(numbers, ders, lambdas)            
+    
+    def get_index(point, numbers):
+        index = point[0] * (p[0] + 1) + numbers[0]
+        for dim in range(dims - 1):
+            index *= ns[dim]
+            index += point[dim+1] * (p[dim + 1] + 1) + numbers[dim]
+        return index
 
+    intervals_grid = np.meshgrid(*[range(n - 1) for n in ns])
+    points = list(zip(*(x.flat for x in intervals_grid)))
+    number_grid = np.meshgrid(*[range(order+1) for order in  p])
+    numbers = list(zip(*(x.flat for x in number_grid)))
+    derivatives_grid = np.meshgrid(*[range(der+1) for der in  k])
+    ders = list(zip(*(x.flat for x in derivatives_grid)))
+    
     row = 0
-
-    for i in range(1, n):
-        for l in range(k+1):
-            for j in range(p+1):
-                matrix[row][(p+1) * (i-1) + j] = -get_base_function(number=j, der=l)(1.) / \
-                     (intervals[i+1] - intervals[i])**l
-                matrix[row][(p+1) * i + j] = get_base_function(number=j, der=l)(0.) / \
-                     (intervals[i+1] - intervals[i])**l
-            row+=1
+    
+    for i in range(len(points)):
+        for l in range(len(ders)):
+            for direction in range(dims):
+                for j in range(len(numbers)):
+                    args = np.zeros(dims)
+                    shifted = list(points[i])
+                    shifted[direction] = 1
+                    matrix[row][get_index(shifted, numbers[j])] =\
+                        -get_base_function(numbers=numbers[j], ders=ders[l])(*args) / \
+                         np.prod([(intervals[dim][shifted[dim]+1] - intervals[dim][shifted[dim]])**ders[l][dim] for dim in range(dims)])
+                    args[direction] = 1.
+                    matrix[row][get_index(points[i], numbers[j])] = \
+                        get_base_function(numbers=numbers[j], ders=ders[l])(*args) / \
+                         np.prod([(intervals[dim][points[i][dim]+1] - intervals[dim][points[i][dim]])**ders[l][dim] for dim in range(dims)])
+                row+=1
     
     for z, values in external_bounds:
-        i, j = bisection(z, intervals)
-        if z - intervals[i] == 0:
-            arg = 0.
-        else:
-            arg = (z - intervals[i]) / (intervals[i+1] - intervals[i])
-        for l in range(k+1):
-            if values[l] is not None:
-                for m in range(p+1):
-                    matrix[row][(p+1) * i + m] = get_base_function(number=m, der=l)(arg) / \
-                        (intervals[j] - intervals[j-1])**l
-                vector[row] = values[l]
+        i = np.ndarray((len(z),), dtype=int)
+        j = np.ndarray((len(z),), dtype=int)
+        args = np.ndarray((len(z),))
+        for dim in range(len(z)):
+            i[dim], j[dim] = bisection(z[dim], intervals[dim])
+            if z[dim] - intervals[dim][i[dim]] == 0:
+                args[dim] = 0.
+            else:
+                args[dim] = (z[dim] - intervals[dim][i[dim]]) / \
+                           (intervals[dim][j[dim]] - intervals[dim][j[dim]-1])
+        for l in range(len(ders)):
+            if values.flat[l] is not None:
+                for m in range(len(numbers)):
+                    matrix[row][get_index(i, numbers[m])] = \
+                        get_base_function(numbers=numbers[m], ders=ders[l])(*args) / \
+                        np.prod([(intervals[dim][i[dim]+1] - intervals[dim][i[dim]])**ders[l][dim] for dim in range(dims)])
+                vector[row] = values.flat[l]
                 row+=1
 
+    
+    def find_division(ns, total_number):
+        if len(ns) == 1:
+            return {ns[0]: total_number}
+        else:
+            max_n = max(ns)
+            new_ns = ns
+            new_ns.remove(max_n)
+            approx_total_number = np.prod(new_ns)
+            search_factor = max_n / approx_total_number
+            result = 1
+            for proposal in range(np.ceil(total_number / 2)):
+                if total_number % proposal:
+                    continue
+                if ((total_number // proposal) * search_factor - 1.) < \
+                    ((total_number // result) * search_factor - 1.):
+                    result = proposal
+            return {**find_division(new_ns, total_number // proposal), 
+                    **{max_n: proposal}}
+    
     known = row
-    y = np.linspace(intervals[0], intervals[-1], (n * (p+1) - known) + 2)
-    y = y[1:-1]
+    division = find_division(ns, degrees_of_freedom - known)
+    mesh = [division[n] for n in ns]
+    parameters = [np.linspace(intervals[dim][0], intervals[dim][-1], mesh[dim] + 2)[1:-1] for dim in range(dims)]
 
-    for z in y:
-        i, j = bisection(z, intervals)
-        arg = (z - intervals[i]) / (intervals[j] - intervals[j-1])
-        for m in range(p+1):
-            matrix[row][(p+1) * i + m] = get_base_function(number=m, der=0)(arg) 
+    parameters_grid = np.meshgrid(*parameters)
+    extra_points = list(zip(*(x.flat for x in parameters_grid)))
+    
+    for z in extra_points:
+        i = np.ndarray((len(z),), dtype=int)
+        j = np.ndarray((len(z),), dtype=int)
+        args = np.ndarray((len(z),))
+        for dim in range(len(z)):
+            i[dim], j[dim] = bisection(z[dim], intervals[dim])
+            args[dim] = (z[dim] - intervals[dim][i[dim]]) / \
+                       (intervals[dim][j[dim]] - intervals[dim][j[dim]-1])
+        for m in range(len(numbers)):
+            matrix[row][get_index(i, numbers[m])] = \
+                         get_base_function(numbers=numbers[m],
+                                           ders=np.zeros(dims, dtype=int))(*args) 
         row+=1
 
+    print(matrix)
     inverse_matrix = linalg.inv(matrix)
     
     def coefficients(parameters):
         modified_vector = deepcopy(vector)
-        for i in range(n * (p+1) - known):
+        for i in range(degrees_of_freedom - known):
             modified_vector[known + i] = parameters[i]
         return inverse_matrix.dot(modified_vector)
 
-    return coefficients, lambdas, len(y)
+    return coefficients, lambdas, len(mesh)
 
 
 def fit_parameters(p, k, intervals, external_bounds, data, dependencies):
@@ -143,107 +263,3 @@ def fit_parameters(p, k, intervals, external_bounds, data, dependencies):
     Beta = linalg.solve(np.matmul(XT, X), XT.dot(Y))
     #print(Beta)
     return coefficients(Beta), lambdas
-
-
-def get_interpolation_coeffiecients(n, p, k, xmin, xmax, intervals, 
-                                    function, function_low, function_high,
-                                    N=1000, weights=None):
-    if weights is None:
-        def weights(Z, der=0):
-            return 1;
-
-    # Helper wrappers.
-    def get_function(der=0):
-        return function[der]
-    
-    def get_function_low(der=0):
-        return function_low[der]
-
-    def get_function_high(der=0):
-        return function_high[der]
-        
-    matrix = np.zeros((n * (p+1), n * (p+1)))
-    vector = np.zeros(n * (p+1))
-    monomials = generate_monomials(order=p)
-    derivatives = generate_derivatives(monomials, der=p)
-    lambdas = lambdify_poly(derivatives)
-    
-    def get_base_function(number, der=0):
-        return lambdas[der][number]
-
-    row = 0
-
-    for l in range(k+1):
-        for j in range(p+1):
-            matrix[row][j] = get_base_function(number=j, der=l)(0.) / \
-                 (intervals[1] - intervals[0])**l
-            vector[row] = get_function_low(der=l)(intervals[0])
-        row+=1
-
-    for i in range(1, n):
-        for l in range(k+1):
-            for j in range(p+1):
-                matrix[row][(p+1) * (i-1) + j] = -get_base_function(number=j, der=l)(1.) / \
-                     (intervals[i+1] - intervals[i])**l
-                matrix[row][(p+1) * i + j] = get_base_function(number=j, der=l)(0.) / \
-                     (intervals[i+1] - intervals[i])**l
-            row+=1
-
-    for l in range(k+1):
-        for j in range(p+1):
-            matrix[row][(n-1) * (p+1) + j] = get_base_function(number=j, der=l)(1.) / \
-                 (intervals[n] - intervals[n-1])**l
-            vector[row] = get_function_high(der=l)(intervals[n])
-        row+=1
-
-
-    y = np.linspace(xmin, xmax, (n * (p+1) - (k+1) * (n+1)) + 2)
-    y = y[1:-1]
-
-    for z in y:
-        i, j = bisection(z, intervals)
-        arg = (z - intervals[i]) / (intervals[j] - intervals[j-1])
-        for m in range(p+1):
-            matrix[row][(p+1) * i + m] = get_base_function(number=m, der=0)(arg) 
-        row+=1
-
-    inverse_matrix = linalg.inv(matrix)
-
-    # Least squares from here
-    Z = np.linspace(xmin, xmax, N + 2)
-    Z = Z[1:-1]
-
-    Y = weights(Z, der=0) * get_function(der=0)(Z)
-    for l in range(1, k+1):
-         Y = np.append(Y, weights(Z, der=l) * get_function(der=l)(Z))
-    X = np.zeros(((k+1) * N, n * (p+1) - (k+1) * (n+1)))
-
-    for m in range(len(Z)):
-        z = Z[m]
-        i, j = bisection(z, intervals)
-        arg = (z - intervals[i]) / (intervals[j] - intervals[j-1])
-        for r in range(n * (p+1) - (k+1) * (n+1)):
-            for l in range(k+1):
-                result = 0
-                for s in range(p+1):
-                    result += inverse_matrix[(p+1) * i + s, (k+1) * (n+1) + r] * \
-                        get_base_function(number=s, der=l)(arg) / \
-                            (intervals[j] - intervals[j-1])**l
-                X[l * N + m, r] = weights(z, der=l) * result
-        for r in range(p+1):
-            for s in range((k+1) * (n+1)):
-                for l in range(k+1):
-                    Y[l * N + m] -= weights(z, der=l) * \
-                        inverse_matrix[(p+1) * i + r, s] * vector[s] * \
-                        get_base_function(number=r, der=l)(arg) / \
-                            (intervals[j] - intervals[j-1])**l
-
-    XT = X.transpose()
-    Beta = linalg.solve(np.matmul(XT, X), XT.dot(Y))
-
-    for row in range(n * (p+1) - (k+1) * (n+1)):
-        vector[(k+1) * (n+1) + row] = Beta[row]
-
-    coefficients = inverse_matrix.dot(vector)
-    return coefficients, lambdas
-

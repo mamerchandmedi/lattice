@@ -62,14 +62,14 @@ if __name__=='__main__':
     vec_J2 = []
     vec_J3 = []
     for i in range(len(vec_phi)):
-    	vec_V.append(V(vec_phi[i]))
-    	vec_dV.append(dV(vec_phi[i]))
-    	vec_w.append(-Tn*dVdT(vec_phi[i]))
+        vec_V.append(V(vec_phi[i]))
+        vec_dV.append(dV(vec_phi[i]))
+        vec_w.append(-Tn*dVdT(vec_phi[i]))
     for i in range(len(vec_x)):
-    	vec_J0.append(J0_interpolated(vec_x[i]))
-    	vec_J1.append(J1_interpolated(vec_x[i]))
-    	vec_J2.append(J2_interpolated(vec_x[i]))
-    	vec_J3.append(J3_interpolated(vec_x[i]))
+        vec_J0.append(J0_interpolated(vec_x[i]))
+        vec_J1.append(J1_interpolated(vec_x[i]))
+        vec_J2.append(J2_interpolated(vec_x[i]))
+        vec_J3.append(J3_interpolated(vec_x[i]))
     plt.figure()
     plt.plot(vec_phi, vec_V)
     plt.savefig('tunneling_potential_test.png')
@@ -82,7 +82,7 @@ if __name__=='__main__':
     plt.plot(vec_phi, vec_w)
     plt.savefig('tunneling_enthalpy_test.png')
     
-    print(J0_interpolated(0.23), J1_interpolated(0.23), J2_interpolated(0.23), J3_interpolated(0.23))
+    #print(J0_interpolated(0.23), J1_interpolated(0.23), J2_interpolated(0.23), J3_interpolated(0.23))
     plt.figure()
     plt.plot(vec_x, vec_J0)
     plt.xscale("log")

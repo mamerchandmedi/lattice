@@ -48,9 +48,10 @@ except:
 	#Z = data["Z"]
 	#tau = data["tau"]
 	print("error")
-	
-P_off = 0 * np.ones(r.size)
-print(T)
-print(Z)
-print(P)
 
+P_off = 0 * np.ones(r.size)
+
+if __name__=='__main__':
+    print(T)
+    print(Z)
+    print(P)

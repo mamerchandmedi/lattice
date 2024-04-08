@@ -22,7 +22,7 @@ from sympy.codegen.rewriting import ReplaceOptim
 import sympy.utilities.codegen
 # end: Import codegen subpackage from sympy package for "monkey patching".
 
-from .spline import get_interpolation_coeffiecients, interpolated_function, \
+from .spline import interpolated_function, \
  fit_parameters, get_spline_from_parameters, get_base_functions
 
 
@@ -187,23 +187,23 @@ function_high = [lambda x: np.sum([J_low(argument_function(x), l) * jacobian[0][
                   lambda x: np.sum([J_low(argument_function(x), l) * jacobian[3][l](x) for l in range(p+1)])]
 
 
-external_bounds = [[xmin, [function_low[j](xmin) for j in range(k+1)]],
-                   [xmax, [function_high[j](xmax) for j in range(k+1)]]]
+external_bounds = [[[xmin], np.asarray([function_low[j](xmin) for j in range(k+1)])],
+                   [[xmax], np.asarray([function_high[j](xmax) for j in range(k+1)])]]
 N = 1000
 Z = np.linspace(xmin, xmax, N+2)
 Z = Z[1:-1]
 
-data = [[z, [J0_full(argument_function(z)),
-             J1_full(argument_function(z)),
-             J2_full(argument_function(z)),
-             J3_full(argument_function(z))]] for z in Z]
+data = [[[z], [J0_full(argument_function(z)),
+               J1_full(argument_function(z)),
+               J2_full(argument_function(z)),
+               J3_full(argument_function(z))]] for z in Z]
 
 def calculate_jacobian(jacobian):
     return lambda x: [[jacobian[j][l](x) for l in range(p+1)] for j in range(k+1)]
 
 if not os.path.exists("thermal_functions/interpolation_coefficients.npy"):
-	dependencies = [[z, calculate_jacobian(inverse_jacobian)(argument_function(z))] for z in Z]
-	coefficients, lambdas = fit_parameters(p, k, intervals, external_bounds, data, dependencies)
+	dependencies = [[[z], calculate_jacobian(inverse_jacobian)(argument_function(z))] for z in Z]
+	coefficients, lambdas = fit_parameters([p], [k], [intervals], external_bounds, data, dependencies)
 	coefficients_0 = np.copy(coefficients)
 	coefficients_1 = np.copy(coefficients)
 	for i in range(len(intervals) - 1):
@@ -219,18 +219,9 @@ if not os.path.exists("thermal_functions/interpolation_coefficients.npy"):
 			coefficients_3[(p+1) * i + m] = m*(m-1)*(m-2) * coefficients[(p+1) * i + m] / (intervals[i+1] - intervals[i])**3
 	np.save('thermal_functions/interpolation_coefficients.npy', [coefficients, coefficients_0, coefficients_1, coefficients_2, coefficients_3])
 else:
-	lambdas = get_base_functions(p, k)
+	lambdas = get_base_functions([p], [k])
 	coefficients_data = np.load('thermal_functions/interpolation_coefficients.npy')
 	coefficients = coefficients_data[0]
-
-print(coefficients_data[1])
-print(coefficients_data[2])
-print(coefficients_data[3])
-print("################")
-print(interpolated_function(0.23, 0, intervals, coefficients, lambdas))
-print(interpolated_function(0.23, 1, intervals, coefficients, lambdas))
-print(interpolated_function(0.23, 2, intervals, coefficients, lambdas))                                     
-print(interpolated_function(0.23, 3, intervals, coefficients, lambdas))
                                      
                                      
 def J0_interpolated(z):

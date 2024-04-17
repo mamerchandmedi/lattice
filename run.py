@@ -16,7 +16,6 @@ from parameters import Tc, eta
 # %% Importing initial values.
 from initialization import phi, T, P, tau, Z, v
 # end: Importing initial values.
-
 # %% Import rescaled quantities.
 from scaled import GeV, tauZphi2Tpv_mod
 # end: Import rescaled quantities.
@@ -69,7 +68,7 @@ fig.subplots_adjust(hspace=0.5)
 fig.subplots_adjust(wspace=0.5)
 # ------plotting
 plt.xlim(0, 10)
-plt.rcParams["figure.dpi"] = 400
+plt.rcParams["figure.dpi"] = 300
 # plt.ylim(0,0.1)
 fig.suptitle("dr = " + str(dr / GeV**(-1)) + ", dt = " +
              str(dt / GeV**(-1)) + r', $\eta=$' + str(eta/Tc))
@@ -122,7 +121,7 @@ axs_diag[1, 1].set_ylim(0, 1.)
 axs_diag[2, 1].set_ylim(0, 1.)
 
 psteps = 500
-nsteps = 10000
+nsteps = 5000
 
 # initial values
 phidot = np.zeros((N + 1, ), dtype=float)
@@ -400,4 +399,4 @@ for k in tqdm(range(nsteps)):
         axs_diag[2, 0].plot(xi, alpha_limiter1[:, 1], c=colors)
         axs_diag[2, 1].plot(xi, alpha_limiter2[:, 1], c=colors)
         plt.savefig('plots/test/limiter' + str(k + 1) + '.png')
-        #np.savez_compressed('values/profiles_FCT_dense_eta_'+str(eta/Tc)+'_step'+str(k), r=r, xi=r/t, phi=phi_H, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H, limiter1_m = alpha_limiter1[:, -1], limiter1_0 = alpha_limiter1[:, 0], limiter1_p = alpha_limiter1[:, 1], limiter2_m = alpha_limiter2[:, -1], limiter2_0 = alpha_limiter2[:, 0], limiter2_p = alpha_limiter2[:, 1])
+        np.savez_compressed('values/profiles_FCT_dense_eta_'+str(eta/Tc)+'_step'+str(k), r=r, xi=r/t, phi=phi_H, phidot=phidot, v=v_H, T=T_H, P=P_H, tau=tau_H, Z=Z_H, limiter1_m = alpha_limiter1[:, -1], limiter1_0 = alpha_limiter1[:, 0], limiter1_p = alpha_limiter1[:, 1], limiter2_m = alpha_limiter2[:, -1], limiter2_0 = alpha_limiter2[:, 0], limiter2_p = alpha_limiter2[:, 1])

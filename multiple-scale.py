@@ -62,29 +62,57 @@ phidot0 = Function(r'\dot{\phi}_{(0)}')
 phidot1 = Function(r'\dot{\phi}_{(1)}')
 psi0 = Function(r'\psi_{(0)}')
 psi1 = Function(r'\psi_{(1)}')
-tau0 = Function(r'\tau_{(0)}')
-tau1 = Function(r'\tau_{(1)}')
-Z0 = Function(r'Z_{(0)}')
-Z1 = Function(r'Z_{(1)}')
-T0 = Function(r'T_{(0)}')
-T1 = Function(r'T_{(1)}')
-p0 = Function(r'p_{(0)}')
-p1 = Function(r'p_{(1)}')
-v0 = Function(r'v_{(0)}')
-v1 = Function(r'v_{(1)}')
-rules = {phi(t, r): phi0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * phi1((r - v_w * t) * gamma(v_w), parameter * r / t),
-         phidot(t, r): phidot0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * phidot1((r - v_w * t) * gamma(v_w), parameter * r / t),
-         psi(t, r): psi0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * psi1((r - v_w * t) * gamma(v_w), parameter * r / t),
-         tau(t, r): tau0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * tau1((r - v_w * t) * gamma(v_w), parameter * r / t),
-         Z(t, r): Z0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * Z1((r - v_w * t) * gamma(v_w), parameter * r / t),
-         T(t, r): T0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * T1((r - v_w * t) * gamma(v_w), parameter * r / t),
-         p(t, r): p0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * p1((r - v_w * t) * gamma(v_w), parameter * r / t),
-         v(t, r): v0((r - v_w * t) * gamma(v_w), parameter * r / t) + parameter * v1((r - v_w * t) * gamma(v_w), parameter * r / t)}
-result = field_equations.xreplace(rules)
-result = Tuple(*[expr.expand().doit() for expr in result])
-ser = Tuple(*[series(expr, parameter, x0=0, n=2) for expr in result])
+tau0 = Symbol(r'\tau_0')
+deltatau0 = Function(r'\delta \tau_{(0)}')
+deltatau1 = Function(r'\delta \tau_{(1)}')
+Z0 = Symbol(r'Z_0')
+deltaZ0 = Function(r'\delta Z_{(0)}')
+deltaZ1 = Function(r'\delta Z_{(1)}')
+T0 = Symbol(r'T_0')
+deltaT0 = Function(r'\delta T_{(0)}')
+deltaT1 = Function(r'\delta T_{(1)}')
+p0 = Symbol(r'p_0')
+deltap0 = Function(r'\delta p_{(0)}')
+deltap1 = Function(r'\delta p_{(1)}')
+v0 = Symbol(r'v_0')
+deltav0 = Function(r'\delta v_{(0)}')
+deltav1 = Function(r'\delta v_{(1)}')
+temp_chi = Function(r'\chi')
+temp_xi = Function(r'xi')
+expansion_rules = {phi(t, r): phi0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * phi1(temp_chi(t, r), parameter * temp_xi(t, r)),
+                   phidot(t, r): phidot0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * phidot1(temp_chi(t, r), parameter * temp_xi(t, r)),
+                   psi(t, r): psi0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * psi1(temp_chi(t, r), parameter * temp_xi(t, r)),
+                   tau(t, r): tau0 +
+                   deltatau0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * deltatau1(temp_chi(t, r), parameter * temp_xi(t, r)),
+                   Z(t, r): Z0 +
+                   deltaZ0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * deltaZ1(temp_chi(t, r), parameter * temp_xi(t, r)),
+                   T(t, r): T0 +
+                   deltaT0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * deltaT1(temp_chi(t, r), parameter * temp_xi(t, r)),
+                   p(t, r): p0 +
+                   deltap0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * deltap1(temp_chi(t, r), parameter * temp_xi(t, r)),
+                   v(t, r): v0 +
+                   deltav0(temp_chi(t, r), parameter * temp_xi(t, r)) +
+                   parameter * deltav1(temp_chi(t, r), parameter * temp_xi(t, r))}
+derivatives_rules = {temp_chi(t, r).diff(t): ((r - v_w * t) * gamma(v_w)).diff(t),
+                     temp_chi(t, r).diff(r): ((r - v_w * t) * gamma(v_w)).diff(r),
+                     temp_xi(t, r).diff(t): (r / t).diff(t),
+                     temp_xi(t, r).diff(r): (r / t).diff(r)}
 xi = Symbol(r'\xi')
 chi = Symbol(r'\chi')
-sub_rules = {r/sqrt(1 - v_w**2) - t*v_w/sqrt(1 - v_w**2): chi}
-sub = ser.xreplace(sub_rules).simplify()
-sub.coeff(parameter, 0) # 0-th order
+result = conservation_equations.xreplace(expansion_rules)
+result = Tuple(*[expr.expand().doit() for expr in result])
+der = result.xreplace(derivatives_rules)
+simplify_rules = {temp_chi(t,r): chi, temp_xi(t,r): xi}
+simple = der.xreplace(simplify_rules)
+coordinates_rules = {t: chi / ((xi - v_w) * gamma(v_w)),
+                    r: xi * chi / ((xi - v_w) * gamma(v_w))}
+transformed = simple.xreplace(coordinates_rules)
+ser = Tuple(*[series(expr, parameter, x0=0, n=2) for expr in transformed])
+coefficients = Tuple(*[Tuple(*[expr.coeff(parameter, i) for i in range(2)]) for expr in ser]) # 0-th order]

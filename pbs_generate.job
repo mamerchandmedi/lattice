@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -l nodes=w08
+
+cd "$PBS_O_WORKDIR"
+# export PYTHONPATH=/home/2/tkrajewski/anaconda3/bin/python:/home/2/tkrajewski/anaconda3/lib:/home/2/tkrajewski/anaconda3/pkgs
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64:/usr/lib:/home/2/tkrajewski/anaconda3/lib:/home/2/tkrajewski/anaconda3/pkgs:/home/2/tkrajewski/libs/python
+
+echo "Running script for" $FILE"."
+cd $(dirname "$FILE")
+~/repo_scalar_singlet/generate.py $FILE
+

@@ -10,7 +10,7 @@ from sympy.utilities.codegen import default_datatypes
 
 # %% Import utility for automatic generation of C code.
 from sympy.utilities.codegen import codegen
-from sympy.printing.ccode import C99CodePrinter
+from sympy.printing.c import C99CodePrinter
 from sympy.utilities.codegen import C99CodeGen
 # end: Import utility for automatic generation of C code.
 

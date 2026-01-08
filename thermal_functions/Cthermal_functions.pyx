@@ -14,6 +14,7 @@ import array
 # %% Import numpy.
 import numpy as np
 cimport numpy as np
+np.import_array()
 # end: Import numpy.
 
 

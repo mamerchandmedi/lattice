@@ -32,13 +32,12 @@ index = 1
 #Tn = 43  
 #y = 1.5
 
+V_parameter = 1.
+A_parameter = 30.
 Tc = 100
-lam = 0.146
-v = 110
 etaV = 0.22
-Tn = 51  
+Tn = 1#51  
 y = 1.615
 
-print(Tn, lam, v, y, etaV)
 # -----------specify friction here---------------
 eta = 0.0 * Tc

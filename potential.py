@@ -32,7 +32,8 @@ d2VTdT2 = np.vectorize(d2VTdT2)
 d3VTdT3 = np.vectorize(d3VTdT3)
 
 # %% Importing parameters of the model.
-from parameters import lam, etaV, y, v, Tn, Tc
+#from parameters import lam, etaV, y, v, Tn, Tc
+from parameters import Tn
 # end: Importing parameters of the model.
 
 

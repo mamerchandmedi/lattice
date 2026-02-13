@@ -17,9 +17,9 @@ c_beta = 0.
 c_gamma = 0.
 
 rmin = 0. * GeV**(-1)
-rmax = 7. * GeV**(-1)
-dr = 0.01 * GeV**(-1)
-dt = 0.001 * GeV**(-1)
+rmax = 30. * GeV**(-1)
+dr = 0.001 * GeV**(-1)
+dt = 0.0001 * GeV**(-1)
 N = int(np.floor((rmax - rmin) / dr))
 
 r = np.array(range(0, N + 1)) * dr

@@ -175,29 +175,30 @@ def ho_update_Zdot(np.ndarray[DTYPE_t, ndim=1] phi,
                    np.ndarray[DTYPE_t, ndim=1] T,
                    np.ndarray[DTYPE_t, ndim=1] P,
                    np.ndarray[DTYPE_t, ndim=1] v,
+                   np.ndarray[DTYPE_t, ndim=1] q,
                    np.ndarray[DTYPE_t, ndim=1] FZ,
                    np.ndarray[DTYPE_t, ndim=1] Zdot,
                    np.ndarray[DTYPE_t, ndim=1] GZ):
 
-    GZ[0] = sources_num[0][0] * Gf_Z(phi[0], phidot[0], psi[0], T[0], v[0])
+    GZ[0] = sources_num[0][0] * (Gf_Z(phi[0], phidot[0], psi[0], T[0], v[0]) - q[0])
     Zdot[0] = ((advection_num[0][0] * FZ[0] +
                advection_num[0][1] * FZ[1] +
-               gradient_num_minus[0] * derivative_minus_num[1] * (P[1] - P[0]) +
+               #gradient_num_minus[0] * derivative_minus_num[1] * (P[1] - P[0]) +
                GZ[0]) / mass_num[0])
     cdef int j
     for j in range(1, n_N-1):
-        GZ[j] = sources_num[j][0] * Gf_Z(phi[j], phidot[j], psi[j], T[j], v[j])
+        GZ[j] = sources_num[j][0] * (Gf_Z(phi[j], phidot[j], psi[j], T[j], v[j]) - q[j])
         Zdot[j] = ((advection_num[j][-1] * FZ[j - 1] +
                    advection_num[j][0] * FZ[j] +
                    advection_num[j][1] * FZ[j + 1] +
-                   gradient_num_plus[j] * derivative_plus_num[j] * (P[j] - P[j-1]) +
-                   gradient_num_minus[j] * derivative_minus_num[j+1] * (P[j+1] - P[j]) +  
+                   #gradient_num_plus[j] * derivative_plus_num[j] * (P[j] - P[j-1]) +
+                   #gradient_num_minus[j] * derivative_minus_num[j+1] * (P[j+1] - P[j]) +  
                    GZ[j]) / mass_num[j])
-    GZ[n_N-1] = (sources_num[n_N-1][0] *
-             Gf_Z(phi[n_N-1], 0, psi[n_N-1], T[n_N-1], v[n_N-1]))
+    GZ[n_N-1] = sources_num[n_N-1][0] * \
+             (Gf_Z(phi[n_N-1], 0, psi[n_N-1], T[n_N-1], v[n_N-1]) - q[n_N-1])
     Zdot[n_N-1] = ((advection_num[n_N-1][-1] * FZ[n_N - 2] +
                advection_num[n_N-1][0] * FZ[n_N-1] +
-               gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (P[n_N-1] - P[n_N-2]) + 
+               #gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (P[n_N-1] - P[n_N-2]) + 
                GZ[n_N-1]) / mass_num[n_N-1])
 
 
@@ -238,28 +239,30 @@ def lo_update_Zdot(np.ndarray[DTYPE_t, ndim=1] phi,
                    np.ndarray[DTYPE_t, ndim=1] T,
                    np.ndarray[DTYPE_t, ndim=1] P,
                    np.ndarray[DTYPE_t, ndim=1] v,
+                   np.ndarray[DTYPE_t, ndim=1] q,
                    np.ndarray[DTYPE_t, ndim=1] FZ,
                    np.ndarray[DTYPE_t, ndim=2] lo_advection_matrix,
                    np.ndarray[DTYPE_t, ndim=1] Zdot,
                    np.ndarray[DTYPE_t, ndim=1] GZ):
-    GZ[0] = sources_num[0][0] * Gf_Z(phi[0], phidot[0], psi[0], T[0], v[0])
+    GZ[0] = sources_num[0][0] * (Gf_Z(phi[0], phidot[0], psi[0], T[0], v[0]) - q[0])
     Zdot[0] = (lo_advection_matrix[0][0] * FZ[0] +
                lo_advection_matrix[0][1] * FZ[1] +
-               gradient_num_minus[0] * derivative_minus_num[1] * (P[1] - P[0]) +
+               #gradient_num_minus[0] * derivative_minus_num[1] * (P[1] - P[0]) +
                GZ[0]) / mass_num[0]
     cdef int j
     for j in range(1, n_N-1):
-        GZ[j] = sources_num[j][0] * Gf_Z(phi[j], phidot[j], psi[j], T[j], v[j])
+        GZ[j] = sources_num[j][0] * (Gf_Z(phi[j], phidot[j], psi[j], T[j], v[j]) - q[j])
         Zdot[j] = (lo_advection_matrix[j][-1] * FZ[j - 1] +
                    lo_advection_matrix[j][0] * FZ[j] +
                    lo_advection_matrix[j][1] * FZ[j + 1] +
-                   gradient_num_plus[j] * derivative_plus_num[j] * (P[j] - P[j-1]) +
-                   gradient_num_minus[j] * derivative_minus_num[j+1] * (P[j+1] - P[j]) +  
+                   #gradient_num_plus[j] * derivative_plus_num[j] * (P[j] - P[j-1]) +
+                   #gradient_num_minus[j] * derivative_minus_num[j+1] * (P[j+1] - P[j]) +  
                    GZ[j]) / mass_num[j]
-    GZ[n_N-1] = sources_num[n_N-1][0] * Gf_Z(phi[n_N-1], 0, psi[n_N-1], T[n_N-1], v[n_N-1])
+    GZ[n_N-1] = sources_num[n_N-1][0] * \
+        (Gf_Z(phi[n_N-1], 0, psi[n_N-1], T[n_N-1], v[n_N-1]) - q[n_N-1])
     Zdot[n_N-1] = (lo_advection_matrix[n_N-1][-1] * FZ[n_N - 2] +
                lo_advection_matrix[n_N-1][0] * FZ[n_N-1] +
-               gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (P[n_N-1] - P[n_N-2]) + 
+               #gradient_num_plus[n_N-1] * derivative_plus_num[n_N-1] * (P[n_N-1] - P[n_N-2]) + 
                GZ[n_N-1]) / mass_num[n_N-1]
 
 cdef array.array U_old_array = array.array('d')

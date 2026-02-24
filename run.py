@@ -148,11 +148,13 @@ nsteps = 7000
 phidot = np.zeros((N + 1, ), dtype=float)
 phi_H, tau_H, Z_H = cp.deepcopy(phi), cp.deepcopy(tau), cp.deepcopy(Z)
 T_H, v_H, P_H = cp.deepcopy(T), cp.deepcopy(v), cp.deepcopy(P)
+q_H = np.zeros(r.size)
 phidot_H, taudot_H, Zdot_H = np.zeros(r.size), np.zeros(r.size), np.zeros(r.size)
 psi_H = np.zeros(r.size)
 
 phi_L, tau_L, Z_L = cp.deepcopy(phi), cp.deepcopy(tau), cp.deepcopy(Z)
 T_L, v_L, P_L = cp.deepcopy(T), cp.deepcopy(v), cp.deepcopy(P)
+q_L = np.zeros(r.size)
 phidot_L, taudot_L, Zdot_L = np.zeros(r.size), np.zeros(r.size), np.zeros(r.size)
 psi_L = np.zeros(r.size)
 
@@ -202,9 +204,10 @@ for k in tqdm(range(nsteps)):
     # ############# HIGH ORDER ##################
     # ------ update variables
     evaluate_psi(phi_H, psi_H)
+    evaluate_psi(P_H, q_H)
     evaluate_fluxes(tau_H, Z_H, P_H, v_H, Ftau_H, FZ_H)
     ho_update_taudot(phi_H, phidot_H, psi_H, T_H, v_H, Ftau_H, taudot_H, Gtau_H)
-    ho_update_Zdot(phi_H, phidot_H, psi_H, T_H, P_H, v_H, FZ_H, Zdot_H, GZ_H)
+    ho_update_Zdot(phi_H, phidot_H, psi_H, T_H, P_H, v_H, q_H, FZ_H, Zdot_H, GZ_H)
 
     # ------tau, Z evolution (temporary values)
     tau_temp = tau_H - 0.5 * dt * taudot_H
@@ -215,6 +218,7 @@ for k in tqdm(range(nsteps)):
 
     # ------ update variables
     update_Tpv(T_H, P_H, v_H, phi_H, tau_temp, Z_temp)
+    evaluate_psi(P_H, q_H)
     evaluate_fluxes(tau_H, Z_H, P_H, v_H, Ftau_H, FZ_H)
 
     phidot_H_old = cp.deepcopy(phidot_H)
@@ -223,7 +227,7 @@ for k in tqdm(range(nsteps)):
     evaluate_psi(phi_H, psi_H)
     
     ho_update_taudot(phi_H, phidot_H_mean, psi_H, T_H, v_H, Ftau_H, taudot_H, Gtau_H)
-    ho_update_Zdot(phi_H, phidot_H_mean, psi_H, T_H, P_H, v_H, FZ_H, Zdot_H, GZ_H)
+    ho_update_Zdot(phi_H, phidot_H_mean, psi_H, T_H, P_H, v_H, q_H, FZ_H, Zdot_H, GZ_H)
 
     # ------tau, Z evolution (full step)
     #tau_H -= dt * taudot_H # Not needed when FCT used.
@@ -233,6 +237,7 @@ for k in tqdm(range(nsteps)):
     phi_H += 0.5 * dt * phidot_H
     # ################LOW ORDER##################
     update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
+    evaluate_psi(P_L, q_L)
     Ftau_L = tau_L + P_L
     FZ_L = cp.deepcopy(Z_L)
     
@@ -245,7 +250,7 @@ for k in tqdm(range(nsteps)):
     #print(sum(abs(KL[:,-1]) + abs(KL[:,-1])) < sum(abs(KL[:,0])))
     evaluate_psi(phi_L, psi_L)
     lo_update_taudot(phi_L, phidot_L, psi_L, T_L, v_L, Ftau_L, KL, taudot_L, Gtau_L)
-    lo_update_Zdot(phi_L, phidot_L, psi_L, T_L, P_L, v_L, FZ_L, KL, Zdot_L, GZ_L)
+    lo_update_Zdot(phi_L, phidot_L, psi_L, T_L, P_L, v_L, q_L, FZ_L, KL, Zdot_L, GZ_L)
 
     # ------phi evolution (half step)
     phi_L += 0.5 * dt * phidot_L
@@ -264,26 +269,6 @@ for k in tqdm(range(nsteps)):
     tau_L -= 0.5 * dt * taudot_L
     Z_L -= 0.5 * dt * Zdot_L
     
-    #print(tau_L[0], Z_L[0])
-    KL_old = advection(v_old)
-    rtol = 1.e-4 #1.e-6
-    atol = 1.e-5
-    #print("Newton method: ")
-    while(True):
-        tau_Lm = cp.deepcopy(tau_L)
-        Z_Lm = cp.deepcopy(Z_L)
-        Ftau_L = tau_L + P_L
-        FZ_L = cp.deepcopy(Z_L)
-        lo_update_taudot(phi_L, phidot_L, psi_L, T_L, v_L, Ftau_L, KL, taudot_L, Gtau_L)
-        lo_update_Zdot(phi_L, phidot_L, psi_L, T_L, P_L, v_L, FZ_L, KL, Zdot_L, GZ_L) 
-        update_Tpv(T_L, P_L, v_L, phi_L, tau_L, Z_L)
-        lo_newton_fast(tau_old, tau_L, taudot_L, Z_old, Z_L, Zdot_L, Tf_L_banded, phi_L, phidot_L, psi_L, T_L, v_L, P_L, KL_old)
-        #lo_newton(tau_old, tau_L, taudot_L, Z_old, Z_L, Zdot_L, Tf_L, Tf_L_banded, phi_L, phidot_L, psi_L, T_L, v_L, P_L, KL_old)
-        tau_mean = np.mean(tau_L[0:-2]**2 + tau_Lm[0:-2]**2)
-        Z_mean = np.mean(Z_L[0:-2]**2 + Z_Lm[0:-2]**2)
-        if max(abs((tau_L[0:-2] - tau_Lm[0:-2])/np.sqrt(tau_L[0:-2]**2 + tau_Lm[0:-2]**2 + atol*np.sqrt(tau_mean)))) <=rtol and max(abs((Z_L[0:-2] - Z_Lm[0:-2])/np.sqrt(Z_L[0:-2]**2 + Z_Lm[0:-2]**2 + atol*np.sqrt(Z_mean)))) <= rtol: break
-    #print("Success!")
-    # ###########FCT###############
     antidiffusive_matrix(KL, FZ_H, FZ_L, dt, antidiffusive_flux_Z)
     antidiffusive_matrix(KL, Ftau_H, Ftau_L, dt, antidiffusive_flux_tau)
     
@@ -326,6 +311,7 @@ for k in tqdm(range(nsteps)):
         	#print(m, np.max(np.abs(limited_flux_tau)), np.max(np.abs(limited_flux_Z)))
 
     update_Tpv(T_H, P_H, v_H, phi_H, tau_H, Z_H)
+    evaluate_psi(P_H, q_H)
     tau_L = cp.deepcopy(tau_H)
     tau = cp.deepcopy(tau_H)
     Z_L = cp.deepcopy(Z_H)

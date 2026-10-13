@@ -17,12 +17,6 @@ import numpy as np
 from Cpotential import V0, VT, dVTdphi, dVTdT, d2VTdphidT, d2VTdT2, d3VTdT3
 # end: Import termodynamically corrected quantities.
 
-
-# %% Import termodynamically corrected quantities.
-from thermal_functions.Cthermal_functions import J0_interpolated, \
- J1_interpolated, J2_interpolated, J3_interpolated
-# end: Import termodynamically corrected quantities.
-
 V0 = np.vectorize(V0)
 VT = np.vectorize(VT)
 dVTdphi = np.vectorize(dVTdphi)

@@ -27,11 +27,17 @@ from lattice import r
 from potential import V, dV
 # end: Importing the potetnial of the model.
 
-xi = np.linspace(0,100,10000)
-Vmin = np.amin(V(xi))
-print(Vmin)
-vt = xi[np.where(V(xi) == Vmin)[0]][0]  # Find location of the global minimum.
-profile = SingleFieldInstanton(vt, 0, V, dV).findProfile(npoints=1000)
+xi = np.linspace(0,20000,1000000)
+Vs = V(xi)
+dVs = dV(xi)
+Vmin = np.amin(Vs)
+print("Vmin = ", Vmin)
+vt = xi[np.where(Vs == Vmin)[0]][0]  # Find location of the global minimum.
+print("vt =", vt)
+vb = SingleFieldInstanton(vt, 0., V, dV).findBarrierLocation()
+print("vb =", vb)
+profile = SingleFieldInstanton(vt, 0., V, dV).findProfile(npoints=1000)
+#profile = SingleFieldInstanton(vt, 0., V, dV, phi_bar=vb).findProfile(npoints=1000)
 fphi = interpolate.interp1d(profile.R, profile.Phi,
                             fill_value=(0), bounds_error=False)
 
@@ -73,7 +79,6 @@ plt.grid(lw = 0.5)
 plt.savefig('phi0.pdf')
 plt.close()
 
-print(vt)
 phi_tw = []
 for i in range(len(r)):
     # if r[i]/1.01 > profile.R[-1]:
@@ -82,3 +87,8 @@ for i in range(len(r)):
     # phi_tw.append(fphi(r[i]/1.01))
 phi_tw = np.array(phi_tw)
 np.savez_compressed('critical_bubble', r=r, phi=phi_tw)
+
+if __name__=='__main__':
+    plt.figure()
+    plt.plot(r, phi_tw)
+    plt.savefig('critical_bubble_test.png')

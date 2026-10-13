@@ -4,8 +4,9 @@ from math import factorial
 from scipy.integrate import quad
 from scipy import linalg
 import matplotlib.pyplot as plt
-from sympy import Dummy, diff, lambdify, sinh, asinh, exp, log, Id, Symbol
+from sympy import Dummy, diff, lambdify, sinh, asinh, exp, log, sqrt, Id, Symbol
 import os
+from pathlib import Path
 from sympy.utilities.codegen import default_datatypes
 
 # %% Import utility for automatic generation of C code.
@@ -26,86 +27,86 @@ from .spline import get_interpolation_coeffiecients, interpolated_function, \
  fit_parameters, get_spline_from_parameters, get_base_functions
 
 
-def I0(k, m):
-	return k**2*np.exp(-(m + k**2)**0.5)
+file_path = str(Path(__file__).parent)
 
-def I1(k, m):
-	return - k**2*np.exp(-(m + k**2)**0.5) / (2*np.sqrt(k**2 + m))
+x = Symbol("x", real=True)
+k = Symbol("k", real=True, positive=True)
 
-def I2(k, m):
-	return  k**2*(np.exp(-(m + k**2)**0.5) / (4*(k**2 + m)**1.5) + np.exp(-(m + k**2)**0.5) / (4*(k**2 + m)))
+integrand = k**2 * log(1 + exp(-sqrt(x + k**2)))
 
-def I3(k, m):
-	return  - k**2*np.exp(-(m + k**2)**0.5) *  (3 + k**2 + m + 3 * (k**2 + m)**0.5) / (8*(k**2 + m)**2.5)
+If0 = lambdify((k, x), integrand)
+If1 = lambdify((k, x), diff(integrand, x))
+If2 = lambdify((k, x), diff(integrand, x, 2))
+If3 = lambdify((k, x), diff(integrand, x, 3))
 
-def J0_full(x2):
-	integral_result, _ = quad(I0, 0, np.inf, args=(x2,))
+def Jf0_full(x2):
+	integral_result, _ = quad(If0, 0, np.inf, args=(x2,))
 	return -integral_result
 
-def J1_full(x2):
-	integral_result, _ = quad(I1, 0, np.inf, args=(x2,))
+def Jf1_full(x2):
+	integral_result, _ = quad(If1, 0, np.inf, args=(x2,))
 	return -integral_result
 
-def J2_full(x2):
-	integral_result, _ = quad(I2, 0, np.inf, args=(x2,))
+def Jf2_full(x2):
+	integral_result, _ = quad(If2, 0, np.inf, args=(x2,))
 	return -integral_result
 
-def J3_full(x2):
-	integral_result, _ = quad(I3, 0, np.inf, args=(x2,))
+def Jf3_full(x2):
+	integral_result, _ = quad(If3, 0, np.inf, args=(x2,))
 	return -integral_result
 
-J0_full_vec = np.vectorize(J0_full)
-J1_full_vec = np.vectorize(J1_full)
-J2_full_vec = np.vectorize(J2_full)
-J3_full_vec = np.vectorize(J3_full)
+Jf0_full_vec = np.vectorize(Jf0_full)
+Jf1_full_vec = np.vectorize(Jf1_full)
+Jf2_full_vec = np.vectorize(Jf2_full)
+Jf3_full_vec = np.vectorize(Jf3_full)
 
 
-def J_full(x, l):
+def Jf_full(x, l):
     if(l==0):
-        return J0_full_vec(x)
+        return Jf0_full_vec(x)
     elif(l==1):
-        return J1_full_vec(x)
+        return Jf1_full_vec(x)
     elif(l==2):
-        return J2_full_vec(x)
+        return Jf2_full_vec(x)
     elif(l==3):
-        return J3_full_vec(x)
+        return Jf3_full_vec(x)
     else:
         return 0.
 
 
-def J_high(x, l):
-    E_gamma = 0.5772156649
+def Jf_high(x, l):
+    a_f = np.pi**2 * np.exp(1.5 - 2 * np.euler_gamma)
     if(l==0):
-        return -2 + x/2 + x**2/32*(-3 + 4*E_gamma - 4*np.log(2) + 4*np.log(np.sqrt(x))) 
+        return -7 * np.pi**4 / 360 + x * np.pi**2 / 24 + x**2 * np.log(x / a_f) / 32
     elif(l==1):
-        return 0.5 + x/16 + x/16*(-3 + 4*E_gamma - 4*np.log(2) + 4*np.log(np.sqrt(x))) 
+        return np.pi**2 / 24 + x * np.log(x / a_f) / 16 + x / 32
     elif(l==2):
-        return 3/16 + 1/16*(-3 + 4*E_gamma - 4*np.log(2) + 4*np.log(np.sqrt(x))) 
+        return np.log(x / a_f) / 16 + 3 / 32
     elif(l==3):
-        return 1/(8*x)
+        return 1 / x / 16
     else:
         return 0
 		
 
-def J_low(x, l):
+def Jf_low(x, l):
     if(l==0):
-        return -np.sqrt(np.pi/2) * x**(0.75)*np.exp(-np.sqrt(x))
+        return -np.sqrt(np.pi / 2) * x**(0.75) * np.exp(-np.sqrt(x))
     elif(l==1):
-        return np.sqrt(np.pi/2)/4 * np.exp(-np.sqrt(x))*(-3+2*np.sqrt(x))/x**(0.25)
+        return np.sqrt(np.pi / 2) / 4 * np.exp(-np.sqrt(x)) * (-3 + 2 * np.sqrt(x)) / x**(0.25)
     elif(l==2):
-        return np.sqrt(np.pi/2)/16 * np.exp(-np.sqrt(x))*(3+8*np.sqrt(x)-4*x)/x**(1.25)
+        return np.sqrt(np.pi / 2) / 16 * np.exp(-np.sqrt(x))*(3 + 8 * np.sqrt(x)- 4 * x) / x**(1.25)
     elif(l==3):
-        return np.sqrt(np.pi/2)/64 * np.exp(-np.sqrt(x))*(-15-30*np.sqrt(x)-12*x + 8*x**(1.5))/x**(2.25)
+        return np.sqrt(np.pi / 2) / 64 * np.exp(-np.sqrt(x))*(-15 - 30 * np.sqrt(x) - 12 * x + 8 * x**(1.5)) / x**(2.25)
     else:
         return 0
 
-n = 10
+n = 12
 p = 8
 k = 3
 zmin = 10**(-3)
 zmax = 10**(3)
 
-rescaling = 80 * 10**(-3)
+rescaling = 120 * 10**(-3)
 argument_function = lambda x: zmin * np.sinh(x) / rescaling
 inverse_argument_function = lambda x: np.arcsinh(rescaling * x / zmin)
 
@@ -160,10 +161,9 @@ def code_jacobian(p, k, fun_name, argument_function = Id):
     code_input = []
     for l in range(p+1):
         for j in range(k+1):
-        	#print(j, l, jacobian[j, l])
         	code_input.append((fun_name+"_"+str(j)+"_"+str(l), jacobian[j, l]))
     codegen(code_input, code_gen=gen, argument_sequence=(x, ), to_files=True,
-            prefix='thermal_functions/thermal_functions_jacobian')
+            prefix='thermal_functions/fermionic_thermal_functions_jacobian')
     CythonCodeGen(code_input, 
                   prefix='thermal_functions/thermal_functions_jacobian')
     
@@ -173,35 +173,35 @@ code_jacobian(p, k, "jacobian", lambda x: asinh(rescaling * x / zmin))
 
 
 
-function = [lambda x: np.sum([J_full(argument_function(x), l) * jacobian[0][l](x) for l in range(p+1)]),
-            lambda x: np.sum([J_full(argument_function(x), l) * jacobian[1][l](x) for l in range(p+1)]),
-            lambda x: np.sum([J_full(argument_function(x), l) * jacobian[2][l](x) for l in range(p+1)]),
-            lambda x: np.sum([J_full(argument_function(x), l) * jacobian[3][l](x) for l in range(p+1)])]
-function_low = [lambda x: np.sum([J_high(argument_function(x), l) * jacobian[0][l](x) for l in range(p+1)]),
-                lambda x: np.sum([J_high(argument_function(x), l) * jacobian[1][l](x) for l in range(p+1)]),
-                lambda x: np.sum([J_high(argument_function(x), l) * jacobian[2][l](x) for l in range(p+1)]),
-                lambda x: np.sum([J_high(argument_function(x), l) * jacobian[3][l](x) for l in range(p+1)])]
-function_high = [lambda x: np.sum([J_low(argument_function(x), l) * jacobian[0][l](x) for l in range(p+1)]),
-                  lambda x: np.sum([J_low(argument_function(x), l) * jacobian[1][l](x) for l in range(p+1)]),
-                  lambda x: np.sum([J_low(argument_function(x), l) * jacobian[2][l](x) for l in range(p+1)]),
-                  lambda x: np.sum([J_low(argument_function(x), l) * jacobian[3][l](x) for l in range(p+1)])]
+function = [lambda x: np.sum([Jf_full(argument_function(x), l) * jacobian[0][l](x) for l in range(p+1)]),
+            lambda x: np.sum([Jf_full(argument_function(x), l) * jacobian[1][l](x) for l in range(p+1)]),
+            lambda x: np.sum([Jf_full(argument_function(x), l) * jacobian[2][l](x) for l in range(p+1)]),
+            lambda x: np.sum([Jf_full(argument_function(x), l) * jacobian[3][l](x) for l in range(p+1)])]
+function_low = [lambda x: np.sum([Jf_high(argument_function(x), l) * jacobian[0][l](x) for l in range(p+1)]),
+                lambda x: np.sum([Jf_high(argument_function(x), l) * jacobian[1][l](x) for l in range(p+1)]),
+                lambda x: np.sum([Jf_high(argument_function(x), l) * jacobian[2][l](x) for l in range(p+1)]),
+                lambda x: np.sum([Jf_high(argument_function(x), l) * jacobian[3][l](x) for l in range(p+1)])]
+function_high = [lambda x: np.sum([Jf_low(argument_function(x), l) * jacobian[0][l](x) for l in range(p+1)]),
+                  lambda x: np.sum([Jf_low(argument_function(x), l) * jacobian[1][l](x) for l in range(p+1)]),
+                  lambda x: np.sum([Jf_low(argument_function(x), l) * jacobian[2][l](x) for l in range(p+1)]),
+                  lambda x: np.sum([Jf_low(argument_function(x), l) * jacobian[3][l](x) for l in range(p+1)])]
 
 
 external_bounds = [[xmin, [function_low[j](xmin) for j in range(k+1)]],
                    [xmax, [function_high[j](xmax) for j in range(k+1)]]]
-N = 1000
+N = 2000
 Z = np.linspace(xmin, xmax, N+2)
 Z = Z[1:-1]
 
-data = [[z, [J0_full(argument_function(z)),
-             J1_full(argument_function(z)),
-             J2_full(argument_function(z)),
-             J3_full(argument_function(z))]] for z in Z]
+data = [[z, [Jf0_full(argument_function(z)) / np.fabs(Jf_high(zmin, 0)),
+             Jf1_full(argument_function(z)) / np.fabs(Jf_high(zmin, 1)),
+             Jf2_full(argument_function(z)) / np.fabs(Jf_high(zmin, 2)),
+             Jf3_full(argument_function(z)) / np.fabs(Jf_high(zmin, 3))]] for z in Z]
 
 def calculate_jacobian(jacobian):
-    return lambda x: [[jacobian[j][l](x) for l in range(p+1)] for j in range(k+1)]
+    return lambda x: [[jacobian[j][l](x) / np.fabs(Jf_high(zmin, j)) for l in range(p+1)] for j in range(k+1)]
 
-if not os.path.exists("thermal_functions/interpolation_coefficients.npy"):
+if not os.path.exists(file_path + '/fermionic_interpolation_coefficients.npy'):
 	dependencies = [[z, calculate_jacobian(inverse_jacobian)(argument_function(z))] for z in Z]
 	coefficients, lambdas = fit_parameters(p, k, intervals, external_bounds, data, dependencies)
 	coefficients_0 = np.copy(coefficients)
@@ -217,11 +217,11 @@ if not os.path.exists("thermal_functions/interpolation_coefficients.npy"):
 	for i in range(len(intervals) - 1):
 		for m in range(3, p+1):
 			coefficients_3[(p+1) * i + m] = m*(m-1)*(m-2) * coefficients[(p+1) * i + m] / (intervals[i+1] - intervals[i])**3
-	np.save('thermal_functions/interpolation_coefficients.npy', [coefficients, coefficients_0, coefficients_1, coefficients_2, coefficients_3])
-else:
-	lambdas = get_base_functions(p, k)
-	coefficients_data = np.load('thermal_functions/interpolation_coefficients.npy')
-	coefficients = coefficients_data[0]
+	np.save(file_path +'/fermionic_interpolation_coefficients.npy', [coefficients, coefficients_0, coefficients_1, coefficients_2, coefficients_3])
+
+lambdas = get_base_functions(p, k)
+coefficients_data = np.load(file_path + '/fermionic_interpolation_coefficients.npy')
+coefficients = coefficients_data[0]
 
 print(coefficients_data[1])
 print(coefficients_data[2])
@@ -233,63 +233,63 @@ print(interpolated_function(0.23, 2, intervals, coefficients, lambdas))
 print(interpolated_function(0.23, 3, intervals, coefficients, lambdas))
                                      
                                      
-def J0_interpolated(z):
+def Jf0_interpolated(z):
     if (z <= zmin):
-        return J_high(z, 0)
+        return Jf_high(z, 0)
     elif (z >= zmax):
-        return J_low(z, 0)
+        return Jf_low(z, 0)
     else:
         return interpolated_function(inverse_argument_function(z), 0, intervals,
                                      coefficients, lambdas)
 
-def J1_interpolated(z):
+def Jf1_interpolated(z):
     if (z <= zmin):
-        return J_high(z, 1)
+        return Jf_high(z, 1)
     elif (z >= zmax):
-        return J_low(z, 1)
+        return Jf_low(z, 1)
     else:
         return sum([interpolated_function(inverse_argument_function(z), l,
                                      intervals, coefficients, lambdas) * \
                     inverse_jacobian[1][l](z) for l in range(p+1)])
 
 
-def J2_interpolated(z):
+def Jf2_interpolated(z):
     if (z <= zmin):
-        return J_high(z, 2)
+        return Jf_high(z, 2)
     elif (z >= zmax):
-        return J_low(z, 2)
+        return Jf_low(z, 2)
     else:
         return sum([interpolated_function(inverse_argument_function(z), l,
                                      intervals, coefficients, lambdas) * \
                     inverse_jacobian[2][l](z) for l in range(p+1)])
 
-def J3_interpolated(z):
+def Jf3_interpolated(z):
     if (z <= zmin):
-        return J_high(z, 3)
+        return Jf_high(z, 3)
     elif (z >= zmax):
-        return J_low(z, 3)
+        return Jf_low(z, 3)
     else:
         return sum([interpolated_function(inverse_argument_function(z), l,
                                      intervals, coefficients, lambdas) * \
                     inverse_jacobian[3][l](z) for l in range(p+1)])
 
-def J_interpolated(z, der=0):
+def Jf_interpolated(z, der=0):
     if der == 0:
-        return J0_interpolated(z)
+        return Jf0_interpolated(z)
     elif der == 1:
-        return J1_interpolated(z)
+        return Jf1_interpolated(z)
     elif der == 2:
-        return J2_interpolated(z)
+        return Jf2_interpolated(z)
     elif der == 3:
-        return J3_interpolated(z)
+        return Jf3_interpolated(z)
     else:
         return 0
 
-J0_interpolated = np.vectorize(J0_interpolated)
-J1_interpolated = np.vectorize(J1_interpolated)
-J2_interpolated = np.vectorize(J2_interpolated)
-J3_interpolated = np.vectorize(J3_interpolated)
-J_interpolated = np.vectorize(J_interpolated)
+Jf0_interpolated = np.vectorize(Jf0_interpolated)
+Jf1_interpolated = np.vectorize(Jf1_interpolated)
+Jf2_interpolated = np.vectorize(Jf2_interpolated)
+Jf3_interpolated = np.vectorize(Jf3_interpolated)
+Jf_interpolated = np.vectorize(Jf_interpolated)
 
 
 if __name__=='__main__':
@@ -304,27 +304,27 @@ if __name__=='__main__':
     plt.show()
     plt.plot(Z, [point[1][3] for point in data])
     plt.show()
-    plt.plot(xplot2, J0_full_vec(xplot2), "--")
-    plt.plot(xplot2, J0_interpolated(xplot2))
+    plt.plot(xplot2, Jf0_full_vec(xplot2), "--")
+    plt.plot(xplot2, Jf0_interpolated(xplot2))
     plt.xscale("log")
-    plt.savefig("J0.pdf")
+    plt.savefig("Jf0.pdf")
     plt.close()
     plt.figure()
-    plt.plot(xplot2, J1_full_vec(xplot2), "--")
-    plt.plot(xplot2, J1_interpolated(xplot2))
+    plt.plot(xplot2, Jf1_full_vec(xplot2), "--")
+    plt.plot(xplot2, Jf1_interpolated(xplot2))
     plt.xscale("log")
-    plt.savefig("J1.pdf")
+    plt.savefig("Jf1.pdf")
     plt.close()
     plt.figure()
-    plt.plot(xplot2, J2_full_vec(xplot2), "--")
-    plt.plot(xplot2, J2_interpolated(xplot2))
+    plt.plot(xplot2, Jf2_full_vec(xplot2), "--")
+    plt.plot(xplot2, Jf2_interpolated(xplot2))
     plt.xscale("log")
-    plt.savefig("J2.pdf")
+    plt.savefig("Jf2.pdf")
     plt.close()
     plt.figure()
-    plt.plot(xplot2, J3_full_vec(xplot2), "--")
-    plt.plot(xplot2, J3_interpolated(xplot2))
+    plt.plot(xplot2, Jf3_full_vec(xplot2), "--")
+    plt.plot(xplot2, Jf3_interpolated(xplot2))
     plt.xscale("log")
-    plt.savefig("J3.pdf")
+    plt.savefig("Jf3.pdf")
     plt.close()
 

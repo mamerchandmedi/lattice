@@ -1,12 +1,5 @@
 # Declare the functions
 
-cdef int bisection(const double x)
-
-cdef double interpolated_function_0(const double z)
-cdef double interpolated_function_1(const double z)
-cdef double interpolated_function_2(const double z)
-cdef double interpolated_function_3(const double z)
-
 cdef double I0(const double k, const double m)
 cdef double I1(const double k, const double m)
 cdef double I2(const double k, const double m)

@@ -3,6 +3,3 @@ def make_ext(modname, pyxfilename):
     return Extension(name=modname,
                      sources=[pyxfilename, 'thermal_functions_jacobian.c'],
                      include_dirs = ['.'])
-
-# def make_setup_args():
-    # return dict(script_args=["--compiler=mingw32"])

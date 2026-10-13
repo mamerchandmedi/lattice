@@ -32,7 +32,7 @@ from libc.math cimport asinh
 cdef extern from "numpy/npy_math.h":
     double inf "NPY_INFINITY"
 
-from .new_thermal_functions import zmin, zmax, intervals, rescaling
+from .thermal_functions import zmin, zmax, intervals, rescaling
 
 
 from thermal_functions_jacobian cimport jacobian_1_0, jacobian_1_1, jacobian_2_0, jacobian_2_1, jacobian_2_2, jacobian_3_0, jacobian_3_1, jacobian_3_2, jacobian_3_3

@@ -1,5 +1,5 @@
 /******************************************************************************
- *                      Code generated with SymPy 1.14.0                      *
+ *                       Code generated with SymPy 1.10                       *
  *                                                                            *
  *              See http://www.sympy.org/ for more information.               *
  *                                                                            *
@@ -52,7 +52,7 @@ double jacobian_0_1(double x) {
 double jacobian_1_1(double x) {
 
    double jacobian_1_1_result;
-   jacobian_1_1_result = 80.0/sqrt(6400.0*pow(x, 2) + 1);
+   jacobian_1_1_result = 1.0/sqrt(pow(x, 2) + 0.00015625);
    return jacobian_1_1_result;
 
 }
@@ -60,7 +60,7 @@ double jacobian_1_1(double x) {
 double jacobian_2_1(double x) {
 
    double jacobian_2_1_result;
-   jacobian_2_1_result = -512000.0*x/pow(6400.0*pow(x, 2) + 1, 3.0/2.0);
+   jacobian_2_1_result = -1.0*x/pow(pow(x, 2) + 0.00015625, 3.0/2.0);
    return jacobian_2_1_result;
 
 }
@@ -68,7 +68,7 @@ double jacobian_2_1(double x) {
 double jacobian_3_1(double x) {
 
    double jacobian_3_1_result;
-   jacobian_3_1_result = 9830400000.0*pow(x, 2)/pow(6400.0*pow(x, 2) + 1, 5.0/2.0) - 512000.0/pow(6400.0*pow(x, 2) + 1, 3.0/2.0);
+   jacobian_3_1_result = 3.0*pow(x, 2)/pow(pow(x, 2) + 0.00015625, 5.0/2.0) - 1.0/pow(pow(x, 2) + 0.00015625, 3.0/2.0);
    return jacobian_3_1_result;
 
 }
@@ -92,7 +92,7 @@ double jacobian_1_2(double x) {
 double jacobian_2_2(double x) {
 
    double jacobian_2_2_result;
-   jacobian_2_2_result = 6400.0/(6400.0*pow(x, 2) + 1);
+   jacobian_2_2_result = 1.0/(pow(x, 2) + 0.00015625);
    return jacobian_2_2_result;
 
 }
@@ -100,7 +100,7 @@ double jacobian_2_2(double x) {
 double jacobian_3_2(double x) {
 
    double jacobian_3_2_result;
-   jacobian_3_2_result = -122880000.0*x/pow(6400.0*pow(x, 2) + 1, 2);
+   jacobian_3_2_result = -3.0*x/pow(pow(x, 2) + 0.00015625, 2);
    return jacobian_3_2_result;
 
 }
@@ -132,7 +132,7 @@ double jacobian_2_3(double x) {
 double jacobian_3_3(double x) {
 
    double jacobian_3_3_result;
-   jacobian_3_3_result = 512000.0/pow(6400.0*pow(x, 2) + 1, 3.0/2.0);
+   jacobian_3_3_result = 1.0/pow(pow(x, 2) + 0.00015625, 3.0/2.0);
    return jacobian_3_3_result;
 
 }
